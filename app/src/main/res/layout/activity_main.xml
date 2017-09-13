@@ -1,18 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<android.support.constraint.ConstraintLayout
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    tools:context="my.utar.phonesecurat.MainActivity">
+    tools:context="my.utar.phonesecurat.MainActivity"
+    tools:layout_editor_absoluteY="81dp"
+    tools:layout_editor_absoluteX="0dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="Home menu"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="0dp">
+    </TextView>
+
+    <Button
+        android:id="@+id/ButtonSettings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Settings"
+        tools:layout_editor_absoluteY="50dp"
+        tools:layout_editor_absoluteX="140dp">
+    </Button>
+
+    <Button
+        android:id="@+id/ButtonStartBaseProfiling"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start base profiling"
+        tools:layout_editor_absoluteY="126dp"
+        tools:layout_editor_absoluteX="91dp">
+    </Button>
+
+    <Button
+        android:id="@+id/ButtonRunInBackground"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Run in Background"
+        tools:layout_editor_absoluteY="218dp"
+        tools:layout_editor_absoluteX="106dp">
+    </Button>
+
+    <Button
+        android:id="@+id/ButtonStopService"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stop Service"
+        tools:layout_editor_absoluteY="303dp"
+        tools:layout_editor_absoluteX="123dp">
+    </Button>
+
 
 </android.support.constraint.ConstraintLayout>
