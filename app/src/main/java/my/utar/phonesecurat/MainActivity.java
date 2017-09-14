@@ -20,7 +20,7 @@ public class MainActivity extends Activity {
 
         mButtonSettings.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void OnClick(View v) {
+            public void onClick(View v) {
                 Intent goToSettings = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(goToSettings);
             }
