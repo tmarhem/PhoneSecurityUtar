@@ -9,6 +9,8 @@ import android.widget.Button;
 public class MainActivity extends Activity {
 
     private Button mButtonSettings = null;
+    private Button mButtonStartBaseProfiling = null;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -17,12 +19,22 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         mButtonSettings = (Button) findViewById(R.id.ButtonSettings);
+        mButtonStartBaseProfiling = (Button) findViewById(R.id.ButtonStartBaseProfiling);
+
 
         mButtonSettings.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 Intent goToSettings = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(goToSettings);
+            }
+
+        });
+        mButtonStartBaseProfiling.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent goToStartBaseProfiling = new Intent(MainActivity.this, BaseProfilingActivity.class);
+                startActivity(goToStartBaseProfiling);
             }
 
         });
