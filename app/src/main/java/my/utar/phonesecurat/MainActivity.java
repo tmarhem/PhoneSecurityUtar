@@ -26,7 +26,6 @@ public class MainActivity extends Activity {
             }
 
         });
-        //TODO  //DOING// Naviguation interactivity
         //TODO remplissage basic other activity
         //TODO retreive swiping gesture
 
@@ -34,4 +33,5 @@ public class MainActivity extends Activity {
 
 
 }
+
 
