@@ -7,6 +7,8 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.widget.TextView;
 
+import static java.lang.Math.pow;
+
 public class BaseProfilingActivity extends Activity {
 
     private VelocityTracker mVelocityTracker = null;
@@ -22,8 +24,23 @@ public class BaseProfilingActivity extends Activity {
 
     }
     public boolean onTouchEvent(MotionEvent event){
-        mVelocityTracker = VelocityTracker.obtain();
-        mSpeedDisplay.setText(mVelocityTracker.toString());
+        switch (event.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN :
+                if (mVelocityTracker == null){
+                    mVelocityTracker = VelocityTracker.obtain();
+                }
+                else {
+                    mVelocityTracker.clear();
+                }
+                mVelocityTracker.addMovement(event);
+            break;
+
+            case MotionEvent.ACTION_MOVE :
+                mVelocityTracker.addMovement(event);
+                mVelocityTracker.computeCurrentVelocity(1000);
+                mSpeedDisplay.setText(String.valueOf(pow(mVelocityTracker.getXVelocity(),2)));
+
+        }
         return true;
     }
 }
