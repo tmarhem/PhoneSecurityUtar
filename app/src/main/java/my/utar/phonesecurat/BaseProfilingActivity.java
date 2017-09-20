@@ -7,12 +7,28 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.widget.TextView;
 
+import java.util.Vector;
+
 import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
 
 public class BaseProfilingActivity extends Activity {
 
     private VelocityTracker mVelocityTracker = null;
     private TextView mSpeedDisplay = null;
+    private Vector mVector = null;
+    private StructMotionElemts mStructMotionElemts = null;
+    //instant speed
+    private double speed;
+
+    //StructMotionElemts required variables
+    private long posX;
+    private long posY;
+    private long time;
+    private double pressure;
+    private double instantSpeed;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,12 +49,24 @@ public class BaseProfilingActivity extends Activity {
                     mVelocityTracker.clear();
                 }
                 mVelocityTracker.addMovement(event);
+
+                //TODO Compute X, Y, time, pressure & instantSpeed
+                //TODO create Struct from these values
+                //TODO Insert object in vector
+                mVector = new Vector();
+                //mVector.add();
             break;
 
             case MotionEvent.ACTION_MOVE :
                 mVelocityTracker.addMovement(event);
                 mVelocityTracker.computeCurrentVelocity(1000);
-                mSpeedDisplay.setText(String.valueOf(pow(mVelocityTracker.getXVelocity(),2)));
+                speed = sqrt(pow(mVelocityTracker.getXVelocity(),2) +
+                        pow(mVelocityTracker.getYVelocity(),2));
+                mSpeedDisplay.setText(String.valueOf( (int) speed));
+
+                //TODO Compute X, Y, time, pressure & speed
+                //TODO create Struct from these values
+                //TODO Insert object in vector
 
         }
         return true;
