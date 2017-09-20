@@ -26,7 +26,7 @@ public class BaseProfilingActivity extends Activity {
     private long posY;
     private long time;
     private double pressure;
-    private double instantSpeed;
+    private long instantSpeed;
 
 
 
@@ -54,7 +54,7 @@ public class BaseProfilingActivity extends Activity {
                 //TODO create Struct from these values
                 //TODO Insert object in vector
                 mVector = new Vector();
-                //mVector.add();
+                //mVector.add(new StructMotionElemts(posX, posY, time, pressure, instantSpeed));
             break;
 
             case MotionEvent.ACTION_MOVE :
