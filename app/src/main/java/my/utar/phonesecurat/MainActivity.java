@@ -11,6 +11,7 @@ public class MainActivity extends Activity {
     private Button mButtonSettings = null;
     private Button mButtonStartBaseProfiling = null;
 
+    //TEST GITHUB CHGN
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
