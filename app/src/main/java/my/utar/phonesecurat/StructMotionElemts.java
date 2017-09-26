@@ -87,4 +87,11 @@ public class StructMotionElemts {
     public void setSpeed(double speed) {
         this.speed = speed;
     }
+
+    @Override
+    public String toString(){
+        return "posX:" + Float.toString(posX) + " posY:" + Float.toString(posY)+
+                " time:" + Long.toString(time) + " pressure:" + Float.toString(pressure)+
+                " speed:" + Double.toString(speed);
+    }
 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.webkit.ConsoleMessage;
@@ -100,7 +101,7 @@ public class BaseProfilingActivity extends Activity {
                 Iterator i = mVector.iterator();
                 while (i.hasNext()){
                     mStructMotionElemts = (StructMotionElemts) i.next();
-
+                    Log.v("TEST",mStructMotionElemts.toString());
                 }
             break;
         }
