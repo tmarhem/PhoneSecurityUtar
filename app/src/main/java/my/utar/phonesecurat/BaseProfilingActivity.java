@@ -68,8 +68,10 @@ public class BaseProfilingActivity extends Activity {
                 mStructMotionElemts.setPressure(event.getPressure());
                 mStructMotionElemts.setTime(SystemClock.uptimeMillis());
                 // Insert object in vector
-                mVector.addElement(mStructMotionElemts);
-            break;
+                mVector.addElement(mStructMotionElemts.clone());
+                Log.v("TEST","\nNEW ELEMENT\n");
+
+                break;
 
             case MotionEvent.ACTION_MOVE :
                 // Compute X, Y, time, pressure & instantSpeed
@@ -84,7 +86,8 @@ public class BaseProfilingActivity extends Activity {
                 mStructMotionElemts.setPressure(event.getPressure());
                 mStructMotionElemts.setTime(SystemClock.uptimeMillis());
                 // Insert object in vector
-                mVector.addElement(mStructMotionElemts);
+                mVector.addElement(mStructMotionElemts.clone());
+                mSpeedDisplay.setText(mStructMotionElemts.toString());
                 break;
 
             case MotionEvent.ACTION_UP :

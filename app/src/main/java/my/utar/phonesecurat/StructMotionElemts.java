@@ -94,4 +94,8 @@ public class StructMotionElemts {
                 " time:" + Long.toString(time) + " pressure:" + Float.toString(pressure)+
                 " speed:" + Double.toString(speed);
     }
+
+    public StructMotionElemts clone(){
+        return new StructMotionElemts(this.posX, this.posY, this.time, this.pressure, this.speed);
+    }
 }
