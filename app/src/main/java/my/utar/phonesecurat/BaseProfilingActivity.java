@@ -7,7 +7,6 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
-import android.webkit.ConsoleMessage;
 import android.widget.TextView;
 
 import java.util.Iterator;
@@ -22,15 +21,6 @@ public class BaseProfilingActivity extends Activity {
     private TextView mSpeedDisplay = null;
     private Vector mVector = null;
     private StructMotionElemts mStructMotionElemts = null;
-
-    //StructMotionElemts required variables
-    private float posX;
-    private float posY;
-    private long time;
-    private float pressure;
-    private double instantSpeed;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
