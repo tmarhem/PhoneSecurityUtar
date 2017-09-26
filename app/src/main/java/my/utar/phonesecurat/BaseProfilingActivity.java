@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
+import android.webkit.ConsoleMessage;
 import android.widget.TextView;
 
 import java.util.Vector;
@@ -89,6 +90,11 @@ public class BaseProfilingActivity extends Activity {
                 // create Struct from these values
                 // Insert object in vector
                 mVector.add(new StructMotionElemts(posX, posY, time, pressure, instantSpeed));
+                break;
+
+            case MotionEvent.ACTION_UP :
+                //mStructMotionElemts = mVector.firstElement();
+            break;
         }
         return true;
     }

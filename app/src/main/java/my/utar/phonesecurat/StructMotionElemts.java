@@ -28,4 +28,24 @@ public class StructMotionElemts {
         this.speed = speed;
     }
 
+    //Accesseurs - Accessibility methods
+    public float getPosX(){
+        return this.posX;
+    }
+
+    public float getPosY(){
+        return this.posY;
+    }
+
+    public long getTime(){
+        return this.time;
+    }
+
+    public float getPressure(){
+        return this.pressure;
+    }
+
+    public double getSpeed(){
+        return this.speed;
+    }
 }
