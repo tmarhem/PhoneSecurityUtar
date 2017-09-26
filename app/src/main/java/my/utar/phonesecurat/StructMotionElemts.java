@@ -5,11 +5,11 @@ package my.utar.phonesecurat;
  */
 
 public class StructMotionElemts {
-    private long posX;
-    private long posY;
+    private float posX;
+    private float posY;
     private long time;
-    private double pressure;
-    private long speed;
+    private float pressure;
+    private double speed;
 
 
     public StructMotionElemts() {
@@ -20,7 +20,7 @@ public class StructMotionElemts {
         speed = 0;
     }
 
-    public StructMotionElemts(long posX, long posY, long time, double pressure, long speed) {
+    public StructMotionElemts(float posX, float posY, long time, float pressure, double speed) {
         this.posX = posX;
         this.posY = posY;
         this.time = time;
