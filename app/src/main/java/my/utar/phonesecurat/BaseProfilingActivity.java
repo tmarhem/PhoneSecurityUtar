@@ -9,6 +9,7 @@ import android.view.VelocityTracker;
 import android.webkit.ConsoleMessage;
 import android.widget.TextView;
 
+import java.util.Iterator;
 import java.util.Vector;
 
 import static java.lang.Math.pow;
@@ -20,8 +21,6 @@ public class BaseProfilingActivity extends Activity {
     private TextView mSpeedDisplay = null;
     private Vector mVector = null;
     private StructMotionElemts mStructMotionElemts = null;
-    //instant speed
-    private double speed;
 
     //StructMotionElemts required variables
     private float posX;
@@ -58,21 +57,27 @@ public class BaseProfilingActivity extends Activity {
                 else {
                     mVector.clear();
                 }
+                //Creation ou reinitialisation du StructMotionElemts
+                if (mStructMotionElemts == null){
+                    mStructMotionElemts = new StructMotionElemts();
+                }
+                else {
+                    mStructMotionElemts.clear();
+                }
 
                 // Compute X, Y, time, pressure & instantSpeed
 
                 mVelocityTracker.addMovement(event);
                 mVelocityTracker.computeCurrentVelocity(1000);
 
-                instantSpeed = sqrt(pow(mVelocityTracker.getXVelocity(),2) +
-                        pow(mVelocityTracker.getYVelocity(),2));
-                posX = event.getX();
-                posY = event.getY();
-                pressure = event.getPressure();
-                time = SystemClock.uptimeMillis();
-                // create Struct from these values
+                mStructMotionElemts.setSpeed(sqrt(pow(mVelocityTracker.getXVelocity(),2) +
+                        pow(mVelocityTracker.getYVelocity(),2)));
+                mStructMotionElemts.setPosX(event.getX());
+                mStructMotionElemts.setPosY(event.getY());
+                mStructMotionElemts.setPressure(event.getPressure());
+                mStructMotionElemts.setTime(SystemClock.uptimeMillis());
                 // Insert object in vector
-                mVector.add(new StructMotionElemts(posX, posY, time, pressure, instantSpeed));
+                mVector.addElement(mStructMotionElemts);
             break;
 
             case MotionEvent.ACTION_MOVE :
@@ -81,19 +86,22 @@ public class BaseProfilingActivity extends Activity {
                 mVelocityTracker.addMovement(event);
                 mVelocityTracker.computeCurrentVelocity(1000);
 
-                instantSpeed = sqrt(pow(mVelocityTracker.getXVelocity(),2) +
-                        pow(mVelocityTracker.getYVelocity(),2));
-                posX = event.getX();
-                posY = event.getY();
-                pressure = event.getPressure();
-                time = SystemClock.uptimeMillis();
-                // create Struct from these values
+                mStructMotionElemts.setSpeed(sqrt(pow(mVelocityTracker.getXVelocity(),2) +
+                        pow(mVelocityTracker.getYVelocity(),2)));
+                mStructMotionElemts.setPosX(event.getX());
+                mStructMotionElemts.setPosY(event.getY());
+                mStructMotionElemts.setPressure(event.getPressure());
+                mStructMotionElemts.setTime(SystemClock.uptimeMillis());
                 // Insert object in vector
-                mVector.add(new StructMotionElemts(posX, posY, time, pressure, instantSpeed));
+                mVector.addElement(mStructMotionElemts);
                 break;
 
             case MotionEvent.ACTION_UP :
-                //mStructMotionElemts = mVector.firstElement();
+                Iterator i = mVector.iterator();
+                while (i.hasNext()){
+                    mStructMotionElemts = (StructMotionElemts) i.next();
+
+                }
             break;
         }
         return true;

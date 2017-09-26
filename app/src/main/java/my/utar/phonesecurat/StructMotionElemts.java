@@ -48,4 +48,43 @@ public class StructMotionElemts {
     public double getSpeed(){
         return this.speed;
     }
+
+    //Utility methods
+    public boolean clear(){
+        this.posX = 0;
+        this.posY = 0;
+        this.speed = 0;
+        this.pressure = 0;
+        this.time = 0;
+
+        if(     this.posX == 0 &&
+                this.posY == 0 &&
+                this.speed == 0 &&
+                this.time == 0 &&
+                this.pressure == 0){
+            return true;
+        }
+        else return false;
+    }
+
+    //Setters
+    public void setPosX(float posX){
+        this.posX = posX;
+    }
+
+    public void setPosY(float posY){
+        this.posY = posY;
+    }
+
+    public void setTime(long time){
+        this.time = time;
+    }
+
+    public void setPressure(float pressure) {
+        this.pressure = pressure;
+    }
+
+    public void setSpeed(double speed) {
+        this.speed = speed;
+    }
 }
