@@ -23,7 +23,7 @@ public class BaseProfilingActivity extends Activity {
     private StructMotionElemts mStructMotionElemts = null;
 
     //Results
-    private long motionAbsLength;
+    private double motionAbsLength;
     private long motionLength;
     private long motionDuration;
     private double motionAvgSpeed;
@@ -102,22 +102,36 @@ public class BaseProfilingActivity extends Activity {
                 mSpeedDisplay.setText(mStructMotionElemts.toString());
                 break;
 
+            //Exiting event, going though the vector by its iterator and making calulations
             case MotionEvent.ACTION_UP :
-                //Sum reset
+                //Resets and utility
                 sumSpeed = 0;
                 motionLength = 0;
+                //Initialisation bourrine de nowPos
+                mStructMotionElemts = (StructMotionElemts) mVector.firstElement();
+                nowPosX = mStructMotionElemts.getPosX();
+                nowPosY = mStructMotionElemts.getPosY();
+                mStructMotionElemts.clear();
                 //Iterator out of vector
                 Iterator i = mVector.iterator();
                 while (i.hasNext()){
+                    prevPosX = nowPosX;
+                    prevPosY = nowPosY;
                     mStructMotionElemts = (StructMotionElemts) i.next();
-                    //Needed for avgSpeed calculation
+                    //motionLength calculation
+                    nowPosX = mStructMotionElemts.getPosX();
+                    nowPosY = mStructMotionElemts.getPosY();
+
+                    motionLength += sqrt(pow((prevPosX - nowPosX),2)+pow((prevPosY - nowPosY),2));
+                    //avgSpeed calculation
                     sumSpeed += mStructMotionElemts.getSpeed();
 
                     //DISPLAY//////////////////////
-                    Log.v("TEST",mStructMotionElemts.toString());
+                    //Log.v("TEST",mStructMotionElemts.toString());
                     ///////////////////////////////
                 }
                 //TODO compute out of raw values
+                //TODO Display and check computed values
                 //motionAvgSpeed
                 motionAvgSpeed = sumSpeed / mVector.size() ;
                 //motionDuration & motionAbsLength
@@ -132,7 +146,7 @@ public class BaseProfilingActivity extends Activity {
                 endTime = mStructMotionElemts.getTime();
                     //Computing
                 motionDuration = endTime - startTime;
-                //motionAbsLength = sqrt(pow((las),2)+pow((),2));
+                motionAbsLength = sqrt(pow((lastPosX - firstPosX),2)+pow((lastPosY - firstPosY),2));
             break;
         }
         return true;
