@@ -22,6 +22,18 @@ public class BaseProfilingActivity extends Activity {
     private Vector mVector = null;
     private StructMotionElemts mStructMotionElemts = null;
 
+    //Results
+    private long motionAbsLength;
+    private long motionLength;
+    private long motionDuration;
+    private double motionAvgSpeed;
+
+    //Utility
+    private double sumSpeed;
+    private float firstPosX, lastPosX, firstPosY, lastPosY;
+    private float prevPosX, prevPosY, nowPosX, nowPosY;
+    private long  startTime, endTime;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,11 +103,36 @@ public class BaseProfilingActivity extends Activity {
                 break;
 
             case MotionEvent.ACTION_UP :
+                //Sum reset
+                sumSpeed = 0;
+                motionLength = 0;
+                //Iterator out of vector
                 Iterator i = mVector.iterator();
                 while (i.hasNext()){
                     mStructMotionElemts = (StructMotionElemts) i.next();
+                    //Needed for avgSpeed calculation
+                    sumSpeed += mStructMotionElemts.getSpeed();
+
+                    //DISPLAY//////////////////////
                     Log.v("TEST",mStructMotionElemts.toString());
+                    ///////////////////////////////
                 }
+                //TODO compute out of raw values
+                //motionAvgSpeed
+                motionAvgSpeed = sumSpeed / mVector.size() ;
+                //motionDuration & motionAbsLength
+                    //Retrieving
+                mStructMotionElemts = (StructMotionElemts) mVector.firstElement();
+                firstPosX = mStructMotionElemts.getPosX();
+                firstPosY = mStructMotionElemts.getPosY();
+                startTime = mStructMotionElemts.getTime();
+                mStructMotionElemts = (StructMotionElemts) mVector.get(mVector.size()-1);
+                lastPosX = mStructMotionElemts.getPosX();
+                lastPosY = mStructMotionElemts.getPosY();
+                endTime = mStructMotionElemts.getTime();
+                    //Computing
+                motionDuration = endTime - startTime;
+                //motionAbsLength = sqrt(pow((las),2)+pow((),2));
             break;
         }
         return true;
