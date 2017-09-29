@@ -81,7 +81,9 @@ public class BaseProfilingActivity extends Activity {
                 mStructMotionElemts.setTime(SystemClock.uptimeMillis());
                 // Insert object in vector
                 mVector.addElement(mStructMotionElemts.clone());
-                Log.v("TEST","\nNEW ELEMENT\n");
+                Log.v("TEST","\nNEW ELEMENT\n"+
+                    mStructMotionElemts.toString()+"\n"+
+                    "up is action down");
 
                 break;
 
@@ -114,6 +116,8 @@ public class BaseProfilingActivity extends Activity {
                 mStructMotionElemts.clear();
                 //Iterator out of vector
                 Iterator i = mVector.iterator();
+                //Jump the first event that is null
+                mStructMotionElemts = (StructMotionElemts) i.next();
                 while (i.hasNext()){
                     prevPosX = nowPosX;
                     prevPosY = nowPosY;
@@ -127,11 +131,11 @@ public class BaseProfilingActivity extends Activity {
                     sumSpeed += mStructMotionElemts.getSpeed();
 
                     //DISPLAY//////////////////////
-                    //Log.v("TEST",mStructMotionElemts.toString());
+                    Log.v("TEST",mStructMotionElemts.toString());
                     ///////////////////////////////
                 }
-                //TODO compute out of raw values
-                //TODO Display and check computed values
+                //TODO firts retrieve equals 0
+                //TODO motion length doubles the lgical result
                 //motionAvgSpeed
                 motionAvgSpeed = sumSpeed / mVector.size() ;
                 //motionDuration & motionAbsLength
@@ -147,7 +151,15 @@ public class BaseProfilingActivity extends Activity {
                     //Computing
                 motionDuration = endTime - startTime;
                 motionAbsLength = sqrt(pow((lastPosX - firstPosX),2)+pow((lastPosY - firstPosY),2));
-            break;
+
+                //////Display///////////
+                Log.v("TEST","Absolute Length:"+ motionAbsLength +"\n"+
+                        "Total length: " + motionLength + "\n"+
+                        "Duration :" + motionDuration + "\n"+
+                        "Avg speed" + motionAvgSpeed + "\n"+
+                        "\nEND OF ELEMENT\n");
+                ////////////////////////
+                break;
         }
         return true;
     }
