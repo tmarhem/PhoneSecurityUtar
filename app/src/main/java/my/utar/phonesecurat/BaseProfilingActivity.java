@@ -45,29 +45,26 @@ public class BaseProfilingActivity extends Activity {
     }
     public boolean onTouchEvent(MotionEvent event){
         switch (event.getActionMasked()) {
-            case MotionEvent.ACTION_DOWN :
+            case MotionEvent.ACTION_DOWN:
                 //Creation ou reinitialisation du VelocityTracker
-                if (mVelocityTracker == null){
+                if (mVelocityTracker == null) {
                     mVelocityTracker = VelocityTracker.obtain();
-                }
-                else {
+                } else {
                     mVelocityTracker.clear();
                 }
                 //Creation ou reinitialisation du Vector
-                if (mVector == null){
+                if (mVector == null) {
                     mVector = new Vector();
-                }
-                else {
+                } else {
                     mVector.clear();
                 }
                 //Creation ou reinitialisation du StructMotionElemts
-                if (mStructMotionElemts == null){
+                if (mStructMotionElemts == null) {
                     mStructMotionElemts = new StructMotionElemts();
-                }
-                else {
+                } else {
                     mStructMotionElemts.clear();
                 }
-
+                /*
                 // Compute X, Y, time, pressure & instantSpeed
 
                 mVelocityTracker.addMovement(event);
@@ -84,17 +81,17 @@ public class BaseProfilingActivity extends Activity {
                 Log.v("TEST","\nNEW ELEMENT\n"+
                     mStructMotionElemts.toString()+"\n"+
                     "up is action down");
-
+            */
                 break;
 
-            case MotionEvent.ACTION_MOVE :
+            case MotionEvent.ACTION_MOVE:
                 // Compute X, Y, time, pressure & instantSpeed
 
                 mVelocityTracker.addMovement(event);
                 mVelocityTracker.computeCurrentVelocity(1000);
 
-                mStructMotionElemts.setSpeed(sqrt(pow(mVelocityTracker.getXVelocity(),2) +
-                        pow(mVelocityTracker.getYVelocity(),2)));
+                mStructMotionElemts.setSpeed(sqrt(pow(mVelocityTracker.getXVelocity(), 2) +
+                        pow(mVelocityTracker.getYVelocity(), 2)));
                 mStructMotionElemts.setPosX(event.getX());
                 mStructMotionElemts.setPosY(event.getY());
                 mStructMotionElemts.setPressure(event.getPressure());
@@ -105,20 +102,26 @@ public class BaseProfilingActivity extends Activity {
                 break;
 
             //Exiting event, going though the vector by its iterator and making calulations
-            case MotionEvent.ACTION_UP :
+            case MotionEvent.ACTION_UP:
                 //Resets and utility
                 sumSpeed = 0;
                 motionLength = 0;
                 //Initialisation bourrine de nowPos
+                //Delete the first event that is null
+                if (!mVector.isEmpty()) {
                 mStructMotionElemts = (StructMotionElemts) mVector.firstElement();
                 nowPosX = mStructMotionElemts.getPosX();
                 nowPosY = mStructMotionElemts.getPosY();
                 mStructMotionElemts.clear();
+
+                    mVector.remove(0);
+
                 //Iterator out of vector
                 Iterator i = mVector.iterator();
                 //Jump the first event that is null
-                mStructMotionElemts = (StructMotionElemts) i.next();
-                while (i.hasNext()){
+                //mStructMotionElemts = (StructMotionElemts) i.next();
+
+                while (i.hasNext()) {
                     prevPosX = nowPosX;
                     prevPosY = nowPosY;
                     mStructMotionElemts = (StructMotionElemts) i.next();
@@ -126,39 +129,43 @@ public class BaseProfilingActivity extends Activity {
                     nowPosX = mStructMotionElemts.getPosX();
                     nowPosY = mStructMotionElemts.getPosY();
 
-                    motionLength += sqrt(pow((prevPosX - nowPosX),2)+pow((prevPosY - nowPosY),2));
+                    motionLength += sqrt(pow((prevPosX - nowPosX), 2) + pow((prevPosY - nowPosY), 2));
                     //avgSpeed calculation
                     sumSpeed += mStructMotionElemts.getSpeed();
 
                     //DISPLAY//////////////////////
-                    Log.v("TEST",mStructMotionElemts.toString());
+                    Log.v("TEST", mStructMotionElemts.toString());
                     ///////////////////////////////
                 }
                 //TODO firts retrieve equals 0
                 //TODO motion length doubles the lgical result
                 //motionAvgSpeed
-                motionAvgSpeed = sumSpeed / mVector.size() ;
+                motionAvgSpeed = sumSpeed / mVector.size();
                 //motionDuration & motionAbsLength
-                    //Retrieving
+                //Retrieving
                 mStructMotionElemts = (StructMotionElemts) mVector.firstElement();
                 firstPosX = mStructMotionElemts.getPosX();
                 firstPosY = mStructMotionElemts.getPosY();
                 startTime = mStructMotionElemts.getTime();
-                mStructMotionElemts = (StructMotionElemts) mVector.get(mVector.size()-1);
+                mStructMotionElemts = (StructMotionElemts) mVector.get(mVector.size() - 1);
                 lastPosX = mStructMotionElemts.getPosX();
                 lastPosY = mStructMotionElemts.getPosY();
                 endTime = mStructMotionElemts.getTime();
-                    //Computing
+                //Computing
                 motionDuration = endTime - startTime;
-                motionAbsLength = sqrt(pow((lastPosX - firstPosX),2)+pow((lastPosY - firstPosY),2));
+                motionAbsLength = sqrt(pow((lastPosX - firstPosX), 2) + pow((lastPosY - firstPosY), 2));
 
                 //////Display///////////
-                Log.v("TEST","Absolute Length:"+ motionAbsLength +"\n"+
-                        "Total length: " + motionLength + "\n"+
-                        "Duration :" + motionDuration + "\n"+
-                        "Avg speed" + motionAvgSpeed + "\n"+
+                Log.v("TEST", "Absolute Length:" + motionAbsLength + "\n" +
+                        "Total length: " + motionLength + "\n" +
+                        "Duration :" + motionDuration + "\n" +
+                        "Avg speed" + motionAvgSpeed + "\n" +
                         "\nEND OF ELEMENT\n");
                 ////////////////////////
+        }
+        else{
+                    Log.v("TEST", "\n Vecteur vide\n");
+                }
                 break;
         }
         return true;
