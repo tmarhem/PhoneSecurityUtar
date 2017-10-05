@@ -18,6 +18,7 @@ import static java.lang.Math.sqrt;
 public class BaseProfilingActivity extends Activity {
 
     private VelocityTracker mVelocityTracker = null;
+    private TextView mMotionInfo = null;
     private TextView mSpeedDisplay = null;
     private Vector mVector = null;
     private StructMotionElemts mStructMotionElemts = null;
@@ -41,6 +42,7 @@ public class BaseProfilingActivity extends Activity {
         Intent i = getIntent();
 
         mSpeedDisplay = (TextView) findViewById(R.id.speedDisplay);
+        mMotionInfo = (TextView) findViewById(R.id.motionInfo);
 
     }
     public boolean onTouchEvent(MotionEvent event){
@@ -134,11 +136,11 @@ public class BaseProfilingActivity extends Activity {
                     sumSpeed += mStructMotionElemts.getSpeed();
 
                     //DISPLAY//////////////////////
-                    Log.v("TEST", mStructMotionElemts.toString());
+                    //Log.v("TEST", mStructMotionElemts.toString());
                     ///////////////////////////////
                 }
                 //TODO firts retrieve equals 0
-                //TODO motion length doubles the lgical result
+                //TODO motion length doubles the logical result
                 //motionAvgSpeed
                 motionAvgSpeed = sumSpeed / mVector.size();
                 //motionDuration & motionAbsLength
@@ -156,11 +158,16 @@ public class BaseProfilingActivity extends Activity {
                 motionAbsLength = sqrt(pow((lastPosX - firstPosX), 2) + pow((lastPosY - firstPosY), 2));
 
                 //////Display///////////
-                Log.v("TEST", "Absolute Length:" + motionAbsLength + "\n" +
+                /*Log.v("TEST", "Absolute Length:" + motionAbsLength + "\n" +
                         "Total length: " + motionLength + "\n" +
                         "Duration :" + motionDuration + "\n" +
                         "Avg speed" + motionAvgSpeed + "\n" +
-                        "\nEND OF ELEMENT\n");
+                        "\nEND OF ELEMENT\n");*/
+
+                    mMotionInfo.setText("MOTION EVENT OVERALL VALUES\nAbsolute Length : " + motionAbsLength + " px\n" +
+                            "Total length : " + motionLength + " px\n" +
+                            "Duration : " + motionDuration + " ms\n" +
+                            "Avg speed : " + motionAvgSpeed + " px/s\n");
                 ////////////////////////
         }
         else{

@@ -90,9 +90,9 @@ public class StructMotionElemts {
 
     @Override
     public String toString(){
-        return "posX:" + Float.toString(posX) + " posY:" + Float.toString(posY)+
-                " time:" + Long.toString(time) + " pressure:" + Float.toString(pressure)+
-                " speed:" + Double.toString(speed);
+        return "INSTANT VALUES\nposX : " + Float.toString(posX) + "\nposY : " + Float.toString(posY)+
+                "\ntime : " + Long.toString(time) + "\npressure : " + Float.toString(pressure)+
+                "\nspeed : " + Double.toString(speed);
     }
 
     public StructMotionElemts clone(){
