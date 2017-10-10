@@ -28,6 +28,7 @@ public class BaseProfilingActivity extends Activity {
     private TextView mSpeedDisplay = null;
     private Vector mVector = null;
     private StructMotionElemts mStructMotionElemts = null;
+    private StructMotionFeatures mStrcutMotionFeatures = null;
 
     //Results
     private double motionAbsLength;
@@ -74,24 +75,14 @@ public class BaseProfilingActivity extends Activity {
                 } else {
                     mStructMotionElemts.clear();
                 }
-
+                //TODO retrieve from global variable instead of creation
+                if (mStrcutMotionFeatures == null) {
+                    mStrcutMotionFeatures = new StructMotionFeatures();
+                }
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                // Compute X, Y, time, pressure & instantSpeed
-
-                mVelocityTracker.addMovement(event);
-                mVelocityTracker.computeCurrentVelocity(1000);
-
-                mStructMotionElemts.setSpeed(sqrt(pow(mVelocityTracker.getXVelocity(), 2) +
-                        pow(mVelocityTracker.getYVelocity(), 2)));
-                mStructMotionElemts.setPosX(event.getX());
-                mStructMotionElemts.setPosY(event.getY());
-                mStructMotionElemts.setPressure(event.getPressure());
-                mStructMotionElemts.setSize(event.getSize());
-                mStructMotionElemts.setTime(SystemClock.uptimeMillis());
-                // Insert object in vector
-                mVector.addElement(mStructMotionElemts.clone());
+                mStructMotionElemts.compute(event,mVector,mVelocityTracker);
                 mSpeedDisplay.setText(mStructMotionElemts.toString());
                 break;
 

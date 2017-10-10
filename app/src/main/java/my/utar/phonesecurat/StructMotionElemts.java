@@ -1,5 +1,14 @@
 package my.utar.phonesecurat;
 
+import android.os.SystemClock;
+import android.view.MotionEvent;
+import android.view.VelocityTracker;
+
+import java.util.Vector;
+
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
+
 /**
  * Created by Thibault on 9/21/2017.
  */
@@ -96,6 +105,29 @@ public class StructMotionElemts {
     }
 
     public void setSize(float size){this.size = size;}
+
+    /**
+     * Retrieves MotionEvent feature into the StructMotionElmts and add it to the Motion Vector
+     * @param event related MotionEvent
+     * @param mVector related Vector
+     * @param mVelocityTracker related VelocityTracker
+     */
+    public void compute(MotionEvent event, Vector mVector, VelocityTracker mVelocityTracker){
+        // Compute X, Y, time, pressure & instantSpeed
+
+        mVelocityTracker.addMovement(event);
+        mVelocityTracker.computeCurrentVelocity(1000);
+
+        this.setSpeed(sqrt(pow(mVelocityTracker.getXVelocity(), 2) +
+                pow(mVelocityTracker.getYVelocity(), 2)));
+        this.setPosX(event.getX());
+        this.setPosY(event.getY());
+        this.setPressure(event.getPressure());
+        this.setSize(event.getSize());
+        this.setTime(SystemClock.uptimeMillis());
+        // Insert object in vector
+        mVector.addElement(this.clone());
+    }
 
     @Override
     public String toString(){
