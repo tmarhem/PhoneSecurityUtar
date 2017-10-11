@@ -5,7 +5,7 @@ Activity for model feature extraction
 //TODO ADDITIONNAL Draw the swipe
 //TODO Swipe, scroll and touch classification
 //TODO Left and Right recognition
-        */
+*/
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,6 +32,7 @@ public class BaseProfilingActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_profiling);
         Intent i = getIntent();
+        //TODO Assure le parcelable du vector works, probably by making the structMotionFeatures parcelable AND structMotionElmts parcelabke
         mModelVector = i.getParcelableExtra("mModelVector");
 
         mSpeedDisplay = findViewById(R.id.speedDisplay);
@@ -60,7 +61,6 @@ public class BaseProfilingActivity extends Activity {
                 } else {
                     mStructMotionElemts.clear();
                 }
-                //TODO retrieve from global variable instead of creation
                 if (mStructMotionFeatures == null) {
                     mStructMotionFeatures = new StructMotionFeatures();
                 }
@@ -85,9 +85,9 @@ public class BaseProfilingActivity extends Activity {
                         "Avg pressure : " + mStructMotionFeatures.getMotionAvgPressure() );
 
                 //if classifications ok
-                /*mModelVector.addElement(mStructMotionFeatures);
-                if (mModelVector==null){
-                    rCounter = NUMBER_OF_INTENT;
+
+                //mModelVector.addElement(mStructMotionFeatures);
+/*                    rCounter = NUMBER_OF_INTENT;
                 }
                 else {
                     rCounter = NUMBER_OF_INTENT - mModelVector.size();
