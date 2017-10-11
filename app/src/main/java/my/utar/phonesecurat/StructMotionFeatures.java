@@ -188,6 +188,7 @@ public class StructMotionFeatures {
             motionDuration = endTime - startTime;
             motionAbsLength = sqrt(pow((lastPosX - firstPosX), 2) + pow((lastPosY - firstPosY), 2));
 
+            mVectorList = (Vector) mVector.clone();
         } else {
         }
     }

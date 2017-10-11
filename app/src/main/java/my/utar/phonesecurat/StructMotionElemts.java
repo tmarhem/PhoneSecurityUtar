@@ -107,7 +107,7 @@ public class StructMotionElemts {
     }
 
     /**
-     * Retrieves MotionEvent features into the StructMotionElmts and add it to the Motion Vector
+     * Retrieves MotionEvent features  into the StructMotionElmts and add it to the Motion Vector
      *
      * @param event            related MotionEvent
      * @param mVector          related Vector

@@ -1,5 +1,5 @@
 package my.utar.phonesecurat;
-/**
+/*
 Activity for model feature extraction
 //TODO Size not working ?
 //TODO ADDITIONNAL Draw the swipe
@@ -20,18 +20,22 @@ public class BaseProfilingActivity extends Activity {
     private VelocityTracker mVelocityTracker = null;
     private TextView mMotionInfo = null;
     private TextView mSpeedDisplay = null;
-    private Vector mVector = null;
+    private Vector<StructMotionElemts> mVector = null;
+    private Vector<StructMotionFeatures> mModelVector = null;
     private StructMotionElemts mStructMotionElemts = null;
     private StructMotionFeatures mStructMotionFeatures = null;
+    private int rCounter = 0;
+    private final static int NUMBER_OF_INTENT = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_profiling);
         Intent i = getIntent();
+        mModelVector = i.getParcelableExtra("mModelVector");
 
-        mSpeedDisplay = (TextView) findViewById(R.id.speedDisplay);
-        mMotionInfo = (TextView) findViewById(R.id.motionInfo);
+        mSpeedDisplay = findViewById(R.id.speedDisplay);
+        mMotionInfo = findViewById(R.id.motionInfo);
 
     }
 
@@ -46,7 +50,7 @@ public class BaseProfilingActivity extends Activity {
                 }
                 //Creation ou reinitialisation du Vector
                 if (mVector == null) {
-                    mVector = new Vector();
+                    mVector = new Vector<>();
                 } else {
                     mVector.clear();
                 }
@@ -79,6 +83,15 @@ public class BaseProfilingActivity extends Activity {
                         "Duration : " + mStructMotionFeatures.getMotionDuration() + " ms\n" +
                         "Avg speed : " + mStructMotionFeatures.getMotionAvgSpeed() + " px/s\n" +
                         "Avg pressure : " + mStructMotionFeatures.getMotionAvgPressure() );
+
+                //if classifications ok
+                /*mModelVector.addElement(mStructMotionFeatures);
+                if (mModelVector==null){
+                    rCounter = NUMBER_OF_INTENT;
+                }
+                else {
+                    rCounter = NUMBER_OF_INTENT - mModelVector.size();
+                }*/
                 break;
         }
         return true;

@@ -6,24 +6,28 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import java.util.Vector;
+
 public class MainActivity extends Activity {
 
-    private Button mButtonSettings = null;
-    private Button mButtonStartBaseProfiling = null;
 
-    //TEST GITHUB CHGN
+    private Vector mModelVector = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         //Activity launch
+        Button mButtonSettings;
+        Button mButtonStartBaseProfiling;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mButtonSettings = (Button) findViewById(R.id.ButtonSettings);
-        mButtonStartBaseProfiling = (Button) findViewById(R.id.ButtonStartBaseProfiling);
+        mModelVector = new Vector<>();
+
+        mButtonSettings = findViewById(R.id.ButtonSettings);
+        mButtonStartBaseProfiling = findViewById(R.id.ButtonStartBaseProfiling);
 
 
-        mButtonSettings.setOnClickListener(new View.OnClickListener(){
+        mButtonSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent goToSettings = new Intent(MainActivity.this, SettingsActivity.class);
@@ -31,20 +35,17 @@ public class MainActivity extends Activity {
             }
 
         });
-        mButtonStartBaseProfiling.setOnClickListener(new View.OnClickListener(){
+        mButtonStartBaseProfiling.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent goToStartBaseProfiling = new Intent(MainActivity.this, BaseProfilingActivity.class);
+                goToStartBaseProfiling.putExtra("mModelVector",mModelVector);
                 startActivity(goToStartBaseProfiling);
             }
 
         });
-        //TODO remplissage basic other activity
-        //TODO retreive swiping gesture
 
     }
-
-
 }
 
 
