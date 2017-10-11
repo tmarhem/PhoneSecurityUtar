@@ -9,7 +9,7 @@ import java.util.Vector;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
-/**
+/*
  * Created by Thibault on 9/21/2017.
  */
 
@@ -22,7 +22,7 @@ public class StructMotionElemts {
     private float size;
 
 
-    public StructMotionElemts() {
+    protected StructMotionElemts() {
         posX = 0;
         posY = 0;
         time = 0;
@@ -31,7 +31,7 @@ public class StructMotionElemts {
         size = 0;
     }
 
-    public StructMotionElemts(float posX, float posY, long time, float pressure, double speed, float size) {
+    protected StructMotionElemts(float posX, float posY, long time, float pressure, double speed, float size) {
         this.posX = posX;
         this.posY = posY;
         this.time = time;
@@ -64,22 +64,13 @@ public class StructMotionElemts {
         return this.size;
     }
 
-    public boolean clear() {
+    public void clear() {
         this.posX = 0;
         this.posY = 0;
         this.speed = 0;
         this.pressure = 0;
         this.time = 0;
         this.size = 0;
-
-        if (this.posX == 0 &&
-                this.posY == 0 &&
-                this.speed == 0 &&
-                this.time == 0 &&
-                this.pressure == 0 &&
-                this.size == 0) {
-            return true;
-        } else return false;
     }
 
     public void setPosX(float posX) {
@@ -113,7 +104,7 @@ public class StructMotionElemts {
      * @param mVector          related Vector
      * @param mVelocityTracker related VelocityTracker
      */
-    public void compute(MotionEvent event, Vector mVector, VelocityTracker mVelocityTracker) {
+    public void compute(MotionEvent event, Vector<StructMotionElemts> mVector, VelocityTracker mVelocityTracker) {
         // Compute X, Y, time, pressure & instantSpeed
 
         mVelocityTracker.addMovement(event);

@@ -6,7 +6,7 @@ import java.util.Vector;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
-/**
+/*
  * Created by Thibault on 10/10/2017.
  */
 
@@ -31,7 +31,7 @@ public class StructMotionFeatures {
         lastPosX = 0;
         firstPosY = 0;
         lastPosY = 0;
-        mVectorList = new Vector();
+        mVectorList = new Vector<>();
     }
 
     public double getMotionAbsLength() {
@@ -58,7 +58,7 @@ public class StructMotionFeatures {
         this.motionDuration = motionDuration;
     }
 
-    public double getMotionAvgSpeed() {
+    protected double getMotionAvgSpeed() {
         return motionAvgSpeed;
     }
 
@@ -66,7 +66,7 @@ public class StructMotionFeatures {
         this.motionAvgSpeed = motionAvgSpeed;
     }
 
-    public double getMotionAvgPressure() {
+    protected double getMotionAvgPressure() {
         return motionAvgPressure;
     }
 
@@ -114,7 +114,7 @@ public class StructMotionFeatures {
         this.mVectorList = mVectorList;
     }
 
-    public void clear() {
+    protected void clear() {
         motionAbsLength = 0;
         motionLength = 0;
         motionDuration = 0;
@@ -129,22 +129,22 @@ public class StructMotionFeatures {
     }
 
 
-    public void compute(Vector<StructMotionElemts> mVector) {
+    protected void compute(Vector<StructMotionElemts> mVector) {
         //Resets and utility
         double sumSpeed = 0;
         double sumPressure = 0;
-        float nowPosX = 0;
-        float nowPosY = 0;
-        float prevPosX = 0;
-        float prevPosY = 0;
-        long startTime = 0;
-        long endTime = 0;
-        StructMotionElemts mStructMotionElemts = new StructMotionElemts();
+        float nowPosX;
+        float nowPosY;
+        float prevPosX;
+        float prevPosY;
+        long startTime;
+        long endTime;
+        StructMotionElemts mStructMotionElemts;
 
         //Initialisation bourrine de nowPos
         if (!mVector.isEmpty()) {
 
-            mStructMotionElemts = (StructMotionElemts) mVector.firstElement();
+            mStructMotionElemts = mVector.firstElement();
             nowPosX = mStructMotionElemts.getPosX();
             nowPosY = mStructMotionElemts.getPosY();
             mStructMotionElemts.clear();
@@ -153,7 +153,6 @@ public class StructMotionFeatures {
 
             //Iterator out of vector
             Iterator i = mVector.iterator();
-
             while (i.hasNext()) {
                 prevPosX = nowPosX;
                 prevPosY = nowPosY;
@@ -176,11 +175,11 @@ public class StructMotionFeatures {
             motionAvgPressure = sumPressure / mVector.size();
             //motionDuration & motionAbsLength
             //Retrieving
-            mStructMotionElemts = (StructMotionElemts) mVector.firstElement();
+            mStructMotionElemts = mVector.firstElement();
             firstPosX = mStructMotionElemts.getPosX();
             firstPosY = mStructMotionElemts.getPosY();
             startTime = mStructMotionElemts.getTime();
-            mStructMotionElemts = (StructMotionElemts) mVector.get(mVector.size() - 1);
+            mStructMotionElemts = mVector.get(mVector.size() - 1);
             lastPosX = mStructMotionElemts.getPosX();
             lastPosY = mStructMotionElemts.getPosY();
             endTime = mStructMotionElemts.getTime();
@@ -189,7 +188,6 @@ public class StructMotionFeatures {
             motionAbsLength = sqrt(pow((lastPosX - firstPosX), 2) + pow((lastPosY - firstPosY), 2));
 
             mVectorList = (Vector) mVector.clone();
-        } else {
         }
     }
 
