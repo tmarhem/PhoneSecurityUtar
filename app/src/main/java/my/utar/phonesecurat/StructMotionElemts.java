@@ -28,7 +28,7 @@ public class StructMotionElemts {
         time = 0;
         pressure = 0;
         speed = 0;
-        size=0;
+        size = 0;
     }
 
     public StructMotionElemts(float posX, float posY, long time, float pressure, double speed, float size) {
@@ -40,31 +40,31 @@ public class StructMotionElemts {
         this.size = size;
     }
 
-    //Accesseurs - Accessibility methods
-    public float getPosX(){
+    public float getPosX() {
         return this.posX;
     }
 
-    public float getPosY(){
+    public float getPosY() {
         return this.posY;
     }
 
-    public long getTime(){
+    public long getTime() {
         return this.time;
     }
 
-    public float getPressure(){
+    public float getPressure() {
         return this.pressure;
     }
 
-    public double getSpeed(){
+    public double getSpeed() {
         return this.speed;
     }
 
-    public float getSize() { return this.size; }
+    public float getSize() {
+        return this.size;
+    }
 
-    //Utility methods
-    public boolean clear(){
+    public boolean clear() {
         this.posX = 0;
         this.posY = 0;
         this.speed = 0;
@@ -72,27 +72,25 @@ public class StructMotionElemts {
         this.time = 0;
         this.size = 0;
 
-        if(     this.posX == 0 &&
+        if (this.posX == 0 &&
                 this.posY == 0 &&
                 this.speed == 0 &&
                 this.time == 0 &&
                 this.pressure == 0 &&
-                this.size == 0){
+                this.size == 0) {
             return true;
-        }
-        else return false;
+        } else return false;
     }
 
-    //Setters
-    public void setPosX(float posX){
+    public void setPosX(float posX) {
         this.posX = posX;
     }
 
-    public void setPosY(float posY){
+    public void setPosY(float posY) {
         this.posY = posY;
     }
 
-    public void setTime(long time){
+    public void setTime(long time) {
         this.time = time;
     }
 
@@ -104,15 +102,18 @@ public class StructMotionElemts {
         this.speed = speed;
     }
 
-    public void setSize(float size){this.size = size;}
+    public void setSize(float size) {
+        this.size = size;
+    }
 
     /**
-     * Retrieves MotionEvent feature into the StructMotionElmts and add it to the Motion Vector
-     * @param event related MotionEvent
-     * @param mVector related Vector
+     * Retrieves MotionEvent features into the StructMotionElmts and add it to the Motion Vector
+     *
+     * @param event            related MotionEvent
+     * @param mVector          related Vector
      * @param mVelocityTracker related VelocityTracker
      */
-    public void compute(MotionEvent event, Vector mVector, VelocityTracker mVelocityTracker){
+    public void compute(MotionEvent event, Vector mVector, VelocityTracker mVelocityTracker) {
         // Compute X, Y, time, pressure & instantSpeed
 
         mVelocityTracker.addMovement(event);
@@ -130,13 +131,14 @@ public class StructMotionElemts {
     }
 
     @Override
-    public String toString(){
-        return "INSTANT VALUES\nposX : " + Float.toString(posX) + "\nposY : " + Float.toString(posY)+
-                "\ntime : " + Long.toString(time) + "\npressure : " + Float.toString(pressure)+
+    public String toString() {
+        return "INSTANT VALUES\nposX : " + Float.toString(posX) + "\nposY : " + Float.toString(posY) +
+                "\ntime : " + Long.toString(time) + "\npressure : " + Float.toString(pressure) +
                 "\nspeed : " + Double.toString(speed) + "\nsize : " + Float.toString(size);
     }
 
-    public StructMotionElemts clone(){
+    @Override
+    public StructMotionElemts clone() {
         return new StructMotionElemts(this.posX, this.posY, this.time, this.pressure, this.speed, this.size);
     }
 }

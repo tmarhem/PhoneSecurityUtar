@@ -9,17 +9,11 @@ Activity for model feature extraction
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.widget.TextView;
-
-import java.util.Iterator;
 import java.util.Vector;
 
-import static java.lang.Math.pow;
-import static java.lang.Math.sqrt;
 
 public class BaseProfilingActivity extends Activity {
 
@@ -28,20 +22,7 @@ public class BaseProfilingActivity extends Activity {
     private TextView mSpeedDisplay = null;
     private Vector mVector = null;
     private StructMotionElemts mStructMotionElemts = null;
-    private StructMotionFeatures mStrcutMotionFeatures = null;
-
-    //Results
-    private double motionAbsLength;
-    private long motionLength;
-    private long motionDuration;
-    private double motionAvgSpeed;
-    private double motionAvgPressure;
-
-    //Utility
-    private double sumSpeed, sumPressure;
-    private float firstPosX, lastPosX, firstPosY, lastPosY;
-    private float prevPosX, prevPosY, nowPosX, nowPosY;
-    private long startTime, endTime;
+    private StructMotionFeatures mStructMotionFeatures = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,8 +57,11 @@ public class BaseProfilingActivity extends Activity {
                     mStructMotionElemts.clear();
                 }
                 //TODO retrieve from global variable instead of creation
-                if (mStrcutMotionFeatures == null) {
-                    mStrcutMotionFeatures = new StructMotionFeatures();
+                if (mStructMotionFeatures == null) {
+                    mStructMotionFeatures = new StructMotionFeatures();
+                }
+                else{
+                    mStructMotionFeatures.clear();
                 }
                 break;
 
@@ -88,74 +72,13 @@ public class BaseProfilingActivity extends Activity {
 
             //Exiting event, going though the vector by its iterator and making calulations
             case MotionEvent.ACTION_UP:
-                //Resets and utility
-                sumSpeed = 0;
-                sumPressure = 0;
-                motionLength = 0;
-                //Initialisation bourrine de nowPos
-                if (!mVector.isEmpty()) {
-
-                    mStructMotionElemts = (StructMotionElemts) mVector.firstElement();
-                    nowPosX = mStructMotionElemts.getPosX();
-                    nowPosY = mStructMotionElemts.getPosY();
-                    mStructMotionElemts.clear();
-
-                    mVector.remove(0);
-
-                    //Iterator out of vector
-                    Iterator i = mVector.iterator();
-
-                    while (i.hasNext()) {
-                        prevPosX = nowPosX;
-                        prevPosY = nowPosY;
-                        mStructMotionElemts = (StructMotionElemts) i.next();
-                        //motionLength calculation
-                        nowPosX = mStructMotionElemts.getPosX();
-                        nowPosY = mStructMotionElemts.getPosY();
-
-                        motionLength += sqrt(pow((prevPosX - nowPosX), 2) + pow((prevPosY - nowPosY), 2));
-                        //avgSpeed calculation
-                        sumSpeed += mStructMotionElemts.getSpeed();
-                        sumPressure += mStructMotionElemts.getPressure();
-
-                        //DISPLAY//////////////////////
-                        //Log.v("TEST", mStructMotionElemts.toString());
-                        ///////////////////////////////
-                    }
-                    //motionAvgSpeed & pressure
-                    motionAvgSpeed = sumSpeed / mVector.size();
-                    motionAvgPressure = sumPressure / mVector.size();
-                    //motionDuration & motionAbsLength
-                    //Retrieving
-                    mStructMotionElemts = (StructMotionElemts) mVector.firstElement();
-                    firstPosX = mStructMotionElemts.getPosX();
-                    firstPosY = mStructMotionElemts.getPosY();
-                    startTime = mStructMotionElemts.getTime();
-                    mStructMotionElemts = (StructMotionElemts) mVector.get(mVector.size() - 1);
-                    lastPosX = mStructMotionElemts.getPosX();
-                    lastPosY = mStructMotionElemts.getPosY();
-                    endTime = mStructMotionElemts.getTime();
-                    //Computing
-                    motionDuration = endTime - startTime;
-                    motionAbsLength = sqrt(pow((lastPosX - firstPosX), 2) + pow((lastPosY - firstPosY), 2));
-
-                    //////Display///////////
-                /*Log.v("TEST", "Absolute Length:" + motionAbsLength + "\n" +
-                        "Total length: " + motionLength + "\n" +
-                        "Duration :" + motionDuration + "\n" +
-                        "Avg speed" + motionAvgSpeed + "\n" +
-                        "\nEND OF ELEMENT\n");*/
-
-                    mMotionInfo.setText("MOTION EVENT OVERALL VALUES\n" +
-                            "Absolute Length : " + motionAbsLength + " px\n" +
-                            "Total length : " + motionLength + " px\n" +
-                            "Duration : " + motionDuration + " ms\n" +
-                            "Avg speed : " + motionAvgSpeed + " px/s\n" +
-                            "Avg pressure : " + motionAvgPressure);
-                    ////////////////////////
-                } else {
-                    //Log.v("TEST", "\n Vecteur vide\n");
-                }
+                mStructMotionFeatures.compute(mVector);
+                mMotionInfo.setText("MOTION EVENT OVERALL VALUES\n" +
+                        "Absolute Length : " + mStructMotionFeatures.getMotionAbsLength() + " px\n" +
+                        "Total length : " + mStructMotionFeatures.getMotionLength() + " px\n" +
+                        "Duration : " + mStructMotionFeatures.getMotionDuration() + " ms\n" +
+                        "Avg speed : " + mStructMotionFeatures.getMotionAvgSpeed() + " px/s\n" +
+                        "Avg pressure : " + mStructMotionFeatures.getMotionAvgPressure() );
                 break;
         }
         return true;

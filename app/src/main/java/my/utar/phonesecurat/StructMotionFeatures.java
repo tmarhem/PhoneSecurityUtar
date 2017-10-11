@@ -34,6 +34,86 @@ public class StructMotionFeatures {
         mVectorList = new Vector();
     }
 
+    public double getMotionAbsLength() {
+        return motionAbsLength;
+    }
+
+    public void setMotionAbsLength(double motionAbsLength) {
+        this.motionAbsLength = motionAbsLength;
+    }
+
+    public long getMotionLength() {
+        return motionLength;
+    }
+
+    public void setMotionLength(long motionLength) {
+        this.motionLength = motionLength;
+    }
+
+    public long getMotionDuration() {
+        return motionDuration;
+    }
+
+    public void setMotionDuration(long motionDuration) {
+        this.motionDuration = motionDuration;
+    }
+
+    public double getMotionAvgSpeed() {
+        return motionAvgSpeed;
+    }
+
+    public void setMotionAvgSpeed(double motionAvgSpeed) {
+        this.motionAvgSpeed = motionAvgSpeed;
+    }
+
+    public double getMotionAvgPressure() {
+        return motionAvgPressure;
+    }
+
+    public void setMotionAvgPressure(double motionAvgPressure) {
+        this.motionAvgPressure = motionAvgPressure;
+    }
+
+    public float getFirstPosX() {
+        return firstPosX;
+    }
+
+    public void setFirstPosX(float firstPosX) {
+        this.firstPosX = firstPosX;
+    }
+
+    public float getLastPosX() {
+        return lastPosX;
+    }
+
+    public void setLastPosX(float lastPosX) {
+        this.lastPosX = lastPosX;
+    }
+
+    public float getFirstPosY() {
+        return firstPosY;
+    }
+
+    public void setFirstPosY(float firstPosY) {
+        this.firstPosY = firstPosY;
+    }
+
+    public float getLastPosY() {
+        return lastPosY;
+    }
+
+    public void setLastPosY(float lastPosY) {
+        this.lastPosY = lastPosY;
+    }
+
+    public Vector<StructMotionElemts> getmVectorList() {
+        return mVectorList;
+    }
+
+    public void setmVectorList(Vector<StructMotionElemts> mVectorList) {
+        this.mVectorList = mVectorList;
+    }
+
     public void clear() {
         motionAbsLength = 0;
         motionLength = 0;
@@ -47,6 +127,7 @@ public class StructMotionFeatures {
         lastPosY = 0;
         mVectorList = null;
     }
+
 
     public void compute(Vector<StructMotionElemts> mVector) {
         //Resets and utility
@@ -107,9 +188,7 @@ public class StructMotionFeatures {
             motionDuration = endTime - startTime;
             motionAbsLength = sqrt(pow((lastPosX - firstPosX), 2) + pow((lastPosY - firstPosY), 2));
 
-
         } else {
-            //Log.v("TEST", "\n Vecteur vide\n");
         }
     }
 
