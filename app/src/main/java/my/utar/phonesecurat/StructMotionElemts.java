@@ -3,6 +3,8 @@ package my.utar.phonesecurat;
 import android.os.SystemClock;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.Vector;
 
@@ -13,13 +15,34 @@ import static java.lang.Math.sqrt;
  * Created by Thibault on 9/21/2017.
  */
 
-public class StructMotionElemts {
+public class StructMotionElemts implements Parcelable{
     private float posX;
     private float posY;
     private long time;
     private float pressure;
     private double speed;
     private float size;
+
+    public static final Parcelable.Creator<StructMotionElemts> CREATOR = new Parcelable.Creator<StructMotionElemts>(){
+        @Override
+        public StructMotionElemts createFromParcel(Parcel source){
+            return new StructMotionElemts(source);
+        }
+
+        @Override
+        public StructMotionElemts[] newArray(int size){
+            return new StructMotionElemts[size];
+        }
+    };
+
+    public StructMotionElemts(Parcel in){
+        posX = in.readFloat();
+        posY = in.readFloat();
+        time = in.readLong();
+        pressure = in.readFloat();
+        speed = in.readDouble();
+        size = in.readFloat();
+    }
 
 
     protected StructMotionElemts() {
@@ -131,5 +154,22 @@ public class StructMotionElemts {
     @Override
     public StructMotionElemts clone() {
         return new StructMotionElemts(this.posX, this.posY, this.time, this.pressure, this.speed, this.size);
+    }
+
+    @Override
+    public int describeContents() {
+        //Return 0 as our object dosen't have FileDescriptor
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags){
+        //We add object the same order they're declared
+        dest.writeFloat(posX);
+        dest.writeFloat(posY);
+        dest.writeLong(time);
+        dest.writeFloat(pressure);
+        dest.writeDouble(speed);
+        dest.writeFloat(size);
     }
 }
