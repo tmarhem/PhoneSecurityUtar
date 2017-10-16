@@ -6,12 +6,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends Activity {
 
 
-    private Vector mModelVector = null;
+    private ArrayList mModelList = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -21,7 +22,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mModelVector = new Vector<>();
+        mModelList = new ArrayList<>();
 
         mButtonSettings = findViewById(R.id.ButtonSettings);
         mButtonStartBaseProfiling = findViewById(R.id.ButtonStartBaseProfiling);
@@ -39,7 +40,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent goToStartBaseProfiling = new Intent(MainActivity.this, BaseProfilingActivity.class);
-                goToStartBaseProfiling.putExtra("mModelVector",mModelVector);
+                goToStartBaseProfiling.putExtra("mModelList",mModelList);
                 startActivity(goToStartBaseProfiling);
             }
 

@@ -1,7 +1,8 @@
 package my.utar.phonesecurat;
 
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
@@ -17,7 +18,7 @@ public class StructMotionFeatures {
     private double motionAvgSpeed;
     private double motionAvgPressure;
     private float firstPosX, lastPosX, firstPosY, lastPosY;
-    private Vector<StructMotionElemts> mVectorList;
+    private List<StructMotionElemts> mListList;
 
 
     public StructMotionFeatures() {
@@ -31,7 +32,7 @@ public class StructMotionFeatures {
         lastPosX = 0;
         firstPosY = 0;
         lastPosY = 0;
-        mVectorList = new Vector<>();
+        mListList = new ArrayList<>();
     }
 
     public double getMotionAbsLength() {
@@ -106,12 +107,12 @@ public class StructMotionFeatures {
         this.lastPosY = lastPosY;
     }
 
-    public Vector<StructMotionElemts> getmVectorList() {
-        return mVectorList;
+    public List<StructMotionElemts> getmListList() {
+        return mListList;
     }
 
-    public void setmVectorList(Vector<StructMotionElemts> mVectorList) {
-        this.mVectorList = mVectorList;
+    public void setmListList(List<StructMotionElemts> mListList) {
+        this.mListList = mListList;
     }
 
     protected void clear() {
@@ -125,11 +126,11 @@ public class StructMotionFeatures {
         lastPosX = 0;
         firstPosY = 0;
         lastPosY = 0;
-        mVectorList = null;
+        mListList = null;
     }
 
 
-    protected void compute(Vector<StructMotionElemts> mVector) {
+    protected void compute(ArrayList<StructMotionElemts> mList) {
         //Resets and utility
         double sumSpeed = 0;
         double sumPressure = 0;
@@ -142,17 +143,17 @@ public class StructMotionFeatures {
         StructMotionElemts mStructMotionElemts;
 
         //Initialisation bourrine de nowPos
-        if (!mVector.isEmpty()) {
+        if (!mList.isEmpty()) {
 
-            mStructMotionElemts = mVector.firstElement();
+            mStructMotionElemts = mList.get(0);
             nowPosX = mStructMotionElemts.getPosX();
             nowPosY = mStructMotionElemts.getPosY();
             mStructMotionElemts.clear();
 
-            mVector.remove(0);
+            mList.remove(0);
 
-            //Iterator out of vector
-            Iterator i = mVector.iterator();
+            //Iterator out of List
+            Iterator i = mList.iterator();
             while (i.hasNext()) {
                 prevPosX = nowPosX;
                 prevPosY = nowPosY;
@@ -171,15 +172,15 @@ public class StructMotionFeatures {
                 ///////////////////////////////
             }
             //motionAvgSpeed & pressure
-            motionAvgSpeed = sumSpeed / mVector.size();
-            motionAvgPressure = sumPressure / mVector.size();
+            motionAvgSpeed = sumSpeed / mList.size();
+            motionAvgPressure = sumPressure / mList.size();
             //motionDuration & motionAbsLength
             //Retrieving
-            mStructMotionElemts = mVector.firstElement();
+            mStructMotionElemts = mList.get(0);
             firstPosX = mStructMotionElemts.getPosX();
             firstPosY = mStructMotionElemts.getPosY();
             startTime = mStructMotionElemts.getTime();
-            mStructMotionElemts = mVector.get(mVector.size() - 1);
+            mStructMotionElemts = mList.get(mList.size() - 1);
             lastPosX = mStructMotionElemts.getPosX();
             lastPosY = mStructMotionElemts.getPosY();
             endTime = mStructMotionElemts.getTime();
@@ -187,7 +188,7 @@ public class StructMotionFeatures {
             motionDuration = endTime - startTime;
             motionAbsLength = sqrt(pow((lastPosX - firstPosX), 2) + pow((lastPosY - firstPosY), 2));
 
-            mVectorList = (Vector) mVector.clone();
+            mListList = (ArrayList) mList.clone();
         }
     }
 

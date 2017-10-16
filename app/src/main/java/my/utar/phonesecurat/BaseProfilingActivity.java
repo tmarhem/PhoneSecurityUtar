@@ -12,7 +12,9 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.widget.TextView;
-import java.util.Vector;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class BaseProfilingActivity extends Activity {
@@ -20,8 +22,8 @@ public class BaseProfilingActivity extends Activity {
     private VelocityTracker mVelocityTracker = null;
     private TextView mMotionInfo = null;
     private TextView mSpeedDisplay = null;
-    private Vector<StructMotionElemts> mVector = null;
-    private Vector<StructMotionFeatures> mModelVector = null;
+    private List<StructMotionElemts> mList = null;
+    private List<StructMotionFeatures> mModelList = null;
     private StructMotionElemts mStructMotionElemts = null;
     private StructMotionFeatures mStructMotionFeatures = null;
     private int rCounter = 0;
@@ -32,8 +34,8 @@ public class BaseProfilingActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_profiling);
         Intent i = getIntent();
-        //TODO Assure le parcelable du vector works, probably by making the structMotionFeatures parcelable AND structMotionElmts parcelabke
-        mModelVector = i.getParcelableExtra("mModelVector");
+        //TODO Assure le parcelable du List works, probably by making the structMotionFeatures parcelable AND structMotionElmts parcelabke
+        mModelList = i.getParcelableExtra("mModelList");
 
         mSpeedDisplay = findViewById(R.id.speedDisplay);
         mMotionInfo = findViewById(R.id.motionInfo);
@@ -49,11 +51,11 @@ public class BaseProfilingActivity extends Activity {
                 } else {
                     mVelocityTracker.clear();
                 }
-                //Creation ou reinitialisation du Vector
-                if (mVector == null) {
-                    mVector = new Vector<>();
+                //Creation ou reinitialisation du List
+                if (mList == null) {
+                    mList = new ArrayList<StructMotionElemts>();
                 } else {
-                    mVector.clear();
+                    mList.clear();
                 }
                 //Creation ou reinitialisation du StructMotionElemts
                 if (mStructMotionElemts == null) {
@@ -70,13 +72,13 @@ public class BaseProfilingActivity extends Activity {
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                mStructMotionElemts.compute(event,mVector,mVelocityTracker);
+                mStructMotionElemts.compute(event, mList,mVelocityTracker);
                 mSpeedDisplay.setText(mStructMotionElemts.toString());
                 break;
 
-            //Exiting event, going though the vector by its iterator and making calulations
+            //Exiting event, going though the List by its iterator and making calulations
             case MotionEvent.ACTION_UP:
-                mStructMotionFeatures.compute(mVector);
+                mStructMotionFeatures.compute(mList);
                 mMotionInfo.setText("MOTION EVENT OVERALL VALUES\n" +
                         "Absolute Length : " + mStructMotionFeatures.getMotionAbsLength() + " px\n" +
                         "Total length : " + mStructMotionFeatures.getMotionLength() + " px\n" +
@@ -86,11 +88,11 @@ public class BaseProfilingActivity extends Activity {
 
                 //if classifications ok
 
-                //mModelVector.addElement(mStructMotionFeatures);
+                //mModelList.addElement(mStructMotionFeatures);
 /*                    rCounter = NUMBER_OF_INTENT;
                 }
                 else {
-                    rCounter = NUMBER_OF_INTENT - mModelVector.size();
+                    rCounter = NUMBER_OF_INTENT - mModelList.size();
                 }*/
                 break;
         }

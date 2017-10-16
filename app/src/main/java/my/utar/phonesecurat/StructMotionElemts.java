@@ -6,7 +6,7 @@ import android.view.VelocityTracker;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.Vector;
+import java.util.List;
 
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
@@ -121,13 +121,13 @@ public class StructMotionElemts implements Parcelable{
     }
 
     /**
-     * Retrieves MotionEvent features  into the StructMotionElmts and add it to the Motion Vector
+     * Retrieves MotionEvent features  into the StructMotionElmts and add it to the Motion List
      *
      * @param event            related MotionEvent
-     * @param mVector          related Vector
+     * @param mList          related List
      * @param mVelocityTracker related VelocityTracker
      */
-    public void compute(MotionEvent event, Vector<StructMotionElemts> mVector, VelocityTracker mVelocityTracker) {
+    public void compute(MotionEvent event, List<StructMotionElemts> mList, VelocityTracker mVelocityTracker) {
         // Compute X, Y, time, pressure & instantSpeed
 
         mVelocityTracker.addMovement(event);
@@ -140,8 +140,8 @@ public class StructMotionElemts implements Parcelable{
         this.setPressure(event.getPressure());
         this.setSize(event.getSize());
         this.setTime(SystemClock.uptimeMillis());
-        // Insert object in vector
-        mVector.addElement(this.clone());
+        // Insert object in List
+        mList.add(this.clone());
     }
 
     @Override
