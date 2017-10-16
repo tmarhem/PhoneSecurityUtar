@@ -53,7 +53,7 @@ public class BaseProfilingActivity extends Activity {
                 }
                 //Creation ou reinitialisation du List
                 if (mList == null) {
-                    mList = new ArrayList<StructMotionElemts>();
+                    mList = new ArrayList<>();
                 } else {
                     mList.clear();
                 }

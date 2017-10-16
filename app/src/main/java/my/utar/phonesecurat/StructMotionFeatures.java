@@ -1,5 +1,8 @@
 package my.utar.phonesecurat;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -11,7 +14,7 @@ import static java.lang.Math.sqrt;
  * Created by Thibault on 10/10/2017.
  */
 
-public class StructMotionFeatures {
+public class StructMotionFeatures implements Parcelable{
     private double motionAbsLength;
     private long motionLength;
     private long motionDuration;
@@ -20,6 +23,33 @@ public class StructMotionFeatures {
     private float firstPosX, lastPosX, firstPosY, lastPosY;
     private ArrayList<StructMotionElemts> mListList;
 
+    public static final Parcelable.Creator<StructMotionFeatures> CREATOR = new Parcelable.Creator<StructMotionFeatures>(){
+        @Override
+        public StructMotionFeatures createFromParcel(Parcel source){
+            return new StructMotionFeatures(source);
+        }
+
+        @Override
+        public StructMotionFeatures[] newArray(int size){
+            return new StructMotionFeatures[size];
+        }
+    };
+
+    public StructMotionFeatures(Parcel in){
+        motionAbsLength = in.readDouble();
+        motionLength = in.readLong();
+        motionDuration = in.readLong();
+        motionAvgSpeed = in.readDouble();
+        motionAvgPressure = in.readDouble();
+        firstPosX = in.readFloat();
+        lastPosX = in.readFloat();
+        firstPosY = in.readFloat();
+        lastPosX = in.readFloat();
+        mListList = in.readArrayList(StructMotionElemts.class.getClassLoader());
+
+
+
+    }
 
     public StructMotionFeatures() {
         motionAbsLength = 0;
@@ -192,5 +222,26 @@ public class StructMotionFeatures {
         }
     }
 
+    @Override
+    public int describeContents() {
+        //Return 0 as our object dosen't have FileDescriptor
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags){
+        //We add object the same order they're declared
+        dest.writeDouble(motionAbsLength);
+        dest.writeLong(motionLength);
+        dest.writeLong(motionDuration);
+        dest.writeDouble(motionAvgSpeed);
+        dest.writeDouble(motionAvgPressure);
+        dest.writeFloat(firstPosX);
+        dest.writeFloat(lastPosX);
+        dest.writeFloat(firstPosY);
+        dest.writeFloat(lastPosY);
+        dest.writeList(mListList);
+
+    }
 
 }
