@@ -18,7 +18,7 @@ public class StructMotionFeatures {
     private double motionAvgSpeed;
     private double motionAvgPressure;
     private float firstPosX, lastPosX, firstPosY, lastPosY;
-    private List<StructMotionElemts> mListList;
+    private ArrayList<StructMotionElemts> mListList;
 
 
     public StructMotionFeatures() {
@@ -107,11 +107,11 @@ public class StructMotionFeatures {
         this.lastPosY = lastPosY;
     }
 
-    public List<StructMotionElemts> getmListList() {
+    public ArrayList<StructMotionElemts> getmListList() {
         return mListList;
     }
 
-    public void setmListList(List<StructMotionElemts> mListList) {
+    public void setmListList(ArrayList<StructMotionElemts> mListList) {
         this.mListList = mListList;
     }
 

@@ -6,6 +6,7 @@ import android.view.VelocityTracker;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Math.pow;
@@ -127,7 +128,7 @@ public class StructMotionElemts implements Parcelable{
      * @param mList          related List
      * @param mVelocityTracker related VelocityTracker
      */
-    public void compute(MotionEvent event, List<StructMotionElemts> mList, VelocityTracker mVelocityTracker) {
+    public void compute(MotionEvent event, ArrayList<StructMotionElemts> mList, VelocityTracker mVelocityTracker) {
         // Compute X, Y, time, pressure & instantSpeed
 
         mVelocityTracker.addMovement(event);

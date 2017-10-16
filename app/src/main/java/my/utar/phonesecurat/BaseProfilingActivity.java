@@ -22,8 +22,8 @@ public class BaseProfilingActivity extends Activity {
     private VelocityTracker mVelocityTracker = null;
     private TextView mMotionInfo = null;
     private TextView mSpeedDisplay = null;
-    private List<StructMotionElemts> mList = null;
-    private List<StructMotionFeatures> mModelList = null;
+    private ArrayList<StructMotionElemts> mList = null;
+    private ArrayList<StructMotionFeatures> mModelList = null;
     private StructMotionElemts mStructMotionElemts = null;
     private StructMotionFeatures mStructMotionFeatures = null;
     private int rCounter = 0;
