@@ -8,22 +8,29 @@ Activity for model feature extraction
 */
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class BaseProfilingActivity extends Activity {
 
+    private final Context mContext = this;
     private VelocityTracker mVelocityTracker;
     private TextView mMotionInfo;
     private TextView mSpeedDisplay;
     private TextView mTextCounter;
+    private Button mBtnReset;
     private ArrayList<StructMotionElemts> mList;
     private StructMotionFeaturesList mModelList;
     private StructMotionElemts mStructMotionElemts;
@@ -44,6 +51,47 @@ public class BaseProfilingActivity extends Activity {
         mMotionInfo = findViewById(R.id.motionInfo);
         mTextCounter = findViewById(R.id.textCounter);
         mTextCounter.setText(Integer.toString(rCounter));
+        mBtnReset = findViewById(R.id.btnReset);
+
+        mBtnReset.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
+
+                // set title
+                alertDialogBuilder.setTitle("Warning");
+
+                // set dialog message
+                alertDialogBuilder
+                        .setMessage("Are you sure you want to wipe the current saved model ?")
+                        .setCancelable(true)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // if this button is clicked, close
+                                // current activity
+                                rCounter = 10;
+                                mModelList.clear();
+                                mTextCounter.setText(Integer.toString(rCounter));
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // if this button is clicked, just close
+                                // the dialog box and do nothing
+                                dialog.cancel();
+                            }
+                        });
+
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+
+                // show it
+                alertDialog.show();
+            }
+        });
+
     }
 
     public boolean onTouchEvent(MotionEvent event) {

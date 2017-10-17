@@ -33,7 +33,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent goToSettings = new Intent(MainActivity.this, SettingsActivity.class);
-                startActivity(goToSettings);
+                startActivityForResult(goToSettings, 1);
             }
 
         });
