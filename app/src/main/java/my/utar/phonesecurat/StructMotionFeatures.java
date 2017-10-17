@@ -21,7 +21,7 @@ public class StructMotionFeatures implements Parcelable{
     private double motionAvgSpeed;
     private double motionAvgPressure;
     private float firstPosX, lastPosX, firstPosY, lastPosY;
-    private ArrayList<StructMotionElemts> mListList;
+    //private ArrayList<StructMotionElemts> mListList;
 
     public static final Parcelable.Creator<StructMotionFeatures> CREATOR = new Parcelable.Creator<StructMotionFeatures>(){
         @Override
@@ -45,7 +45,7 @@ public class StructMotionFeatures implements Parcelable{
         lastPosX = in.readFloat();
         firstPosY = in.readFloat();
         lastPosX = in.readFloat();
-        mListList = in.readArrayList(StructMotionElemts.class.getClassLoader());
+        //mListList = in.readArrayList(StructMotionElemts.class.getClassLoader());
 
 
 
@@ -62,16 +62,14 @@ public class StructMotionFeatures implements Parcelable{
         lastPosX = 0;
         firstPosY = 0;
         lastPosY = 0;
-        mListList = new ArrayList<>();
+        //mListList = new ArrayList<>();
     }
 
     public double getMotionAbsLength() {
         return motionAbsLength;
     }
 
-    public void setMotionAbsLength(double motionAbsLength) {
-        this.motionAbsLength = motionAbsLength;
-    }
+    public void setMotionAbsLength(double motionAbsLength) { this.motionAbsLength = motionAbsLength;}
 
     public long getMotionLength() {
         return motionLength;
@@ -101,9 +99,7 @@ public class StructMotionFeatures implements Parcelable{
         return motionAvgPressure;
     }
 
-    public void setMotionAvgPressure(double motionAvgPressure) {
-        this.motionAvgPressure = motionAvgPressure;
-    }
+    public void setMotionAvgPressure(double motionAvgPressure) { this.motionAvgPressure = motionAvgPressure; }
 
     public float getFirstPosX() {
         return firstPosX;
@@ -137,13 +133,9 @@ public class StructMotionFeatures implements Parcelable{
         this.lastPosY = lastPosY;
     }
 
-    public ArrayList<StructMotionElemts> getmListList() {
-        return mListList;
-    }
+    //public ArrayList<StructMotionElemts> getmListList() {  return mListList; }
 
-    public void setmListList(ArrayList<StructMotionElemts> mListList) {
-        this.mListList = mListList;
-    }
+    //public void setmListList(ArrayList<StructMotionElemts> mListList) { this.mListList = mListList; }
 
     protected void clear() {
         motionAbsLength = 0;
@@ -156,7 +148,7 @@ public class StructMotionFeatures implements Parcelable{
         lastPosX = 0;
         firstPosY = 0;
         lastPosY = 0;
-        mListList = null;
+        //mListList = null;
     }
 
 
@@ -218,7 +210,7 @@ public class StructMotionFeatures implements Parcelable{
             motionDuration = endTime - startTime;
             motionAbsLength = sqrt(pow((lastPosX - firstPosX), 2) + pow((lastPosY - firstPosY), 2));
 
-            mListList = (ArrayList) mList.clone();
+            //mListList = (ArrayList) mList.clone();
         }
     }
 
@@ -240,7 +232,7 @@ public class StructMotionFeatures implements Parcelable{
         dest.writeFloat(lastPosX);
         dest.writeFloat(firstPosY);
         dest.writeFloat(lastPosY);
-        dest.writeList(mListList);
+        //dest.writeList(mListList);
 
     }
 

@@ -6,6 +6,7 @@ Activity for model feature extraction
 //TODO Swipe, scroll and touch classification
 //TODO Left and Right recognition
 */
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,14 +20,15 @@ import java.util.List;
 
 public class BaseProfilingActivity extends Activity {
 
-    private VelocityTracker mVelocityTracker = null;
-    private TextView mMotionInfo = null;
-    private TextView mSpeedDisplay = null;
-    private ArrayList<StructMotionElemts> mList = null;
-    private ArrayList<StructMotionFeatures> mModelList = null;
-    private StructMotionElemts mStructMotionElemts = null;
-    private StructMotionFeatures mStructMotionFeatures = null;
-    private int rCounter = 0;
+    private VelocityTracker mVelocityTracker;
+    private TextView mMotionInfo;
+    private TextView mSpeedDisplay;
+    private TextView mTextCounter;
+    private ArrayList<StructMotionElemts> mList;
+    private StructMotionFeaturesList mModelList;
+    private StructMotionElemts mStructMotionElemts;
+    private StructMotionFeatures mStructMotionFeatures;
+    private int rCounter;
     private final static int NUMBER_OF_INTENT = 10;
 
     @Override
@@ -35,11 +37,13 @@ public class BaseProfilingActivity extends Activity {
         setContentView(R.layout.activity_base_profiling);
         Intent i = getIntent();
         //TODO Assure le parcelable du List works, probably by making the structMotionFeatures parcelable AND structMotionElmts parcelabke
-        mModelList = i.getParcelableExtra("mModelList");
-
+        Bundle b = getIntent().getExtras();
+        mModelList = b.getParcelable("mModelList");
+        rCounter = NUMBER_OF_INTENT - mModelList.size();
         mSpeedDisplay = findViewById(R.id.speedDisplay);
         mMotionInfo = findViewById(R.id.motionInfo);
-
+        mTextCounter = findViewById(R.id.textCounter);
+        mTextCounter.setText(Integer.toString(rCounter));
     }
 
     public boolean onTouchEvent(MotionEvent event) {
@@ -65,14 +69,13 @@ public class BaseProfilingActivity extends Activity {
                 }
                 if (mStructMotionFeatures == null) {
                     mStructMotionFeatures = new StructMotionFeatures();
-                }
-                else{
+                } else {
                     mStructMotionFeatures.clear();
                 }
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                mStructMotionElemts.compute(event, mList,mVelocityTracker);
+                mStructMotionElemts.compute(event, mList, mVelocityTracker);
                 mSpeedDisplay.setText(mStructMotionElemts.toString());
                 break;
 
@@ -84,16 +87,18 @@ public class BaseProfilingActivity extends Activity {
                         "Total length : " + mStructMotionFeatures.getMotionLength() + " px\n" +
                         "Duration : " + mStructMotionFeatures.getMotionDuration() + " ms\n" +
                         "Avg speed : " + mStructMotionFeatures.getMotionAvgSpeed() + " px/s\n" +
-                        "Avg pressure : " + mStructMotionFeatures.getMotionAvgPressure() );
+                        "Avg pressure : " + mStructMotionFeatures.getMotionAvgPressure());
 
-                //if classifications ok
 
-                //mModelList.addElement(mStructMotionFeatures);
-/*                    rCounter = NUMBER_OF_INTENT;
-                }
-                else {
+                if (rCounter >= 1) {
+
+                    mModelList.add(mStructMotionFeatures);
                     rCounter = NUMBER_OF_INTENT - mModelList.size();
-                }*/
+                    mTextCounter.setText(Integer.toString(rCounter));
+                } else {
+                    //FINISH, send back the list and close
+                }
+
                 break;
         }
         return true;
