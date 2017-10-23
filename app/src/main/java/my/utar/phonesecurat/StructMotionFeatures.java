@@ -10,7 +10,9 @@ import java.util.List;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
-/*
+/**
+ * Class that stores useful computed values out of a sample list
+ * Classifies one complete move
  * Created by Thibault on 10/10/2017.
  */
 
@@ -21,7 +23,11 @@ public class StructMotionFeatures implements Parcelable{
     private double motionAvgSpeed;
     private double motionAvgPressure;
     private float firstPosX, lastPosX, firstPosY, lastPosY;
+    private int orientation;
+    private int moveType;
     //private ArrayList<StructMotionElemts> mListList;
+
+
 
     public static final Parcelable.Creator<StructMotionFeatures> CREATOR = new Parcelable.Creator<StructMotionFeatures>(){
         @Override
@@ -45,6 +51,9 @@ public class StructMotionFeatures implements Parcelable{
         lastPosX = in.readFloat();
         firstPosY = in.readFloat();
         lastPosX = in.readFloat();
+        orientation = in.readInt();
+        moveType = in.readInt();
+
         //mListList = in.readArrayList(StructMotionElemts.class.getClassLoader());
 
 
@@ -62,6 +71,9 @@ public class StructMotionFeatures implements Parcelable{
         lastPosX = 0;
         firstPosY = 0;
         lastPosY = 0;
+        orientation = 0;
+        moveType = 0;
+
         //mListList = new ArrayList<>();
     }
 
@@ -148,10 +160,16 @@ public class StructMotionFeatures implements Parcelable{
         lastPosX = 0;
         firstPosY = 0;
         lastPosY = 0;
+        orientation = 0;
+        moveType = 0;
         //mListList = null;
     }
 
-
+    /**
+     * Computes values from raw data of a list of points
+     * The results define one move
+     * @param mList list of point StructMotionElemts
+     */
     protected void compute(ArrayList<StructMotionElemts> mList) {
         //Resets and utility
         double sumSpeed = 0;
@@ -216,7 +234,7 @@ public class StructMotionFeatures implements Parcelable{
 
     @Override
     public int describeContents() {
-        //Return 0 as our object dosen't have FileDescriptor
+        //Return 0 as our object dosen't have FileDescriptor objects
         return 0;
     }
 
@@ -232,6 +250,8 @@ public class StructMotionFeatures implements Parcelable{
         dest.writeFloat(lastPosX);
         dest.writeFloat(firstPosY);
         dest.writeFloat(lastPosY);
+        dest.writeInt(orientation);
+        dest.writeInt(moveType);
         //dest.writeList(mListList);
 
     }

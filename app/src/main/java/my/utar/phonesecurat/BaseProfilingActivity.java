@@ -9,7 +9,6 @@ Activity for model feature extraction
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,9 +18,7 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
 import java.util.ArrayList;
-
 
 public class BaseProfilingActivity extends Activity {
 
@@ -43,7 +40,6 @@ public class BaseProfilingActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_profiling);
         Intent i = getIntent();
-        //TODO Assure le parcelable du List works, probably by making the structMotionFeatures parcelable AND structMotionElmts parcelabke
         Bundle b = getIntent().getExtras();
         mModelList = b.getParcelable("mModelList");
         rCounter = NUMBER_OF_INTENT - mModelList.size();

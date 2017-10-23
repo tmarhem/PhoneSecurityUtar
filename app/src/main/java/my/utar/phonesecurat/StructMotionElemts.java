@@ -12,7 +12,9 @@ import java.util.List;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
-/*
+/**
+ * StructMotionElemts class
+ * This class store a sample of all the raw data collectible from a move at one specific time
  * Created by Thibault on 9/21/2017.
  */
 

@@ -7,6 +7,9 @@ import java.util.ArrayList;
 
 /**
  * Created by Thibault on 10/17/2017.
+ * Array List extended to be Parcelable and sent within the application
+ * Commposed of a certain number of moves
+ * Represent the full raw data sent for computing the model
  */
 
 public class StructMotionFeaturesList extends ArrayList<StructMotionFeatures> implements Parcelable {
