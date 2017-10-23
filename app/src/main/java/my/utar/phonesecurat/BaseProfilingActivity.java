@@ -30,6 +30,7 @@ public class BaseProfilingActivity extends Activity {
     private Button mBtnReset;
     private ArrayList<StructMotionElemts> mList;
     private StructMotionFeaturesList mModelList;
+    private UserModel mRightSwipeModel;
     private StructMotionElemts mStructMotionElemts;
     private StructMotionFeatures mStructMotionFeatures;
     private int rCounter;
@@ -41,7 +42,8 @@ public class BaseProfilingActivity extends Activity {
         setContentView(R.layout.activity_base_profiling);
         Intent i = getIntent();
         Bundle b = getIntent().getExtras();
-        mModelList = b.getParcelable("mModelList");
+        mRightSwipeModel = b.getParcelable("mRightSwipeModel");
+        mModelList = new StructMotionFeaturesList();
         rCounter = NUMBER_OF_INTENT - mModelList.size();
         mSpeedDisplay = findViewById(R.id.speedDisplay);
         mMotionInfo = findViewById(R.id.motionInfo);
