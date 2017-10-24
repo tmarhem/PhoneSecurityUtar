@@ -6,6 +6,10 @@ import android.view.VelocityTracker;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.text.DecimalFormat;
+import java.text.FieldPosition;
+import java.text.NumberFormat;
+import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -149,13 +153,21 @@ public class StructMotionElemts implements Parcelable{
 
     @Override
     public String toString() {
-        return "INSTANT VALUES\nposX : " + Float.toString(posX) + "\nposY : " + Float.toString(posY) +
-                "\ntime : " + Long.toString(time) + "\npressure : " + Float.toString(pressure) +
-                "\nspeed : " + Double.toString(speed) + "\nsize : " + Float.toString(size);
+        NumberFormat nf = new DecimalFormat("0.##");
+
+        return "PosX : " + nf.format(this.getPosX()) + "\n" +
+                "PosY : " + nf.format(this.getPosY()) + "\n" +
+                "Time : " + nf.format(this.getTime()) + "\n" +
+                "Speed : " + nf.format(this.getSpeed()) + "\n" +
+                "Pressure : " + nf.format(this.getPressure());
     }
 
-    @Override
     public StructMotionElemts clone() {
+        try {
+            super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
         return new StructMotionElemts(this.posX, this.posY, this.time, this.pressure, this.speed, this.size);
     }
 

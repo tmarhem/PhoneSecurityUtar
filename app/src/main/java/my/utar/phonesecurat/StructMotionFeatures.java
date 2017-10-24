@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.sql.Struct;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -23,22 +25,20 @@ public class StructMotionFeatures implements Parcelable {
     private long motionDuration;
     private double motionAvgSpeed;
     private double motionAvgPressure;
-    private float firstPosX, lastPosX, firstPosY, lastPosY;
 
     @Override
     public StructMotionFeatures clone() {
+        try {
+            super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
         StructMotionFeatures mClone = new StructMotionFeatures();
-
         mClone.setMotionAbsLength(this.getMotionAbsLength());
         mClone.setMotionLength(this.getMotionLength());
         mClone.setMotionDuration(this.getMotionDuration());
         mClone.setMotionAvgSpeed(this.getMotionAvgSpeed());
         mClone.setMotionAvgPressure(this.getMotionAvgPressure());
-        mClone.setFirstPosX(this.getFirstPosX());
-        mClone.setLastPosX(this.getLastPosX());
-        mClone.setFirstPosY(this.getFirstPosY());
-        mClone.setLastPosY(this.getLastPosY());
-
         return mClone;
     }
 
@@ -60,10 +60,6 @@ public class StructMotionFeatures implements Parcelable {
         motionDuration = in.readLong();
         motionAvgSpeed = in.readDouble();
         motionAvgPressure = in.readDouble();
-        firstPosX = in.readFloat();
-        lastPosX = in.readFloat();
-        firstPosY = in.readFloat();
-        lastPosX = in.readFloat();
     }
 
     public StructMotionFeatures() {
@@ -73,17 +69,15 @@ public class StructMotionFeatures implements Parcelable {
         motionAvgSpeed = 0;
         motionAvgSpeed = 0;
         motionAvgPressure = 0;
-        firstPosX = 0;
-        lastPosX = 0;
-        firstPosY = 0;
-        lastPosY = 0;
     }
 
     public double getMotionAbsLength() {
         return motionAbsLength;
     }
 
-    public void setMotionAbsLength(double motionAbsLength) {this.motionAbsLength = motionAbsLength;}
+    public void setMotionAbsLength(double motionAbsLength) {
+        this.motionAbsLength = motionAbsLength;
+    }
 
     public long getMotionLength() {
         return motionLength;
@@ -113,38 +107,8 @@ public class StructMotionFeatures implements Parcelable {
         return motionAvgPressure;
     }
 
-    public void setMotionAvgPressure(double motionAvgPressure) {this.motionAvgPressure = motionAvgPressure;}
-
-    public float getFirstPosX() {
-        return firstPosX;
-    }
-
-    public void setFirstPosX(float firstPosX) {
-        this.firstPosX = firstPosX;
-    }
-
-    public float getLastPosX() {
-        return lastPosX;
-    }
-
-    public void setLastPosX(float lastPosX) {
-        this.lastPosX = lastPosX;
-    }
-
-    public float getFirstPosY() {
-        return firstPosY;
-    }
-
-    public void setFirstPosY(float firstPosY) {
-        this.firstPosY = firstPosY;
-    }
-
-    public float getLastPosY() {
-        return lastPosY;
-    }
-
-    public void setLastPosY(float lastPosY) {
-        this.lastPosY = lastPosY;
+    public void setMotionAvgPressure(double motionAvgPressure) {
+        this.motionAvgPressure = motionAvgPressure;
     }
 
     protected void clear() {
@@ -154,10 +118,6 @@ public class StructMotionFeatures implements Parcelable {
         motionAvgSpeed = 0;
         motionAvgSpeed = 0;
         motionAvgPressure = 0;
-        firstPosX = 0;
-        lastPosX = 0;
-        firstPosY = 0;
-        lastPosY = 0;
     }
 
     /**
@@ -175,6 +135,8 @@ public class StructMotionFeatures implements Parcelable {
         float prevPosY;
         long startTime;
         long endTime;
+        float firstPosX, lastPosX, firstPosY, lastPosY;
+
         StructMotionElemts mStructMotionElemts;
 
         //Initialisation bourrine de nowPos
@@ -236,10 +198,17 @@ public class StructMotionFeatures implements Parcelable {
         dest.writeLong(motionDuration);
         dest.writeDouble(motionAvgSpeed);
         dest.writeDouble(motionAvgPressure);
-        dest.writeFloat(firstPosX);
-        dest.writeFloat(lastPosX);
-        dest.writeFloat(firstPosY);
-        dest.writeFloat(lastPosY);
+    }
+
+    @Override
+    public String toString(){
+        NumberFormat nf = new DecimalFormat("0.##");
+
+        return "Abs. Length : " + nf.format(this.getMotionAbsLength()) + " px\n" +
+                "Total length : " + nf.format(this.getMotionLength()) + " px\n" +
+                "Duration : " + nf.format(this.getMotionDuration()) + " ms\n" +
+                "Avg speed : " + nf.format(this.getMotionAvgSpeed()) + " px/s\n" +
+                "Avg pressure : " + nf.format(this.getMotionAvgPressure());
     }
 
 }

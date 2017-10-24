@@ -17,9 +17,9 @@ public class MainActivity extends Activity {
 
 
     private UserModel mRightSwipeModel;
-    private UserModel mLeftSwipeModel;
+    /*private UserModel mLeftSwipeModel;
     private UserModel mScrollDownModel;
-    private UserModel mScrollUpModel;
+    private UserModel mScrollUpModel;*/
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,9 +28,9 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         mRightSwipeModel = new UserModel();
-        mLeftSwipeModel = new UserModel();
+        /*mLeftSwipeModel = new UserModel();
         mScrollDownModel = new UserModel();
-        mScrollUpModel = new UserModel();
+        mScrollUpModel = new UserModel();*/
         Button mButtonSettings;
         Button mButtonStartBaseProfiling;
 

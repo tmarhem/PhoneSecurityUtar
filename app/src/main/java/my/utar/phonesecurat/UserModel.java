@@ -57,7 +57,7 @@ public class UserModel implements Parcelable {
     }
 
     public void compute(StructMotionFeaturesList mMotionList) {
-        Log.v("TEST","Entered compare");
+        Log.v("TEST","Entered compute");
 
         int i = 0;
         double sumAbsLength = 0;
@@ -66,12 +66,14 @@ public class UserModel implements Parcelable {
         double sumSpeed = 0;
         double sumPressure = 0;
 
-        while (i <= mMotionList.size() - 1) {
+        while (i <= (mMotionList.size() - 1)) {
             sumAbsLength += mMotionList.get(i).getMotionAbsLength();
             sumLength += mMotionList.get(i).getMotionLength();
             sumDuration += mMotionList.get(i).getMotionDuration();
             sumSpeed += mMotionList.get(i).getMotionAvgSpeed();
             sumPressure += mMotionList.get(i).getMotionAvgPressure();
+
+            i++;
         }
         this.setAvgAbsLength(sumAbsLength / mMotionList.size());
         this.setAvgLength(sumLength / mMotionList.size());

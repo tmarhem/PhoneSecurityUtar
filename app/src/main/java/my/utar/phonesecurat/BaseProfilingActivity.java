@@ -38,15 +38,11 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
     private final static int NUMBER_OF_INTENT = 10;
     private boolean mSwitch;
 
-
-
-
-
     public boolean onTouch(View v, MotionEvent event) {
         return gestureDetector.onTouchEvent(event);
     }
 
-    class GestureListener extends SimpleOnGestureListener {
+    private class GestureListener extends SimpleOnGestureListener {
 
         private static final int SWIPE_DISTANCE_THRESHOLD = 100;
         private static final int SWIPE_VELOCITY_THRESHOLD = 100;
@@ -73,6 +69,7 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         Context context = this;
         setContentView(R.layout.activity_base_profiling);
@@ -105,8 +102,9 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
                             public void onClick(DialogInterface dialog, int id) {
                                 // if this button is clicked, close
                                 // current activity
-                                rCounter = 10;
                                 mModelList.clear();
+                                mRightSwipeModel.clear();
+                                rCounter = 10;
                                 mTextCounter.setText(Integer.toString(rCounter));
                             }
                         })
@@ -165,12 +163,7 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
 
             case MotionEvent.ACTION_UP:
                 mStructMotionFeatures.compute(mPointsList);
-                mMotionInfo.setText("MOTION EVENT OVERALL VALUES\n" +
-                        "Absolute Length : " + mStructMotionFeatures.getMotionAbsLength() + " px\n" +
-                        "Total length : " + mStructMotionFeatures.getMotionLength() + " px\n" +
-                        "Duration : " + mStructMotionFeatures.getMotionDuration() + " ms\n" +
-                        "Avg speed : " + mStructMotionFeatures.getMotionAvgSpeed() + " px/s\n" +
-                        "Avg pressure : " + mStructMotionFeatures.getMotionAvgPressure());
+                mMotionInfo.setText(mStructMotionFeatures.toString());
                 mSwitch = false;
                 break;
         }
@@ -186,25 +179,21 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
 
             mModelList.add(mStructMotionFeatures.clone());
             rCounter = NUMBER_OF_INTENT - mModelList.size();
-            if (rCounter == 0) {
+            if (rCounter == 0 && mRightSwipeModel.getIsComputed()==0) {
                 mRightSwipeModel.compute(mModelList);
             }
             mTextCounter.setText(String.format("%d", rCounter));
 
         }
         else {
-            Log.v("TEST","Entered hard point");
-            //mRightSwipeModel.getAvgPressure();
-            Log.v("TEST","Passed getting from model");
-
-            //compare(mRightSwipeModel,mStructMotionFeatures);
+            compare(mRightSwipeModel,mStructMotionFeatures);
         }
 
     }
 
     public boolean compare(UserModel mUserModel, StructMotionFeatures mStrangerMotion) {
 
-        Log.v("TEST","Entered compare");
+        Log.v("TEST","Entered cmp");
         boolean isAbsLengthMatched = false;
         boolean isLengthMatched = false;
         boolean isDurationMatched = false;
@@ -214,35 +203,22 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
 
         if (Math.abs(mUserModel.getAvgAbsLength() / mStrangerMotion.getMotionAbsLength()) >= sensibility) {
             isAbsLengthMatched = true;
-            ////////////////////////////////////
-            Log.v("COMPARE", "AbsLength Matched");
-            ////////////////////////////////////
         }
         if (Math.abs((double) mUserModel.getAvgLength() / (double) mStrangerMotion.getMotionLength()) >= sensibility) {
             isLengthMatched = true;
-            ////////////////////////////////////
-            Log.v("COMPARE", "Length Matched");
-            ////////////////////////////////////
         }
+
         if (Math.abs((double) mUserModel.getAvgDuration() / (double) mStrangerMotion.getMotionDuration()) >= sensibility) {
             isDurationMatched = true;
-            ////////////////////////////////////
-            Log.v("COMPARE", "Duration Matched");
-            ////////////////////////////////////
         }
+
         if (Math.abs(mUserModel.getAvgSpeed() / mStrangerMotion.getMotionAvgSpeed()) >= sensibility) {
             isSpeedMatched = true;
-            ////////////////////////////////////
-            Log.v("COMPARE", "Speed Matched");
-            ////////////////////////////////////
         }
+
         if (Math.abs(mUserModel.getAvgPressure() / mStrangerMotion.getMotionAvgPressure()) >= sensibility) {
             isPressureMatched = true;
-            ////////////////////////////////////
-            Log.v("COMPARE", "Pressure Matched");
-            ////////////////////////////////////
         }
-        Log.v("TEST","Exiting compare");
 
         return (isAbsLengthMatched && isLengthMatched && isDurationMatched && isSpeedMatched && isPressureMatched);
     }

@@ -54,10 +54,6 @@ public class StructMotionFeaturesList extends ArrayList<StructMotionFeatures> im
             dest.writeLong(smfl.getMotionDuration());
             dest.writeDouble(smfl.getMotionAvgSpeed());
             dest.writeDouble(smfl.getMotionAvgPressure());
-            dest.writeFloat(smfl.getFirstPosX());
-            dest.writeFloat(smfl.getLastPosX());
-            dest.writeFloat(smfl.getFirstPosY());
-            dest.writeFloat(smfl.getLastPosY());
         }
     }
 
@@ -73,10 +69,6 @@ public class StructMotionFeaturesList extends ArrayList<StructMotionFeatures> im
             smf.setMotionDuration(in.readLong());
             smf.setMotionAvgSpeed(in.readDouble());
             smf.setMotionAvgPressure(in.readDouble());
-            smf.setFirstPosX(in.readFloat());
-            smf.setLastPosX(in.readFloat());
-            smf.setFirstPosY(in.readFloat());
-            smf.setLastPosY(in.readFloat());
             this.add(smf);
         }
 
