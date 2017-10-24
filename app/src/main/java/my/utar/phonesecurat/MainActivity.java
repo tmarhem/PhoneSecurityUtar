@@ -12,8 +12,6 @@ import java.util.List;
 
 /**
  * Main activity that launches the application, heads directly to the menu
- * TODO make model parcelable
- * TODO finish model computing
  */
 public class MainActivity extends Activity {
 

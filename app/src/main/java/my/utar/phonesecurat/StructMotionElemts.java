@@ -124,7 +124,7 @@ public class StructMotionElemts implements Parcelable{
     }
 
     /**
-     * Retrieves MotionEvent features  into the StructMotionElmts and add it to the Motion List
+     * Retrieves MotionEvent features into the StructMotionElmts and add it to the Motion List
      *
      * @param event            related MotionEvent
      * @param mList          related List

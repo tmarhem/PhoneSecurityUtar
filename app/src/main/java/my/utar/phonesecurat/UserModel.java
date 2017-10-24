@@ -7,6 +7,7 @@ package my.utar.phonesecurat;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 public class UserModel implements Parcelable {
     private double avgAbsLength;
@@ -56,6 +57,8 @@ public class UserModel implements Parcelable {
     }
 
     public void compute(StructMotionFeaturesList mMotionList) {
+        Log.v("TEST","Entered compare");
+
         int i = 0;
         double sumAbsLength = 0;
         long sumLength = 0;

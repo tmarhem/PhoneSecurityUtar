@@ -3,6 +3,7 @@ package my.utar.phonesecurat;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.sql.Struct;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -16,29 +17,44 @@ import static java.lang.Math.sqrt;
  * Created by Thibault on 10/10/2017.
  */
 
-public class StructMotionFeatures implements Parcelable{
+public class StructMotionFeatures implements Parcelable {
     private double motionAbsLength;
     private long motionLength;
     private long motionDuration;
     private double motionAvgSpeed;
     private double motionAvgPressure;
     private float firstPosX, lastPosX, firstPosY, lastPosY;
-    private int orientation;
-    private int moveType;
 
-    public static final Parcelable.Creator<StructMotionFeatures> CREATOR = new Parcelable.Creator<StructMotionFeatures>(){
+    @Override
+    public StructMotionFeatures clone() {
+        StructMotionFeatures mClone = new StructMotionFeatures();
+
+        mClone.setMotionAbsLength(this.getMotionAbsLength());
+        mClone.setMotionLength(this.getMotionLength());
+        mClone.setMotionDuration(this.getMotionDuration());
+        mClone.setMotionAvgSpeed(this.getMotionAvgSpeed());
+        mClone.setMotionAvgPressure(this.getMotionAvgPressure());
+        mClone.setFirstPosX(this.getFirstPosX());
+        mClone.setLastPosX(this.getLastPosX());
+        mClone.setFirstPosY(this.getFirstPosY());
+        mClone.setLastPosY(this.getLastPosY());
+
+        return mClone;
+    }
+
+    public static final Parcelable.Creator<StructMotionFeatures> CREATOR = new Parcelable.Creator<StructMotionFeatures>() {
         @Override
-        public StructMotionFeatures createFromParcel(Parcel source){
+        public StructMotionFeatures createFromParcel(Parcel source) {
             return new StructMotionFeatures(source);
         }
 
         @Override
-        public StructMotionFeatures[] newArray(int size){
+        public StructMotionFeatures[] newArray(int size) {
             return new StructMotionFeatures[size];
         }
     };
 
-    public StructMotionFeatures(Parcel in){
+    public StructMotionFeatures(Parcel in) {
         motionAbsLength = in.readDouble();
         motionLength = in.readLong();
         motionDuration = in.readLong();
@@ -48,8 +64,6 @@ public class StructMotionFeatures implements Parcelable{
         lastPosX = in.readFloat();
         firstPosY = in.readFloat();
         lastPosX = in.readFloat();
-        orientation = in.readInt();
-        moveType = in.readInt();
     }
 
     public StructMotionFeatures() {
@@ -63,15 +77,13 @@ public class StructMotionFeatures implements Parcelable{
         lastPosX = 0;
         firstPosY = 0;
         lastPosY = 0;
-        orientation = 0;
-        moveType = 0;
     }
 
     public double getMotionAbsLength() {
         return motionAbsLength;
     }
 
-    public void setMotionAbsLength(double motionAbsLength) { this.motionAbsLength = motionAbsLength;}
+    public void setMotionAbsLength(double motionAbsLength) {this.motionAbsLength = motionAbsLength;}
 
     public long getMotionLength() {
         return motionLength;
@@ -101,7 +113,7 @@ public class StructMotionFeatures implements Parcelable{
         return motionAvgPressure;
     }
 
-    public void setMotionAvgPressure(double motionAvgPressure) { this.motionAvgPressure = motionAvgPressure; }
+    public void setMotionAvgPressure(double motionAvgPressure) {this.motionAvgPressure = motionAvgPressure;}
 
     public float getFirstPosX() {
         return firstPosX;
@@ -146,13 +158,12 @@ public class StructMotionFeatures implements Parcelable{
         lastPosX = 0;
         firstPosY = 0;
         lastPosY = 0;
-        orientation = 0;
-        moveType = 0;
     }
 
     /**
      * Computes values from raw data of a list of points
      * The results define one move
+     *
      * @param mList list of point StructMotionElemts
      */
     protected void compute(ArrayList<StructMotionElemts> mList) {
@@ -218,7 +229,7 @@ public class StructMotionFeatures implements Parcelable{
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags){
+    public void writeToParcel(Parcel dest, int flags) {
         //We add object the same order they're declared
         dest.writeDouble(motionAbsLength);
         dest.writeLong(motionLength);
@@ -229,8 +240,6 @@ public class StructMotionFeatures implements Parcelable{
         dest.writeFloat(lastPosX);
         dest.writeFloat(firstPosY);
         dest.writeFloat(lastPosY);
-        dest.writeInt(orientation);
-        dest.writeInt(moveType);
     }
 
 }
