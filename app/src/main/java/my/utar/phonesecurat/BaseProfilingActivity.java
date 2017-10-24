@@ -13,11 +13,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
 import java.util.ArrayList;
 
 public class BaseProfilingActivity extends Activity {
@@ -35,11 +37,13 @@ public class BaseProfilingActivity extends Activity {
     private StructMotionFeatures mStructMotionFeatures;
     private int rCounter;
     private final static int NUMBER_OF_INTENT = 10;
+    private boolean mSwitch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_profiling);
+        mSwitch = false;
         Intent i = getIntent();
         Bundle b = getIntent().getExtras();
         mRightSwipeModel = b.getParcelable("mRightSwipeModel");
@@ -94,38 +98,48 @@ public class BaseProfilingActivity extends Activity {
 
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getActionMasked()) {
+
             case MotionEvent.ACTION_DOWN:
-                //Creation ou reinitialisation du VelocityTracker
-                if (mVelocityTracker == null) {
-                    mVelocityTracker = VelocityTracker.obtain();
-                } else {
-                    mVelocityTracker.clear();
-                }
-                //Creation ou reinitialisation du List
-                if (mList == null) {
-                    mList = new ArrayList<>();
-                } else {
-                    mList.clear();
-                }
-                //Creation ou reinitialisation du StructMotionElemts
-                if (mStructMotionElemts == null) {
-                    mStructMotionElemts = new StructMotionElemts();
-                } else {
-                    mStructMotionElemts.clear();
-                }
-                if (mStructMotionFeatures == null) {
-                    mStructMotionFeatures = new StructMotionFeatures();
-                } else {
-                    mStructMotionFeatures.clear();
-                }
                 break;
 
             case MotionEvent.ACTION_MOVE:
+
+                if (mSwitch == false) {
+
+                    //INITIALISATION
+                    if (mVelocityTracker == null) {
+                        mVelocityTracker = VelocityTracker.obtain();
+                    } else {
+                        mVelocityTracker.clear();
+                    }
+                    //Creation ou reinitialisation du List
+                    if (mList == null) {
+                        mList = new ArrayList<>();
+                    } else {
+                        mList.clear();
+                    }
+                    //Creation ou reinitialisation du StructMotionElemts
+                    if (mStructMotionElemts == null) {
+                        mStructMotionElemts = new StructMotionElemts();
+                    } else {
+                        mStructMotionElemts.clear();
+                    }
+                    if (mStructMotionFeatures == null) {
+                        mStructMotionFeatures = new StructMotionFeatures();
+                    } else {
+                        mStructMotionFeatures.clear();
+                    }
+
+                    mSwitch = true;
+
+                }
+
                 mStructMotionElemts.compute(event, mList, mVelocityTracker);
                 mSpeedDisplay.setText(mStructMotionElemts.toString());
+                Log.v("TEST", Integer.toString(event.getHistorySize()));
+
                 break;
 
-            //Exiting event, going though the List by its iterator and making calulations
             case MotionEvent.ACTION_UP:
                 mStructMotionFeatures.compute(mList);
                 mMotionInfo.setText("MOTION EVENT OVERALL VALUES\n" +
