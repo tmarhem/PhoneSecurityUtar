@@ -14,6 +14,7 @@ public class UserModel implements Parcelable {
     private long avgDuration;
     private double avgSpeed;
     private double avgPressure;
+    private int isComputed;
 
     public static final Parcelable.Creator<UserModel> CREATOR = new Parcelable.Creator<UserModel>() {
         @Override
@@ -33,14 +34,25 @@ public class UserModel implements Parcelable {
         avgDuration = in.readLong();
         avgSpeed = in.readDouble();
         avgPressure = in.readDouble();
+        isComputed = in.readInt();
     }
 
     public UserModel() {
-        avgAbsLength = 0;
-        avgLength = 0;
-        avgDuration = 0;
-        avgSpeed = 0;
-        avgPressure = 0;
+        this.avgAbsLength = 0;
+        this.avgLength = 0;
+        this.avgDuration = 0;
+        this.avgSpeed = 0;
+        this.avgPressure = 0;
+        this.isComputed = 0;
+    }
+
+    public void clear() {
+        this.avgAbsLength = 0;
+        this.avgLength = 0;
+        this.avgDuration = 0;
+        this.avgSpeed = 0;
+        this.avgPressure = 0;
+        this.isComputed = 0;
     }
 
     public void compute(StructMotionFeaturesList mMotionList) {
@@ -64,6 +76,15 @@ public class UserModel implements Parcelable {
         this.setAvgSpeed(sumSpeed / mMotionList.size());
         this.setAvgPressure(sumPressure / mMotionList.size());
 
+        this.setIsComputed(1);
+    }
+
+    public int getIsComputed() {
+        return isComputed;
+    }
+
+    public void setIsComputed(int isComputed) {
+        this.isComputed = isComputed;
     }
 
     public double getAvgAbsLength() {
