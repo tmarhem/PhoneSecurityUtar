@@ -148,7 +148,7 @@ public class BaseProfilingActivity extends Activity {
                         "Duration : " + mStructMotionFeatures.getMotionDuration() + " ms\n" +
                         "Avg speed : " + mStructMotionFeatures.getMotionAvgSpeed() + " px/s\n" +
                         "Avg pressure : " + mStructMotionFeatures.getMotionAvgPressure());
-
+                mSwitch = true;
 
                 if (rCounter >= 1) {
 
@@ -156,7 +156,8 @@ public class BaseProfilingActivity extends Activity {
                     rCounter = NUMBER_OF_INTENT - mModelList.size();
                     mTextCounter.setText(Integer.toString(rCounter));
                 } else {
-                    //FINISH, send back the list and close
+                    //COMPARE TO MODEL
+
                 }
 
                 break;

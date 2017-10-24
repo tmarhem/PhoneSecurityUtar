@@ -11,7 +11,7 @@ import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
 /**
- * Class that stores useful computed values out of a sample list
+ * Class that stores useful computed values for one move out of a sample list
  * Classifies one complete move
  * Created by Thibault on 10/10/2017.
  */
@@ -25,9 +25,6 @@ public class StructMotionFeatures implements Parcelable{
     private float firstPosX, lastPosX, firstPosY, lastPosY;
     private int orientation;
     private int moveType;
-    //private ArrayList<StructMotionElemts> mListList;
-
-
 
     public static final Parcelable.Creator<StructMotionFeatures> CREATOR = new Parcelable.Creator<StructMotionFeatures>(){
         @Override
@@ -53,11 +50,6 @@ public class StructMotionFeatures implements Parcelable{
         lastPosX = in.readFloat();
         orientation = in.readInt();
         moveType = in.readInt();
-
-        //mListList = in.readArrayList(StructMotionElemts.class.getClassLoader());
-
-
-
     }
 
     public StructMotionFeatures() {
@@ -73,8 +65,6 @@ public class StructMotionFeatures implements Parcelable{
         lastPosY = 0;
         orientation = 0;
         moveType = 0;
-
-        //mListList = new ArrayList<>();
     }
 
     public double getMotionAbsLength() {
@@ -145,10 +135,6 @@ public class StructMotionFeatures implements Parcelable{
         this.lastPosY = lastPosY;
     }
 
-    //public ArrayList<StructMotionElemts> getmListList() {  return mListList; }
-
-    //public void setmListList(ArrayList<StructMotionElemts> mListList) { this.mListList = mListList; }
-
     protected void clear() {
         motionAbsLength = 0;
         motionLength = 0;
@@ -162,7 +148,6 @@ public class StructMotionFeatures implements Parcelable{
         lastPosY = 0;
         orientation = 0;
         moveType = 0;
-        //mListList = null;
     }
 
     /**
@@ -171,7 +156,6 @@ public class StructMotionFeatures implements Parcelable{
      * @param mList list of point StructMotionElemts
      */
     protected void compute(ArrayList<StructMotionElemts> mList) {
-        //Resets and utility
         double sumSpeed = 0;
         double sumPressure = 0;
         float nowPosX;
@@ -206,11 +190,8 @@ public class StructMotionFeatures implements Parcelable{
                 //avgSpeed calculation
                 sumSpeed += mStructMotionElemts.getSpeed();
                 sumPressure += mStructMotionElemts.getPressure();
-
-                //DISPLAY//////////////////////
-                //Log.v("TEST", mStructMotionElemts.toString());
-                ///////////////////////////////
             }
+
             //motionAvgSpeed & pressure
             motionAvgSpeed = sumSpeed / mList.size();
             motionAvgPressure = sumPressure / mList.size();
@@ -227,14 +208,12 @@ public class StructMotionFeatures implements Parcelable{
             //Computing
             motionDuration = endTime - startTime;
             motionAbsLength = sqrt(pow((lastPosX - firstPosX), 2) + pow((lastPosY - firstPosY), 2));
-
-            //mListList = (ArrayList) mList.clone();
         }
     }
 
     @Override
     public int describeContents() {
-        //Return 0 as our object dosen't have FileDescriptor objects
+        //Return 0 as our object doesn't have FileDescriptor objects
         return 0;
     }
 
@@ -252,8 +231,6 @@ public class StructMotionFeatures implements Parcelable{
         dest.writeFloat(lastPosY);
         dest.writeInt(orientation);
         dest.writeInt(moveType);
-        //dest.writeList(mListList);
-
     }
 
 }

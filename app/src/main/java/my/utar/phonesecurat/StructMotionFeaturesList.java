@@ -8,8 +8,8 @@ import java.util.ArrayList;
 /**
  * Created by Thibault on 10/17/2017.
  * Array List extended to be Parcelable and sent within the application
- * Commposed of a certain number of moves
- * Represent the full raw data sent for computing the model
+ * Composed of a certain number of moves
+ * Represents the full raw data sent for computing the model
  */
 
 public class StructMotionFeaturesList extends ArrayList<StructMotionFeatures> implements Parcelable {
@@ -44,12 +44,11 @@ public class StructMotionFeaturesList extends ArrayList<StructMotionFeatures> im
     @Override
     public void writeToParcel(Parcel dest, int flags)
     {
-        //Taille de la liste
         int size = this.size();
         dest.writeInt(size);
         for(int i=0; i < size; i++)
         {
-            StructMotionFeatures smfl = this.get(i); //On vient lire chaque objet personne
+            StructMotionFeatures smfl = this.get(i);
             dest.writeDouble(smfl.getMotionAbsLength());
             dest.writeLong(smfl.getMotionLength());
             dest.writeLong(smfl.getMotionDuration());
@@ -64,13 +63,8 @@ public class StructMotionFeaturesList extends ArrayList<StructMotionFeatures> im
 
     public void getFromParcel(Parcel in)
     {
-        // On vide la liste avant tout remplissage
         this.clear();
-
-        //Récupération du nombre d'objet
         int size = in.readInt();
-
-        //On repeuple la liste avec de nouveau objet
         for(int i = 0; i < size; i++)
         {
             StructMotionFeatures smf = new StructMotionFeatures();

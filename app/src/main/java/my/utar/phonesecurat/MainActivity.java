@@ -52,7 +52,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent goToStartBaseProfiling = new Intent(MainActivity.this, BaseProfilingActivity.class);
-                goToStartBaseProfiling.putExtra("mRightSwipeModel",(Parcelable) mRightSwipeModel);
+                goToStartBaseProfiling.putExtra("mRightSwipeModel", mRightSwipeModel);
                 //TODO Add other models
                 startActivity(goToStartBaseProfiling);
             }
