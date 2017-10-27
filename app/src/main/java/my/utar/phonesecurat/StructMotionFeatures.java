@@ -140,7 +140,7 @@ public class StructMotionFeatures implements Parcelable {
         StructMotionElemts mStructMotionElemts;
 
         //Initialisation bourrine de nowPos
-        if (!mList.isEmpty()) {
+        if (mList.size()>0) {
 
             mStructMotionElemts = mList.get(0);
             nowPosX = mStructMotionElemts.getPosX();
@@ -166,8 +166,13 @@ public class StructMotionFeatures implements Parcelable {
             }
 
             //motionAvgSpeed & pressure
-            motionAvgSpeed = sumSpeed / mList.size();
-            motionAvgPressure = sumPressure / mList.size();
+            if (mList.size() > 0) {
+                motionAvgSpeed = sumSpeed / mList.size();
+                motionAvgPressure = sumPressure / mList.size();
+            } else {
+                motionAvgSpeed = 0;
+                motionAvgPressure = 0;
+            }
             //motionDuration & motionAbsLength
             //Retrieving
             mStructMotionElemts = mList.get(0);
@@ -178,9 +183,11 @@ public class StructMotionFeatures implements Parcelable {
             lastPosX = mStructMotionElemts.getPosX();
             lastPosY = mStructMotionElemts.getPosY();
             endTime = mStructMotionElemts.getTime();
+
             //Computing
             motionDuration = endTime - startTime;
             motionAbsLength = sqrt(pow((lastPosX - firstPosX), 2) + pow((lastPosY - firstPosY), 2));
+
         }
     }
 
@@ -201,7 +208,7 @@ public class StructMotionFeatures implements Parcelable {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         NumberFormat nf = new DecimalFormat("0.##");
 
         return "Abs. Length : " + nf.format(this.getMotionAbsLength()) + " px\n" +

@@ -17,6 +17,9 @@ public class UserModel implements Parcelable {
     private double avgPressure;
     private int isComputed;
 
+    /**
+     * Required for PARCELABLE
+     */
     public static final Parcelable.Creator<UserModel> CREATOR = new Parcelable.Creator<UserModel>() {
         @Override
         public UserModel createFromParcel(Parcel source) {
@@ -29,6 +32,10 @@ public class UserModel implements Parcelable {
         }
     };
 
+    /**
+     * Required for PARCELABLE
+     * @param in
+     */
     public UserModel(Parcel in) {
         avgAbsLength = in.readDouble();
         avgLength = in.readLong();
@@ -56,6 +63,10 @@ public class UserModel implements Parcelable {
         this.isComputed = 0;
     }
 
+    /**
+     * Compute the model out of the moves list
+     * @param mMotionList
+     */
     public void compute(StructMotionFeaturesList mMotionList) {
         Log.v("TEST","Entered compute");
 
@@ -132,13 +143,21 @@ public class UserModel implements Parcelable {
         this.avgPressure = avgPressure;
     }
 
-
+    /**
+     * Required for PARCELABLE
+     * @return
+     */
     @Override
     public int describeContents() {
         //Return 0 as our object doesn't have FileDescriptor objects
         return 0;
     }
 
+    /**
+     * Required for PARCELABLE
+     * @param dest
+     * @param flags
+     */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         //We add object the same order they're declared

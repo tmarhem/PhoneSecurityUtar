@@ -30,6 +30,9 @@ public class StructMotionElemts implements Parcelable{
     private double speed;
     private float size;
 
+    /**
+     * Required for PARCELABLE
+     */
     public static final Parcelable.Creator<StructMotionElemts> CREATOR = new Parcelable.Creator<StructMotionElemts>(){
         @Override
         public StructMotionElemts createFromParcel(Parcel source){
@@ -42,6 +45,10 @@ public class StructMotionElemts implements Parcelable{
         }
     };
 
+    /**
+     * Required for PARCELABLE
+     * @param in
+     */
     public StructMotionElemts(Parcel in){
         posX = in.readFloat();
         posY = in.readFloat();
@@ -145,7 +152,6 @@ public class StructMotionElemts implements Parcelable{
         this.setPosX(event.getX());
         this.setPosY(event.getY());
         this.setPressure(event.getPressure());
-        this.setSize(event.getSize());
         this.setTime(SystemClock.uptimeMillis());
         // Insert object in List
         mList.add(this.clone());
@@ -171,12 +177,19 @@ public class StructMotionElemts implements Parcelable{
         return new StructMotionElemts(this.posX, this.posY, this.time, this.pressure, this.speed, this.size);
     }
 
+    /**
+     * Required for PARCELABLE
+     * @return
+     */
     @Override
     public int describeContents() {
         //Return 0 as our object dosen't have FileDescriptor
         return 0;
     }
 
+    /**
+     * Required for PARCELABLE
+     */
     @Override
     public void writeToParcel(Parcel dest, int flags){
         //We add object the same order they're declared

@@ -46,6 +46,7 @@ public class MainActivity extends Activity {
             }
 
         });
+
         mButtonStartBaseProfiling.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

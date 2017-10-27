@@ -1,9 +1,9 @@
 package my.utar.phonesecurat;
-/*
-Activity for model feature extraction
-//TODO Size not working ?
-//TODO ADDITIONNAL Draw the swipe
-*/
+/**
+ * Principal Activity
+ * Used to retrieve 10 right swipes them compute the model
+ * After that the next swipes are compared to the model
+ */
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -38,10 +38,19 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
     private final static int NUMBER_OF_INTENT = 10;
     private boolean mSwitch;
 
+    /**
+     * Method not used, forced to implement it when implementing View.OnTouchListener in the Activity
+     * @param v
+     * @param event
+     * @return
+     */
     public boolean onTouch(View v, MotionEvent event) {
         return gestureDetector.onTouchEvent(event);
     }
 
+    /**
+     *Extending the existing class SimpleOnGestureListener to our need, customization of thresholds and recognized movements
+     */
     private class GestureListener extends SimpleOnGestureListener {
 
         private static final int SWIPE_DISTANCE_THRESHOLD = 100;
@@ -52,6 +61,15 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
             return true;
         }
 
+        /**
+         * Overriding existing method on SimpleOnGestureListener that triggers on a Swipe
+         * Computing speed and direction to launch SwipeRight() or SwipeLeft()
+         * @param e1
+         * @param e2
+         * @param velocityX
+         * @param velocityY
+         * @return
+         */
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
             float distanceX = e2.getX() - e1.getX();
@@ -67,9 +85,16 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
         }
     }
 
+    /**
+     * Method launched on the creation of the activity
+     * @param savedInstanceState Bundle that saves information in case of sudden shutdown of the app
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        /**
+         * Retrieving and initializing all what is necessary in the Activity
+         */
         super.onCreate(savedInstanceState);
         Context context = this;
         setContentView(R.layout.activity_base_profiling);
@@ -124,9 +149,19 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
 
     }
 
+    /**
+     * Method that triggers when you touch the screen
+     * @param event
+     * @return
+     */
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getActionMasked()) {
-
+/**
+ * ACTION_DOWN is the first touch of the screen
+ * ACTION_UP is the last touch of the screen
+ * ACTION_MOVE is all the intermediate points in between
+ * We focus on ACTION_MOVE because on ACTION_DOWN / UP The speed can be 0 and mess the average
+ */
             case MotionEvent.ACTION_DOWN:
                 break;
 
@@ -138,18 +173,19 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
                     } else {
                         mVelocityTracker.clear();
                     }
-                    //Creation ou reinitialisation du List
+                    //Creation or reinitialisation du List
                     if (mPointsList == null) {
                         mPointsList = new ArrayList<>();
                     } else {
                         mPointsList.clear();
                     }
-                    //Creation ou reinitialisation du StructMotionElemts
+                    //Creation or reinitialisation du StructMotionElemts
                     if (mStructMotionElemts == null) {
                         mStructMotionElemts = new StructMotionElemts();
                     } else {
                         mStructMotionElemts.clear();
                     }
+                    //Creation or reinitialisation du StructMotionFeatures
                     if (mStructMotionFeatures == null) {
                         mStructMotionFeatures = new StructMotionFeatures();
                     } else {
@@ -157,22 +193,34 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
                     }
                     mSwitch = true;
                 }
-                mStructMotionElemts.compute(event, mPointsList, mVelocityTracker);
-                mSpeedDisplay.setText(mStructMotionElemts.toString());
+                if(mSwitch) {
+                    mStructMotionElemts.compute(event, mPointsList, mVelocityTracker);
+                    //DISPLAY
+                    mSpeedDisplay.setText(mStructMotionElemts.toString());
+                }
                 break;
 
             case MotionEvent.ACTION_UP:
-                mStructMotionFeatures.compute(mPointsList);
-                mMotionInfo.setText(mStructMotionFeatures.toString());
-                mSwitch = false;
+                if(mSwitch) {
+                    mStructMotionFeatures.compute(mPointsList);
+                    //DISPLAY
+                    mMotionInfo.setText(mStructMotionFeatures.toString());
+                    mSwitch = false;
+                }
                 break;
         }
+        //Used at the end of a move to trigger OnFling method
         return gestureDetector.onTouchEvent(event);
     }
 
     public void onSwipeLeft() {
     }
 
+    /**
+     * If rmovement is recognized as right swipe, add movement to the list
+     * When sample ma number is reached, model is computed
+     * If model is already computed, goes to comparison
+     */
     public void onSwipeRight() {
 
         if (rCounter >= 1) {
@@ -191,7 +239,23 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
 
     }
 
+    /**
+     * Compares a move to the model
+     * TODO Still lacks display
+     * @param mUserModel
+     * @param mStrangerMotion
+     * @return
+     */
     public boolean compare(UserModel mUserModel, StructMotionFeatures mStrangerMotion) {
+
+        TextView mAbs = findViewById(R.id.absLengthMatchResult);
+        TextView length = findViewById(R.id.lengthMatchResult);
+        TextView duration = findViewById(R.id.durationMatchResult);
+        TextView speed = findViewById(R.id.speedMatchResult);
+        TextView pressure = findViewById(R.id.pressureMatchResult);
+
+
+
 
         Log.v("TEST","Entered cmp");
         boolean isAbsLengthMatched = false;
@@ -199,25 +263,39 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
         boolean isDurationMatched = false;
         boolean isSpeedMatched = false;
         boolean isPressureMatched = false;
+        mAbs.setText("   not matched");
+        length.setText("   not matched");
+        duration.setText("   not matched");
+        speed.setText("   not matched");
+        pressure.setText("   not matched");
+
+
+
+
         double sensibility = 0.75;
 
         if (Math.abs(mUserModel.getAvgAbsLength() / mStrangerMotion.getMotionAbsLength()) >= sensibility) {
             isAbsLengthMatched = true;
+            mAbs.setText("   MATCHED");
         }
         if (Math.abs((double) mUserModel.getAvgLength() / (double) mStrangerMotion.getMotionLength()) >= sensibility) {
             isLengthMatched = true;
+            length.setText("   MATCHED");
         }
 
         if (Math.abs((double) mUserModel.getAvgDuration() / (double) mStrangerMotion.getMotionDuration()) >= sensibility) {
             isDurationMatched = true;
+            duration.setText("   MATCHED");
         }
 
         if (Math.abs(mUserModel.getAvgSpeed() / mStrangerMotion.getMotionAvgSpeed()) >= sensibility) {
             isSpeedMatched = true;
+            speed.setText("   MATCHED");
         }
 
         if (Math.abs(mUserModel.getAvgPressure() / mStrangerMotion.getMotionAvgPressure()) >= sensibility) {
             isPressureMatched = true;
+            pressure.setText("   MATCHED");
         }
 
         return (isAbsLengthMatched && isLengthMatched && isDurationMatched && isSpeedMatched && isPressureMatched);

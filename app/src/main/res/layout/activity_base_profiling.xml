@@ -114,50 +114,45 @@
         android:layout_marginStart="103dp"
         android:text="Pressure match"/>
 
-    <ImageView
-        android:id="@+id/AbsLengthImg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/PressureMatchTitle"
-        android:layout_alignStart="@+id/PressureMatchTitle"
-        android:layout_marginStart="-20dp"
-        app:srcCompat="@android:drawable/presence_online"/>
-
-    <ImageView
-        android:id="@+id/LengthImg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/SpeedMatchTitle"
-        android:layout_alignStart="@+id/SpeedMatchTitle"
-        android:layout_marginStart="-20dp"
-        app:srcCompat="@android:drawable/presence_online"/>
-
-    <ImageView
-        android:id="@+id/DurationImg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/DurationMatchTitle"
-        android:layout_alignStart="@+id/DurationMatchTitle"
-        android:layout_marginStart="-20dp"
-        app:srcCompat="@android:drawable/presence_online"/>
-
-    <ImageView
-        android:id="@+id/SpeedImg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/LengthMatchTitle"
-        android:layout_alignStart="@+id/LengthMatchTitle"
-        android:layout_marginStart="-20dp"
-        app:srcCompat="@android:drawable/presence_online"/>
-
-    <ImageView
-        android:id="@+id/PressureIMG"
+    <TextView
+        android:id="@+id/absLengthMatchResult"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/AbsLengthMatchTitle"
-        android:layout_alignStart="@+id/AbsLengthMatchTitle"
-        android:layout_marginStart="-20dp"
-        app:srcCompat="@android:drawable/presence_online"/>
+        android:layout_toEndOf="@+id/AbsLengthMatchTitle"
+        android:text="  pending..."/>
+
+    <TextView
+        android:id="@+id/lengthMatchResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/AbsLengthMatchTitle"
+        android:layout_toEndOf="@+id/LengthMatchTitle"
+        android:text="  pending..."/>
+
+    <TextView
+        android:id="@+id/durationMatchResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lengthMatchResult"
+        android:layout_toEndOf="@+id/DurationMatchTitle"
+        android:text="  pending..."/>
+
+    <TextView
+        android:id="@+id/speedMatchResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/DurationMatchTitle"
+        android:layout_toEndOf="@+id/SpeedMatchTitle"
+        android:text="  pending..."/>
+
+    <TextView
+        android:id="@+id/pressureMatchResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/speedMatchResult"
+        android:layout_toEndOf="@+id/PressureMatchTitle"
+        android:text="  pending..."/>
 
 
 </RelativeLayout>
