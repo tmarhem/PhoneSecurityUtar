@@ -111,6 +111,9 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
         mTextCounter.setText(Integer.toString(rCounter));
         Button mBtnReset;
         mBtnReset = findViewById(R.id.btnReset);
+
+
+
         gestureDetector = new GestureDetector(context, new GestureListener());
 
         mBtnReset.setOnClickListener(new View.OnClickListener() {
@@ -163,6 +166,17 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
  * We focus on ACTION_MOVE because on ACTION_DOWN / UP The speed can be 0 and mess the average
  */
             case MotionEvent.ACTION_DOWN:
+
+                TextView mAbs = findViewById(R.id.absLengthMatchResult);
+                TextView length = findViewById(R.id.lengthMatchResult);
+                TextView duration = findViewById(R.id.durationMatchResult);
+                TextView speed = findViewById(R.id.speedMatchResult);
+                TextView pressure = findViewById(R.id.pressureMatchResult);
+                mAbs.setText("   pending...");
+                length.setText("    pending...");
+                duration.setText("   pending...");
+                speed.setText("   pending...");
+                pressure.setText("   pending...");
                 break;
 
             case MotionEvent.ACTION_MOVE:
