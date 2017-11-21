@@ -53,8 +53,8 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
      */
     private class GestureListener extends SimpleOnGestureListener {
 
-        private static final int SWIPE_DISTANCE_THRESHOLD = 100;
-        private static final int SWIPE_VELOCITY_THRESHOLD = 100;
+        private static final int SWIPE_DISTANCE_THRESHOLD = 66;
+        private static final int SWIPE_VELOCITY_THRESHOLD = 66;
 
         @Override
         public boolean onDown(MotionEvent e) {
@@ -255,7 +255,6 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
 
     /**
      * Compares a move to the model
-     * TODO Still lacks display
      * @param mUserModel
      * @param mStrangerMotion
      * @return
