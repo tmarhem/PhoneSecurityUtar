@@ -39,13 +39,67 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
     private boolean mSwitch;
 
     /**
-     * Method not used, forced to implement it when implementing View.OnTouchListener in the Activity
-     * @param v
-     * @param event
-     * @return
+     * Method launched on the creation of the activity
+     * @param savedInstanceState Bundle that saves information in case of sudden shutdown of the app
      */
-    public boolean onTouch(View v, MotionEvent event) {
-        return gestureDetector.onTouchEvent(event);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+        /**
+         * Retrieving and initializing all what is necessary in the Activity
+         */
+        super.onCreate(savedInstanceState);
+        Context context = this;
+        setContentView(R.layout.activity_base_profiling);
+        mSwitch = false;
+        Intent i = getIntent();
+        Bundle b = getIntent().getExtras();
+        //mRightSwipeModel = b.getParcelable("mRightSwipeModel");
+        mRightSwipeModel = new UserModel();
+        mModelList = new StructMotionFeaturesList();
+        rCounter = NUMBER_OF_INTENT - mModelList.size();
+        mSpeedDisplay = findViewById(R.id.speedDisplay);
+        mMotionInfo = findViewById(R.id.motionInfo);
+        mTextCounter = findViewById(R.id.textCounter);
+        mTextCounter.setText(Integer.toString(rCounter));
+        Button mBtnReset;
+        mBtnReset = findViewById(R.id.btnReset);
+        gestureDetector = new GestureDetector(context, new GestureListener());
+
+        mBtnReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
+                // set title
+                alertDialogBuilder.setTitle("Warning");
+                // set dialog message
+                alertDialogBuilder
+                        .setMessage("Are you sure you want to wipe the current saved model ?")
+                        .setCancelable(true)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // if this button is clicked, close
+                                // current activity
+                                mModelList.clear();
+                                mRightSwipeModel.clear();
+                                rCounter = 10;
+                                mTextCounter.setText(Integer.toString(rCounter));
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // if this button is clicked, just close
+                                // the dialog box and do nothing
+                                dialog.cancel();
+                            }
+                        });
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                // show it
+                alertDialog.show();
+            }
+        });
+
     }
 
     /**
@@ -86,71 +140,16 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
     }
 
     /**
-     * Method launched on the creation of the activity
-     * @param savedInstanceState Bundle that saves information in case of sudden shutdown of the app
+     * Method not used, forced to implement it when implementing View.OnTouchListener in the Activity
+     * @param v
+     * @param event
+     * @return
      */
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-
-        /**
-         * Retrieving and initializing all what is necessary in the Activity
-         */
-        super.onCreate(savedInstanceState);
-        Context context = this;
-        setContentView(R.layout.activity_base_profiling);
-        mSwitch = false;
-        Intent i = getIntent();
-        Bundle b = getIntent().getExtras();
-        //mRightSwipeModel = b.getParcelable("mRightSwipeModel");
-        mRightSwipeModel = new UserModel();
-        mModelList = new StructMotionFeaturesList();
-        rCounter = NUMBER_OF_INTENT - mModelList.size();
-        mSpeedDisplay = findViewById(R.id.speedDisplay);
-        mMotionInfo = findViewById(R.id.motionInfo);
-        mTextCounter = findViewById(R.id.textCounter);
-        mTextCounter.setText(Integer.toString(rCounter));
-        Button mBtnReset;
-        mBtnReset = findViewById(R.id.btnReset);
-
-
-
-        gestureDetector = new GestureDetector(context, new GestureListener());
-
-        mBtnReset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
-                // set title
-                alertDialogBuilder.setTitle("Warning");
-                // set dialog message
-                alertDialogBuilder
-                        .setMessage("Are you sure you want to wipe the current saved model ?")
-                        .setCancelable(true)
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                // if this button is clicked, close
-                                // current activity
-                                mModelList.clear();
-                                mRightSwipeModel.clear();
-                                rCounter = 10;
-                                mTextCounter.setText(Integer.toString(rCounter));
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                // if this button is clicked, just close
-                                // the dialog box and do nothing
-                                dialog.cancel();
-                            }
-                        });
-                // create alert dialog
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                // show it
-                alertDialog.show();
-            }
-        });
-
+    public boolean onTouch(View v, MotionEvent event) {
+        return gestureDetector.onTouchEvent(event);
     }
+
+
 
     /**
      * Method that triggers when you touch the screen

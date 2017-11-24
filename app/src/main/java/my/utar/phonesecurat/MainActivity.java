@@ -1,11 +1,13 @@
 package my.utar.phonesecurat;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,16 +29,21 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        final Context context = this;
+
         mRightSwipeModel = new UserModel();
         /*mLeftSwipeModel = new UserModel();
         mScrollDownModel = new UserModel();
         mScrollUpModel = new UserModel();*/
         Button mButtonSettings;
         Button mButtonStartBaseProfiling;
+        Button mButtonRunInBackground;
+        Button mButtonStopService;
 
         mButtonSettings = findViewById(R.id.ButtonSettings);
         mButtonStartBaseProfiling = findViewById(R.id.ButtonStartBaseProfiling);
-
+        mButtonRunInBackground = findViewById(R.id.ButtonRunInBackground);
+        mButtonStopService = findViewById(R.id.ButtonStopService);
 
         mButtonSettings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,6 +61,26 @@ public class MainActivity extends Activity {
                 goToStartBaseProfiling.putExtra("mRightSwipeModel", mRightSwipeModel);
                 //TODO Add other models
                 startActivity(goToStartBaseProfiling);
+            }
+
+        });
+
+        mButtonRunInBackground.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent authService = new Intent(MainActivity.this, AuthenticationCheck.class);
+                //startService.putExtra("mRightSwipeModel", mRightSwipeModel);
+                startService(authService);
+            }
+
+        });
+
+        mButtonStopService.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent authService = new Intent(MainActivity.this, AuthenticationCheck.class);
+                //startService.putExtra("mRightSwipeModel", mRightSwipeModel);
+                stopService(authService);
             }
 
         });
