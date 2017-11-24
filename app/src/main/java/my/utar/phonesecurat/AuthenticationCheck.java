@@ -1,11 +1,12 @@
 package my.utar.phonesecurat;
 
-import android.app.ActionBar;
 import android.app.IntentService;
-import android.content.Intent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PixelFormat;
+import android.net.Uri;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -20,15 +21,11 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-/**
- * An {@link IntentService} subclass for handling asynchronous task requests in
- * a service on a separate handler thread.
- * <p>
- * TODO: Customize class - update intent actions, extra parameters and static
- * helper methods.
- */
+import static android.R.attr.data;
+
 public class AuthenticationCheck extends IntentService implements View.OnTouchListener {
 
+    private  final Context ctx = this;
     private WindowManager mWindowManager;
     private LinearLayout mLinearLayout;
 
@@ -47,16 +44,14 @@ public class AuthenticationCheck extends IntentService implements View.OnTouchLi
         super("AuthenticationCheck");
     }
 
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Toast.makeText(getApplicationContext(),"Authentication service started", Toast.LENGTH_SHORT).show();
         Log.v("TEST","LOG CHECK");
 
-        /*ActionBar.LayoutParams params = new ActionBar.LayoutParams(
-                WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
-        );*/
 
-        mLinearLayout = new LinearLayout(getApplicationContext());
+        mLinearLayout = new LinearLayout(ctx);
         LayoutParams mLayoutParams = new LayoutParams(1,1);
         mLinearLayout.setLayoutParams(mLayoutParams);
         mLinearLayout.setOnTouchListener(this);
@@ -69,7 +64,9 @@ public class AuthenticationCheck extends IntentService implements View.OnTouchLi
                 WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
         );
         mParams.gravity = Gravity.LEFT | Gravity.TOP;
+///////////////////////////////////////////////////////////////
         mWindowManager.addView(mLinearLayout, mParams);
+        Log.v("TEST","LOG 4");
 
         gestureListener = new GestureListener() {
             @Override
@@ -81,7 +78,7 @@ public class AuthenticationCheck extends IntentService implements View.OnTouchLi
         //TODO retrieve UserModel saved
         mSwitch = false;
 
-        gestureDetector = new GestureDetector(getApplicationContext(), gestureListener);
+        gestureDetector = new GestureDetector(ctx, gestureListener);
         Log.v("TEST","GESTURE DETECTOR CREATED");
 
 
@@ -137,14 +134,12 @@ public class AuthenticationCheck extends IntentService implements View.OnTouchLi
                 }
                 if(mSwitch) {
                     mStructMotionElemts.compute(event, mPointsList, mVelocityTracker);
-                    //DISPLAY
                 }
                 break;
 
             case MotionEvent.ACTION_UP:
                 if(mSwitch) {
                     mStructMotionFeatures.compute(mPointsList);
-                    //DISPLAY
                     mSwitch = false;
                 }
                 break;

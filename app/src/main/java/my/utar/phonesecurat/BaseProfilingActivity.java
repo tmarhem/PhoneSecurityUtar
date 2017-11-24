@@ -65,7 +65,6 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
         Button mBtnReset;
         mBtnReset = findViewById(R.id.btnReset);
         gestureDetector = new GestureDetector(context, new GestureListener());
-
         mBtnReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {

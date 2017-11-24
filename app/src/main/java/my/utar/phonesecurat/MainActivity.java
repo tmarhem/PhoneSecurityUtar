@@ -3,8 +3,11 @@ package my.utar.phonesecurat;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -19,17 +22,18 @@ public class MainActivity extends Activity {
 
 
     private UserModel mRightSwipeModel;
+
     /*private UserModel mLeftSwipeModel;
     private UserModel mScrollDownModel;
     private UserModel mScrollUpModel;*/
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        final Context context = this;
 
         mRightSwipeModel = new UserModel();
         /*mLeftSwipeModel = new UserModel();
@@ -65,11 +69,11 @@ public class MainActivity extends Activity {
 
         });
 
+
         mButtonRunInBackground.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent authService = new Intent(MainActivity.this, AuthenticationCheck.class);
-                //startService.putExtra("mRightSwipeModel", mRightSwipeModel);
                 startService(authService);
             }
 
@@ -79,7 +83,6 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent authService = new Intent(MainActivity.this, AuthenticationCheck.class);
-                //startService.putExtra("mRightSwipeModel", mRightSwipeModel);
                 stopService(authService);
             }
 
