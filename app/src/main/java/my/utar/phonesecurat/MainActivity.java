@@ -1,9 +1,11 @@
 package my.utar.phonesecurat;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.Settings;
@@ -27,7 +29,13 @@ public class MainActivity extends Activity {
     private UserModel mScrollDownModel;
     private UserModel mScrollUpModel;*/
 
-
+    ///
+    public static void requestSystemAlertPermission(Activity context, int requestCode) {
+        final String packageName = context.getPackageName();
+        final Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + packageName));
+            context.startActivityForResult(intent, requestCode);
+    }
+    ///
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,6 +56,10 @@ public class MainActivity extends Activity {
         mButtonStartBaseProfiling = findViewById(R.id.ButtonStartBaseProfiling);
         mButtonRunInBackground = findViewById(R.id.ButtonRunInBackground);
         mButtonStopService = findViewById(R.id.ButtonStopService);
+
+        ///
+        requestSystemAlertPermission(MainActivity.this,5463);
+        ///
 
         mButtonSettings.setOnClickListener(new View.OnClickListener() {
             @Override

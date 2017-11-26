@@ -2,9 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="my.utar.phonesecurat">
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.REAL_GET_TASKS" />
-
-
 
     <application
         android:allowBackup="false"
@@ -26,6 +23,7 @@
         <service
             android:name=".AuthenticationCheck"
             android:exported="false" />
+
     </application>
 
 </manifest>
