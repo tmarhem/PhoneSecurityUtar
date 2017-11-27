@@ -46,24 +46,26 @@ public class AuthenticationCheck extends IntentService implements View.OnTouchLi
 
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(getApplicationContext(),"Authentication service started", Toast.LENGTH_SHORT).show();
+    //public int onStartCommand(Intent intent, int flags, int startId) {
+    public void onCreate() {
+            super.onCreate();
+            Toast.makeText(getApplicationContext(),"Authentication service started", Toast.LENGTH_SHORT).show();
         Log.v("TEST","LOG CHECK");
 
 
-        mLinearLayout = new LinearLayout(ctx);
-        LayoutParams mLayoutParams = new LayoutParams(1,1);
+        mLinearLayout = new LinearLayout(AuthenticationCheck.this);
+        LayoutParams mLayoutParams = new LayoutParams(10,10);
         mLinearLayout.setLayoutParams(mLayoutParams);
-        mLinearLayout.setOnTouchListener(this);
+        //mLinearLayout.setOnTouchListener(AuthenticationCheck.this);
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         WindowManager.LayoutParams mParams = new WindowManager.LayoutParams(
-                1,
-                1,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                PixelFormat.TRANSLUCENT,
-                WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
+                10,
+                10//,
+                //WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                //PixelFormat.TRANSLUCENT,
+                //WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
         );
-        mParams.gravity = Gravity.LEFT | Gravity.TOP;
+        mParams.gravity = Gravity.START | Gravity.TOP;
 ///////////////////////////////////////////////////////////////
         mWindowManager.addView(mLinearLayout, mParams);
         Log.v("TEST","LOG 4");
@@ -84,7 +86,7 @@ public class AuthenticationCheck extends IntentService implements View.OnTouchLi
 
 
 
-        return START_REDELIVER_INTENT;
+        //return START_REDELIVER_INTENT;
     }
 
     public boolean onTouch(View v, MotionEvent event) {
