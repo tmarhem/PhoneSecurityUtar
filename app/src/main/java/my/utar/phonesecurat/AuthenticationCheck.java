@@ -52,27 +52,22 @@ public class AuthenticationCheck extends IntentService implements View.OnTouchLi
         Log.v("TEST","LOG CHECK++");
 
 
-        mLinearLayout = new LinearLayout(AuthenticationCheck.this);
         LayoutParams mLayoutParams = new LayoutParams(10,10);
-        mLinearLayout.setLayoutParams(mLayoutParams);
-        //mLinearLayout.setOnTouchListener(AuthenticationCheck.this);
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         WindowManager.LayoutParams mParams = new WindowManager.LayoutParams(
                 10,
                 10,
                 WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY,
-                WindowManager.LayoutParams.LAST_SYSTEM_WINDOW,
-
-
-                //PixelFormat.TRANSLUCENT,
+                WindowManager.LayoutParams.FIRST_SYSTEM_WINDOW,
                 WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
-
+                //PixelFormat.TRANSLUCENT
         );
         mParams.gravity = Gravity.START | Gravity.TOP;
 ///////////////////////////////////////////////////////////////
         View mView = LayoutInflater.from(AuthenticationCheck.this).inflate(R.layout.floating_layout,null);
-        //mWindowManager.addView(mLinearLayout, mParams);
         mWindowManager.addView(mView, mParams);
+        mView.setOnTouchListener(AuthenticationCheck.this);
+
         Log.v("TEST","LOG 4");
 
         gestureListener = new GestureListener() {
