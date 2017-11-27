@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -60,14 +61,20 @@ public class AuthenticationCheck extends IntentService implements View.OnTouchLi
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         WindowManager.LayoutParams mParams = new WindowManager.LayoutParams(
                 10,
-                10//,
-                //WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                10,
+                WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY,
+                WindowManager.LayoutParams.LAST_SYSTEM_WINDOW,
+
+
                 //PixelFormat.TRANSLUCENT,
-                //WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
+                WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
+
         );
         mParams.gravity = Gravity.START | Gravity.TOP;
 ///////////////////////////////////////////////////////////////
-        mWindowManager.addView(mLinearLayout, mParams);
+        View mView = LayoutInflater.from(AuthenticationCheck.this).inflate(R.layout.floating_layout,null);
+        //mWindowManager.addView(mLinearLayout, mParams);
+        mWindowManager.addView(mView, mParams);
         Log.v("TEST","LOG 4");
 
         gestureListener = new GestureListener() {
@@ -164,9 +171,9 @@ public class AuthenticationCheck extends IntentService implements View.OnTouchLi
 
     @Override
     public void onDestroy() {
-        if(mWindowManager != null) {
-            if(mLinearLayout != null) mWindowManager.removeView(mLinearLayout);
-        }
+        /*if(mWindowManager != null) {
+            if(mView != null) mWindowManager.removeView(mView);
+        }*/
         Toast.makeText(this,"Authentication service stopped", Toast.LENGTH_SHORT).show();
         super.onDestroy();
     }
