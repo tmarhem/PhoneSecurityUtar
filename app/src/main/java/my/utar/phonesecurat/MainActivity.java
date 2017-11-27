@@ -86,10 +86,16 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent authService = new Intent(MainActivity.this, AuthenticationCheck.class);
-                startService(authService);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                    Log.v("TEST","Entered OREO MODE");
+                startForegroundService(authService);}
+                else{
+                    Log.v("TEST","Entered less than O MODE");
+                    startService(authService);}
+                }
             }
 
-        });
+        );
 
         mButtonStopService.setOnClickListener(new View.OnClickListener() {
             @Override
