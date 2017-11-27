@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
@@ -34,8 +35,6 @@ public class AuthenticationCheck extends IntentService implements View.OnTouchLi
     private GestureListener gestureListener;
     private VelocityTracker mVelocityTracker;
     private ArrayList<StructMotionElemts> mPointsList;
-    private StructMotionFeaturesList mModelList;
-    private UserModel mRightSwipeModel;
     private StructMotionElemts mStructMotionElemts;
     private StructMotionFeatures mStructMotionFeatures;
     private boolean mSwitch;
@@ -47,11 +46,10 @@ public class AuthenticationCheck extends IntentService implements View.OnTouchLi
 
 
     @Override
-    //public int onStartCommand(Intent intent, int flags, int startId) {
-    public void onCreate() {
-            super.onCreate();
-            Toast.makeText(getApplicationContext(),"Authentication service started", Toast.LENGTH_SHORT).show();
-        Log.v("TEST","LOG CHECK");
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        super.onStartCommand(intent, flags, startId);
+        Toast.makeText(getApplicationContext(),"Authentication service started", Toast.LENGTH_SHORT).show();
+        Log.v("TEST","LOG CHECK++");
 
 
         mLinearLayout = new LinearLayout(AuthenticationCheck.this);
@@ -83,8 +81,6 @@ public class AuthenticationCheck extends IntentService implements View.OnTouchLi
                 super.onSwipeRight();
             }
         };
-        mRightSwipeModel = new UserModel();
-        //TODO retrieve UserModel saved
         mSwitch = false;
 
         gestureDetector = new GestureDetector(ctx, gestureListener);
@@ -93,7 +89,7 @@ public class AuthenticationCheck extends IntentService implements View.OnTouchLi
 
 
 
-        //return START_REDELIVER_INTENT;
+        return START_REDELIVER_INTENT;
     }
 
     public boolean onTouch(View v, MotionEvent event) {
