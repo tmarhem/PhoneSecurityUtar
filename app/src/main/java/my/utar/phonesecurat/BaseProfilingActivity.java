@@ -3,6 +3,7 @@ package my.utar.phonesecurat;
  * Principal Activity
  * Used to retrieve 10 right swipes them compute the model
  * After that the next swipes are compared to the model
+ * TEST MASTER BRANCH
  */
 
 import android.app.Activity;
