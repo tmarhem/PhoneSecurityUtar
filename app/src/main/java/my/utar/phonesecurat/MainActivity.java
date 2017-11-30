@@ -43,7 +43,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mRightSwipeModel = new UserModel();
+        //mRightSwipeModel = new UserModel();
         /*mLeftSwipeModel = new UserModel();
         mScrollDownModel = new UserModel();
         mScrollUpModel = new UserModel();*/

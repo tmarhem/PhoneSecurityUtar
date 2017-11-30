@@ -39,6 +39,7 @@ public class AuthenticationCheck extends IntentService implements View.OnTouchLi
     private StructMotionFeatures mStructMotionFeatures;
     private boolean mSwitch;
 
+View mSavedView;
 
     public AuthenticationCheck() {
         super("AuthenticationCheck");
@@ -51,12 +52,10 @@ public class AuthenticationCheck extends IntentService implements View.OnTouchLi
         Toast.makeText(getApplicationContext(),"Authentication service started", Toast.LENGTH_SHORT).show();
         Log.v("TEST","LOG CHECK++");
 
-
-        LayoutParams mLayoutParams = new LayoutParams(10,10);
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         WindowManager.LayoutParams mParams = new WindowManager.LayoutParams(
-                10,
-                10,
+                700,
+                700,
                 WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY,
                 WindowManager.LayoutParams.FIRST_SYSTEM_WINDOW,
                 WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
@@ -65,15 +64,18 @@ public class AuthenticationCheck extends IntentService implements View.OnTouchLi
         mParams.gravity = Gravity.START | Gravity.TOP;
 ///////////////////////////////////////////////////////////////
         View mView = LayoutInflater.from(AuthenticationCheck.this).inflate(R.layout.floating_layout,null);
-        mWindowManager.addView(mView, mParams);
         mView.setOnTouchListener(AuthenticationCheck.this);
+        mSavedView = mView;
+        mWindowManager.addView(mView, mParams);
+
 
         Log.v("TEST","LOG 4");
 
         gestureListener = new GestureListener() {
             @Override
             public void onSwipeRight() {
-                super.onSwipeRight();
+                Log.v("TEST","ENTERED ON SWIPE RIGHT");
+                ;
             }
         };
         mSwitch = false;
@@ -82,14 +84,12 @@ public class AuthenticationCheck extends IntentService implements View.OnTouchLi
         Log.v("TEST","GESTURE DETECTOR CREATED");
 
 
-
-
         return START_REDELIVER_INTENT;
     }
 
     public boolean onTouch(View v, MotionEvent event) {
         Log.v("TEST","ENTERED ONTOUCH");
-        return gestureDetector.onTouchEvent(event);
+        return false;
     }
 
     public boolean onTouchEvent(MotionEvent event) {
@@ -105,47 +105,11 @@ public class AuthenticationCheck extends IntentService implements View.OnTouchLi
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                if (!mSwitch) {
-                    //INITIALISATION
-                    if (mVelocityTracker == null) {
-                        mVelocityTracker = VelocityTracker.obtain();
-                    } else {
-                        mVelocityTracker.clear();
-                    }
-                    //Creation or reinitialisation du List
-                    if (mPointsList == null) {
-                        mPointsList = new ArrayList<>();
-                    } else {
-                        mPointsList.clear();
-                    }
-                    //Creation or reinitialisation du StructMotionElemts
-                    if (mStructMotionElemts == null) {
-                        mStructMotionElemts = new StructMotionElemts();
-                    } else {
-                        mStructMotionElemts.clear();
-                    }
-                    //Creation or reinitialisation du StructMotionFeatures
-                    if (mStructMotionFeatures == null) {
-                        mStructMotionFeatures = new StructMotionFeatures();
-                    } else {
-                        mStructMotionFeatures.clear();
-                    }
-                    mSwitch = true;
-                }
-                if(mSwitch) {
-                    mStructMotionElemts.compute(event, mPointsList, mVelocityTracker);
-                }
-                break;
-
-            case MotionEvent.ACTION_UP:
-                if(mSwitch) {
-                    mStructMotionFeatures.compute(mPointsList);
-                    mSwitch = false;
-                }
+                Log.v("TEST","ACTION MOVE");
                 break;
         }
         //Used at the end of a move to trigger OnFling method
-        return gestureDetector.onTouchEvent(event);
+        return false;
     }
 
     @Nullable
@@ -167,5 +131,7 @@ public class AuthenticationCheck extends IntentService implements View.OnTouchLi
         }*/
         Toast.makeText(this,"Authentication service stopped", Toast.LENGTH_SHORT).show();
         super.onDestroy();
+        //mWindowManager.removeView(mSavedView);
+
     }
 }
