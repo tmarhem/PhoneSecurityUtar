@@ -2,6 +2,7 @@ package my.utar.phonesecurat;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.sql.Struct;
 import java.text.DecimalFormat;
@@ -28,11 +29,11 @@ public class StructMotionFeatures implements Parcelable {
 
     @Override
     public StructMotionFeatures clone() {
-        try {
+        /*try {
             super.clone();
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
-        }
+        }*/
         StructMotionFeatures mClone = new StructMotionFeatures();
         mClone.setMotionAbsLength(this.getMotionAbsLength());
         mClone.setMotionLength(this.getMotionLength());
@@ -175,19 +176,24 @@ public class StructMotionFeatures implements Parcelable {
             }
             //motionDuration & motionAbsLength
             //Retrieving
-            mStructMotionElemts = mList.get(0);
-            firstPosX = mStructMotionElemts.getPosX();
-            firstPosY = mStructMotionElemts.getPosY();
-            startTime = mStructMotionElemts.getTime();
-            mStructMotionElemts = mList.get(mList.size() - 1);
-            lastPosX = mStructMotionElemts.getPosX();
-            lastPosY = mStructMotionElemts.getPosY();
-            endTime = mStructMotionElemts.getTime();
+            //TODO DEBUG
+            if(!mList.isEmpty()) {
+                mStructMotionElemts = mList.get(0);
+                firstPosX = mStructMotionElemts.getPosX();
+                firstPosY = mStructMotionElemts.getPosY();
+                startTime = mStructMotionElemts.getTime();
+                mStructMotionElemts = mList.get(mList.size() - 1);
+                lastPosX = mStructMotionElemts.getPosX();
+                lastPosY = mStructMotionElemts.getPosY();
+                endTime = mStructMotionElemts.getTime();
 
-            //Computing
-            motionDuration = endTime - startTime;
-            motionAbsLength = sqrt(pow((lastPosX - firstPosX), 2) + pow((lastPosY - firstPosY), 2));
-
+                //Computing
+                motionDuration = endTime - startTime;
+                motionAbsLength = sqrt(pow((lastPosX - firstPosX), 2) + pow((lastPosY - firstPosY), 2));
+            }
+            else{
+                Log.v("ERROR","MLIST RETURNED EMPTY, COMPUTING COULD NOT COMPLETE");
+            }
         }
     }
 

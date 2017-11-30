@@ -39,6 +39,12 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
     private final static int NUMBER_OF_INTENT = 10;
     private boolean mSwitch;
 
+    TextView mAbs;
+    TextView length;
+    TextView duration;
+    TextView speed;
+    TextView pressure;
+
     /**
      * Method launched on the creation of the activity
      * @param savedInstanceState Bundle that saves information in case of sudden shutdown of the app
@@ -100,6 +106,20 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
             }
         });
 
+        mAbs = findViewById(R.id.absLengthMatchResult);
+        length = findViewById(R.id.lengthMatchResult);
+        duration = findViewById(R.id.durationMatchResult);
+        speed = findViewById(R.id.speedMatchResult);
+        pressure = findViewById(R.id.pressureMatchResult);
+
+    }
+
+    public void setPendingText(){
+        mAbs.setText("   pending...");
+        length.setText("    pending...");
+        duration.setText("   pending...");
+        speed.setText("   pending...");
+        pressure.setText("   pending...");
     }
 
     /**
@@ -166,16 +186,28 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
  */
             case MotionEvent.ACTION_DOWN:
 
-                TextView mAbs = findViewById(R.id.absLengthMatchResult);
-                TextView length = findViewById(R.id.lengthMatchResult);
-                TextView duration = findViewById(R.id.durationMatchResult);
-                TextView speed = findViewById(R.id.speedMatchResult);
-                TextView pressure = findViewById(R.id.pressureMatchResult);
+
+                setPendingText();
+                /*TextView mAbs;
+                TextView length;
+                TextView duration;
+                TextView speed;
+                TextView pressure;
+
+                mAbs = findViewById(R.id.absLengthMatchResult);
+                length = findViewById(R.id.lengthMatchResult);
+                duration = findViewById(R.id.durationMatchResult);
+                speed = findViewById(R.id.speedMatchResult);
+                pressure = findViewById(R.id.pressureMatchResult);
+
+
                 mAbs.setText("   pending...");
                 length.setText("    pending...");
                 duration.setText("   pending...");
                 speed.setText("   pending...");
-                pressure.setText("   pending...");
+                pressure.setText("   pending...");*/
+
+
                 break;
 
             case MotionEvent.ACTION_MOVE:
@@ -215,6 +247,7 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
 
             case MotionEvent.ACTION_UP:
                 if(mSwitch) {
+                    //TODO DEBUG
                     mStructMotionFeatures.compute(mPointsList);
                     //DISPLAY
                     mMotionInfo.setText(mStructMotionFeatures.toString());

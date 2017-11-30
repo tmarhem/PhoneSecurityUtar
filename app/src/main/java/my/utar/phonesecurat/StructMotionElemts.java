@@ -1,6 +1,7 @@
 package my.utar.phonesecurat;
 
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.os.Parcel;
@@ -153,6 +154,7 @@ public class StructMotionElemts implements Parcelable{
         this.setPosY(event.getY());
         this.setPressure(event.getPressure());
         this.setTime(SystemClock.uptimeMillis());
+        Log.v("TEST", "Size: " + Float.toString(event.getSize()));
         // Insert object in List
         mList.add(this.clone());
     }
@@ -168,12 +170,13 @@ public class StructMotionElemts implements Parcelable{
                 "Pressure : " + nf.format(this.getPressure());
     }
 
+    @Override
     public StructMotionElemts clone() {
-        try {
+        /*try {
             super.clone();
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
-        }
+        }*/
         return new StructMotionElemts(this.posX, this.posY, this.time, this.pressure, this.speed, this.size);
     }
 
