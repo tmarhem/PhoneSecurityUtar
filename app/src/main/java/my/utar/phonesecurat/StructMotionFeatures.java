@@ -20,6 +20,8 @@ public class StructMotionFeatures {
     private long motionDuration;
     private double motionAvgSpeed;
     private double motionAvgPressure;
+    float firstPosX, lastPosX, firstPosY, lastPosY;
+
 
     @Override
     public StructMotionFeatures clone() {
@@ -39,6 +41,27 @@ public class StructMotionFeatures {
         motionAvgSpeed = 0;
         motionAvgSpeed = 0;
         motionAvgPressure = 0;
+        firstPosX = 0;
+        lastPosX =0;
+        firstPosY = 0;
+        lastPosY = 0;
+
+    }
+
+    public float getFirstPosX() {
+        return firstPosX;
+    }
+
+    public float getLastPosX() {
+        return lastPosX;
+    }
+
+    public float getFirstPosY() {
+        return firstPosY;
+    }
+
+    public float getLastPosY() {
+        return lastPosY;
     }
 
     public double getMotionAbsLength() {
@@ -88,6 +111,10 @@ public class StructMotionFeatures {
         motionAvgSpeed = 0;
         motionAvgSpeed = 0;
         motionAvgPressure = 0;
+        firstPosX = 0;
+        lastPosX =0;
+        firstPosY = 0;
+        lastPosY = 0;
     }
 
     /**
@@ -105,7 +132,6 @@ public class StructMotionFeatures {
         float prevPosY;
         long startTime;
         long endTime;
-        float firstPosX, lastPosX, firstPosY, lastPosY;
 
         StructMotionElemts mStructMotionElemts;
 
@@ -154,7 +180,6 @@ public class StructMotionFeatures {
                 lastPosY = mStructMotionElemts.getPosY();
                 endTime = mStructMotionElemts.getTime();
 
-                //Computing
                 motionDuration = endTime - startTime;
                 motionAbsLength = sqrt(pow((lastPosX - firstPosX), 2) + pow((lastPosY - firstPosY), 2));
             } else {

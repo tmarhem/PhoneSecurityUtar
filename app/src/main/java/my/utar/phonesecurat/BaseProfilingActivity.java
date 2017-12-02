@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.lang.Math;
 
 public class BaseProfilingActivity extends Activity implements View.OnTouchListener {
 
@@ -36,7 +37,7 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
     private GestureDetector gestureDetector;
     private int counterSwipeRight, counterSwipeLeft, counterScrollUp, counterScrollDown;
     private final static int NUMBER_OF_INTENT = 10;
-    private boolean mSwitch, switchScrollUp, switchScrollDown;
+    private boolean mSwitch, switchScrollUp, switchScrollDown, switchBlockSwipe;
     Button mBtnReset;
 
 
@@ -60,6 +61,7 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
         mSwitch = false;
         switchScrollUp = false;
         switchScrollDown = false;
+        switchBlockSwipe = false;
 
         //TODO Retrieve saved models, if none, create these new ones
         mSwipeRightModel = new UserModel();
@@ -183,41 +185,34 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
             float distanceX = e2.getX() - e1.getX();
             float distanceY = e2.getY() - e1.getY();
-            if (Math.abs(distanceX) > Math.abs(distanceY) && Math.abs(distanceX) > SWIPE_DISTANCE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
-                if (distanceX > 0)
-                    onSwipeRight();
-                else
-                    onSwipeLeft();
-                return true;
+            if(!switchBlockSwipe) {
+                if (Math.abs(distanceX) > Math.abs(distanceY) && Math.abs(distanceX) > SWIPE_DISTANCE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                    if (distanceX > 0)
+                        onSwipeRight();
+                    else
+                        onSwipeLeft();
+                    return true;
+                }
             }
             return false;
         }
 
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            /*switch(e1.getActionMasked()){
-                case MotionEvent.ACTION_DOWN:
-                    Log.v("TEST", "ACTION DOWN");
-                case MotionEvent.ACTION_MOVE:
-                    Log.v("TEST", "ACTION MOVE");
-                case MotionEvent.ACTION_UP:
-                    Log.v("TEST", "ACTION UP");
-            }*/
-                float distanceY = e2.getY() - e1.getY();
-                if (Math.abs(velocityY) > SCROLL_VELOCITY_THRESHOLD) {
-                    if (distanceY < 0) {
-                        Log.v("TEST", "SCROLL UP TRIGGERED");
-                        switchScrollUp = true;
-                        //onScrollUp();
-                    }
-                    else if (distanceY > 0){
-                        Log.v("TEST", "SCROLL DOWN TRIGGERED");
-                        switchScrollDown = true;
-                        //onScrollDown();
-                    }
-                    return true;
+
+            float distanceY = e2.getY() - e1.getY();
+
+            if (Math.abs(velocityY) > SCROLL_VELOCITY_THRESHOLD) {
+                if (distanceY < 0) {
+                    Log.v("TEST", "SCROLL UP TRIGGERED");
+                    switchScrollUp = true;
+                } else if (distanceY > 0) {
+                    Log.v("TEST", "SCROLL DOWN TRIGGERED");
+                    switchScrollDown = true;
                 }
-                return false;
+                return true;
+            }
+            return false;
         }
     }
 
@@ -291,14 +286,27 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
                     mStructMotionFeatures.compute(mPointsList);
                     mAvgValuesDisplay.setText(mStructMotionFeatures.toString());
                     mSwitch = false;
+                    switchBlockSwipe = false;
 
-                    if(switchScrollUp){
+                    float distanceY = mStructMotionFeatures.getLastPosY() - mStructMotionFeatures.getFirstPosY();
+                    float distanceX = mStructMotionFeatures.getLastPosX() - mStructMotionFeatures.getFirstPosX();
+                    double angle = Math.toDegrees(Math.atan(distanceY / distanceX));
+
+                    if (switchScrollUp && !((angle > -50.0) && (angle < 50.0))) {
                         switchScrollUp = false;
+                        switchBlockSwipe = true;
                         onScrollUp();
-                    } else if (switchScrollDown){
+                    }
+
+
+                    if (switchScrollDown && !((angle > -50.0) && (angle < 50.0))) {
                         switchScrollDown = false;
+                        switchBlockSwipe = true;
                         onScrollDown();
                     }
+
+                    switchScrollDown = false;
+                    switchScrollUp = false;
                 }
                 break;
         }
