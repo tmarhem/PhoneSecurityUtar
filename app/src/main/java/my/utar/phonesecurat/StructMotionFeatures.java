@@ -1,16 +1,10 @@
 package my.utar.phonesecurat;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.Log;
-
-import java.sql.Struct;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
-
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
@@ -20,7 +14,7 @@ import static java.lang.Math.sqrt;
  * Created by Thibault on 10/10/2017.
  */
 
-public class StructMotionFeatures implements Parcelable {
+public class StructMotionFeatures {
     private double motionAbsLength;
     private long motionLength;
     private long motionDuration;
@@ -29,11 +23,6 @@ public class StructMotionFeatures implements Parcelable {
 
     @Override
     public StructMotionFeatures clone() {
-        /*try {
-            super.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }*/
         StructMotionFeatures mClone = new StructMotionFeatures();
         mClone.setMotionAbsLength(this.getMotionAbsLength());
         mClone.setMotionLength(this.getMotionLength());
@@ -41,26 +30,6 @@ public class StructMotionFeatures implements Parcelable {
         mClone.setMotionAvgSpeed(this.getMotionAvgSpeed());
         mClone.setMotionAvgPressure(this.getMotionAvgPressure());
         return mClone;
-    }
-
-    public static final Parcelable.Creator<StructMotionFeatures> CREATOR = new Parcelable.Creator<StructMotionFeatures>() {
-        @Override
-        public StructMotionFeatures createFromParcel(Parcel source) {
-            return new StructMotionFeatures(source);
-        }
-
-        @Override
-        public StructMotionFeatures[] newArray(int size) {
-            return new StructMotionFeatures[size];
-        }
-    };
-
-    public StructMotionFeatures(Parcel in) {
-        motionAbsLength = in.readDouble();
-        motionLength = in.readLong();
-        motionDuration = in.readLong();
-        motionAvgSpeed = in.readDouble();
-        motionAvgPressure = in.readDouble();
     }
 
     public StructMotionFeatures() {
@@ -141,7 +110,7 @@ public class StructMotionFeatures implements Parcelable {
         StructMotionElemts mStructMotionElemts;
 
         //Initialisation bourrine de nowPos
-        if (mList.size()>0) {
+        if (mList.size() > 0) {
 
             mStructMotionElemts = mList.get(0);
             nowPosX = mStructMotionElemts.getPosX();
@@ -174,10 +143,8 @@ public class StructMotionFeatures implements Parcelable {
                 motionAvgSpeed = 0;
                 motionAvgPressure = 0;
             }
-            //motionDuration & motionAbsLength
-            //Retrieving
-            //TODO DEBUG
-            if(!mList.isEmpty()) {
+
+            if (!mList.isEmpty()) {
                 mStructMotionElemts = mList.get(0);
                 firstPosX = mStructMotionElemts.getPosX();
                 firstPosY = mStructMotionElemts.getPosY();
@@ -190,27 +157,10 @@ public class StructMotionFeatures implements Parcelable {
                 //Computing
                 motionDuration = endTime - startTime;
                 motionAbsLength = sqrt(pow((lastPosX - firstPosX), 2) + pow((lastPosY - firstPosY), 2));
-            }
-            else{
-                Log.v("ERROR","MLIST RETURNED EMPTY, COMPUTING COULD NOT COMPLETE");
+            } else {
+                Log.v("ERROR", "MLIST RETURNED EMPTY, COMPUTING COULD NOT COMPLETE");
             }
         }
-    }
-
-    @Override
-    public int describeContents() {
-        //Return 0 as our object doesn't have FileDescriptor objects
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        //We add object the same order they're declared
-        dest.writeDouble(motionAbsLength);
-        dest.writeLong(motionLength);
-        dest.writeLong(motionDuration);
-        dest.writeDouble(motionAvgSpeed);
-        dest.writeDouble(motionAvgPressure);
     }
 
     @Override
