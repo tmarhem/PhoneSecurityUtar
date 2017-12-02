@@ -9,6 +9,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 public class UserModel implements Parcelable {
     private double avgAbsLength;
     private long avgLength;
@@ -67,7 +69,7 @@ public class UserModel implements Parcelable {
      * Compute the model out of the moves list
      * @param mMotionList
      */
-    public void compute(StructMotionFeaturesList mMotionList) {
+    public void compute(ArrayList<StructMotionFeatures> mMotionList) {
         Log.v("TEST","Entered compute");
 
         int i = 0;

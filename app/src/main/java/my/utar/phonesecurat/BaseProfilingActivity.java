@@ -1,16 +1,14 @@
 package my.utar.phonesecurat;
 /**
- * Principal Activity
+ * Learning phase Activity
  * Used to retrieve 10 right swipes them compute the model
  * After that the next swipes are compared to the model
- * TEST MASTER BRANCH
  */
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -20,6 +18,8 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class BaseProfilingActivity extends Activity implements View.OnTouchListener {
@@ -30,14 +30,16 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
     private TextView mSpeedDisplay;
     private TextView mTextCounter;
     private ArrayList<StructMotionElemts> mPointsList;
-    private StructMotionFeaturesList mModelList;
-    private UserModel mRightSwipeModel;
+    private ArrayList<StructMotionFeatures> mRightSwipeList, mLeftSwipeList, mScrollUpList, mScrollDownList;
+    private UserModel mRightSwipeModel, mLeftSwipeModel, mScrollUpModel, mScrollDownModel;
     private StructMotionElemts mStructMotionElemts;
     private StructMotionFeatures mStructMotionFeatures;
     private GestureDetector gestureDetector;
-    private int rCounter;
+    private int counterSwipeRight, counterSwipeLeft, counterScrollUp, counterScrollDown;
     private final static int NUMBER_OF_INTENT = 10;
     private boolean mSwitch;
+    Button mBtnReset;
+
 
     TextView mAbs;
     TextView length;
@@ -56,22 +58,24 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
          * Retrieving and initializing all what is necessary in the Activity
          */
         super.onCreate(savedInstanceState);
-        Context context = this;
         setContentView(R.layout.activity_base_profiling);
         mSwitch = false;
-        Intent i = getIntent();
-        Bundle b = getIntent().getExtras();
-        //mRightSwipeModel = b.getParcelable("mRightSwipeModel");
+
         mRightSwipeModel = new UserModel();
-        mModelList = new StructMotionFeaturesList();
-        rCounter = NUMBER_OF_INTENT - mModelList.size();
+        mRightSwipeList = new StructMotionFeaturesList();
+        counterSwipeRight = NUMBER_OF_INTENT - mRightSwipeList.size();
         mSpeedDisplay = findViewById(R.id.speedDisplay);
         mMotionInfo = findViewById(R.id.motionInfo);
-        mTextCounter = findViewById(R.id.textCounter);
-        mTextCounter.setText(Integer.toString(rCounter));
-        Button mBtnReset;
+        mTextCounter = findViewById(R.id.counterSwipeRight);
+        mTextCounter.setText(Integer.toString(counterSwipeRight));
         mBtnReset = findViewById(R.id.btnReset);
-        gestureDetector = new GestureDetector(context, new GestureListener());
+        gestureDetector = new GestureDetector(mContext, new GestureListener());
+        mAbs = findViewById(R.id.absLengthMatchResult);
+        length = findViewById(R.id.lengthMatchResult);
+        duration = findViewById(R.id.durationMatchResult);
+        speed = findViewById(R.id.speedMatchResult);
+        pressure = findViewById(R.id.pressureMatchResult);
+
         mBtnReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -86,10 +90,10 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
                             public void onClick(DialogInterface dialog, int id) {
                                 // if this button is clicked, close
                                 // current activity
-                                mModelList.clear();
+                                mRightSwipeList.clear();
                                 mRightSwipeModel.clear();
-                                rCounter = 10;
-                                mTextCounter.setText(Integer.toString(rCounter));
+                                counterSwipeRight = 10;
+                                mTextCounter.setText(Integer.toString(counterSwipeRight));
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -106,14 +110,13 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
             }
         });
 
-        mAbs = findViewById(R.id.absLengthMatchResult);
-        length = findViewById(R.id.lengthMatchResult);
-        duration = findViewById(R.id.durationMatchResult);
-        speed = findViewById(R.id.speedMatchResult);
-        pressure = findViewById(R.id.pressureMatchResult);
+
 
     }
 
+    /**
+     * Display method
+     */
     public void setPendingText(){
         mAbs.setText("   pending...");
         length.setText("    pending...");
@@ -123,7 +126,7 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
     }
 
     /**
-     *Extending the existing class SimpleOnGestureListener to our need, customization of thresholds and recognized movements
+     *Extending the existing class SimpleOnGestureListener to our needs, customization of thresholds and recognized movements
      */
     private class GestureListener extends SimpleOnGestureListener {
 
@@ -138,11 +141,11 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
         /**
          * Overriding existing method on SimpleOnGestureListener that triggers on a Swipe
          * Computing speed and direction to launch SwipeRight() or SwipeLeft()
-         * @param e1
-         * @param e2
-         * @param velocityX
-         * @param velocityY
-         * @return
+         * @param e1 MotionEvent
+         * @param e2 Motion Event
+         * @param velocityX X axis instant Velocity
+         * @param velocityY Y axis instant velocity
+         * @return boolean true if movement considered onFling after checking thresholds
          */
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
@@ -166,7 +169,7 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
      * @return
      */
     public boolean onTouch(View v, MotionEvent event) {
-        return gestureDetector.onTouchEvent(event);
+        return false;
     }
 
 
@@ -185,29 +188,7 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
  * We focus on ACTION_MOVE because on ACTION_DOWN / UP The speed can be 0 and mess the average
  */
             case MotionEvent.ACTION_DOWN:
-
-
                 setPendingText();
-                /*TextView mAbs;
-                TextView length;
-                TextView duration;
-                TextView speed;
-                TextView pressure;
-
-                mAbs = findViewById(R.id.absLengthMatchResult);
-                length = findViewById(R.id.lengthMatchResult);
-                duration = findViewById(R.id.durationMatchResult);
-                speed = findViewById(R.id.speedMatchResult);
-                pressure = findViewById(R.id.pressureMatchResult);
-
-
-                mAbs.setText("   pending...");
-                length.setText("    pending...");
-                duration.setText("   pending...");
-                speed.setText("   pending...");
-                pressure.setText("   pending...");*/
-
-
                 break;
 
             case MotionEvent.ACTION_MOVE:
@@ -269,14 +250,14 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
      */
     public void onSwipeRight() {
 
-        if (rCounter >= 1) {
+        if (counterSwipeRight >= 1) {
 
-            mModelList.add(mStructMotionFeatures.clone());
-            rCounter = NUMBER_OF_INTENT - mModelList.size();
-            if (rCounter == 0 && mRightSwipeModel.getIsComputed()==0) {
-                mRightSwipeModel.compute(mModelList);
+            mRightSwipeList.add(mStructMotionFeatures.clone());
+            counterSwipeRight = NUMBER_OF_INTENT - mRightSwipeList.size();
+            if (counterSwipeRight == 0 && mRightSwipeModel.getIsComputed()==0) {
+                mRightSwipeModel.compute(mRightSwipeList);
             }
-            mTextCounter.setText(String.format("%d", rCounter));
+            mTextCounter.setText(String.format("%d", counterSwipeRight));
 
         }
         else {

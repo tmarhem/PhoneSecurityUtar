@@ -24,21 +24,17 @@
         android:id="@+id/speedDisplay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
+        android:layout_alignStart="@+id/speedDisplayTitle"
         android:layout_below="@+id/speedDisplayTitle"
-        android:layout_marginStart="14dp"
-        android:text="...............">
-    </TextView>
+        android:text="..............."></TextView>
 
     <TextView
         android:id="@+id/motionInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/motionInfoTitle"
-        android:layout_marginEnd="14dp"
-        android:layout_toStartOf="@+id/textCounter"
-        android:text="..............">
-    </TextView>
+        android:layout_toEndOf="@+id/LengthMatchTitle"
+        android:text=".............."></TextView>
 
     <TextView
         android:id="@+id/motionInfoTitle"
@@ -53,14 +49,12 @@
     </TextView>
 
     <TextView
-        android:id="@+id/textCounter"
+        android:id="@+id/counterSwipeRight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="25dp"
-        android:layout_marginEnd="16dp"
-        android:text="RemainingSwipes"/>
+        android:layout_marginLeft="185dp"
+        android:layout_marginTop="350dp"
+        android:text="SR" />
 
     <Button
         android:id="@+id/btnReset"
@@ -153,6 +147,38 @@
         android:layout_below="@+id/speedMatchResult"
         android:layout_toEndOf="@+id/PressureMatchTitle"
         android:text="  pending..."/>
+
+    <TextView
+        android:id="@+id/counterScrollUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="300dp"
+        android:text="SU" />
+
+    <TextView
+        android:id="@+id/counterSwipeLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="false"
+        android:layout_centerHorizontal="false"
+        android:layout_centerInParent="false"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="350dp"
+        android:autoText="false"
+        android:clickable="false"
+        android:contextClickable="false"
+        android:cursorVisible="false"
+        android:defaultFocusHighlightEnabled="false"
+        android:text="SL" />
+
+    <TextView
+        android:id="@+id/counterScrollDown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="400dp"
+        android:text="SD" />
 
 
 </RelativeLayout>

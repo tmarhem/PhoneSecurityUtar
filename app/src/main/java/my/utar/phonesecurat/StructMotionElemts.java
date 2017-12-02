@@ -23,42 +23,13 @@ import static java.lang.Math.sqrt;
  * Created by Thibault on 9/21/2017.
  */
 
-public class StructMotionElemts implements Parcelable{
+public class StructMotionElemts {
     private float posX;
     private float posY;
     private long time;
     private float pressure;
     private double speed;
     private float size;
-
-    /**
-     * Required for PARCELABLE
-     */
-    public static final Parcelable.Creator<StructMotionElemts> CREATOR = new Parcelable.Creator<StructMotionElemts>(){
-        @Override
-        public StructMotionElemts createFromParcel(Parcel source){
-            return new StructMotionElemts(source);
-        }
-
-        @Override
-        public StructMotionElemts[] newArray(int size){
-            return new StructMotionElemts[size];
-        }
-    };
-
-    /**
-     * Required for PARCELABLE
-     * @param in
-     */
-    public StructMotionElemts(Parcel in){
-        posX = in.readFloat();
-        posY = in.readFloat();
-        time = in.readLong();
-        pressure = in.readFloat();
-        speed = in.readDouble();
-        size = in.readFloat();
-    }
-
 
     protected StructMotionElemts() {
         posX = 0;
@@ -143,7 +114,6 @@ public class StructMotionElemts implements Parcelable{
      * @param mVelocityTracker related VelocityTracker
      */
     public void compute(MotionEvent event, ArrayList<StructMotionElemts> mList, VelocityTracker mVelocityTracker) {
-        // Compute X, Y, time, pressure & instantSpeed
 
         mVelocityTracker.addMovement(event);
         mVelocityTracker.computeCurrentVelocity(1000);
@@ -154,8 +124,6 @@ public class StructMotionElemts implements Parcelable{
         this.setPosY(event.getY());
         this.setPressure(event.getPressure());
         this.setTime(SystemClock.uptimeMillis());
-        Log.v("TEST", "Size: " + Float.toString(event.getSize()));
-        // Insert object in List
         mList.add(this.clone());
     }
 
@@ -172,35 +140,8 @@ public class StructMotionElemts implements Parcelable{
 
     @Override
     public StructMotionElemts clone() {
-        /*try {
-            super.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }*/
         return new StructMotionElemts(this.posX, this.posY, this.time, this.pressure, this.speed, this.size);
     }
 
-    /**
-     * Required for PARCELABLE
-     * @return
-     */
-    @Override
-    public int describeContents() {
-        //Return 0 as our object dosen't have FileDescriptor
-        return 0;
-    }
 
-    /**
-     * Required for PARCELABLE
-     */
-    @Override
-    public void writeToParcel(Parcel dest, int flags){
-        //We add object the same order they're declared
-        dest.writeFloat(posX);
-        dest.writeFloat(posY);
-        dest.writeLong(time);
-        dest.writeFloat(pressure);
-        dest.writeDouble(speed);
-        dest.writeFloat(size);
-    }
 }
