@@ -5,9 +5,15 @@ package my.utar.phonesecurat;
  * Created by Thibault on 10/17/2017.
  */
 
+import android.content.SharedPreferences;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class UserModel implements Parcelable {
     private double avgAbsLength;

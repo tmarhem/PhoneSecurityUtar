@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -18,7 +19,7 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
+import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.lang.Math;
 
@@ -63,21 +64,63 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
         switchScrollDown = false;
         switchBlockSwipe = false;
 
-        //TODO Retrieve saved models, if none, create these new ones
-        mSwipeRightModel = new UserModel();
-        mSwipeLeftModel = new UserModel();
-        mScrollUpModel = new UserModel();
-        mScrollDownModel = new UserModel();
-
         mSwipeRightList = new ArrayList<>();
         mSwipeLeftList = new ArrayList<>();
         mScrollUpList = new ArrayList<>();
         mScrollDownList = new ArrayList<>();
 
-        counterSwipeRight = NUMBER_OF_INTENT - mSwipeRightList.size();
-        counterSwipeLeft = NUMBER_OF_INTENT - mSwipeLeftList.size();
-        counterScrollUp = NUMBER_OF_INTENT - mScrollUpList.size();
-        counterScrollDown = NUMBER_OF_INTENT - mScrollDownList.size();
+        final SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
+        Gson gsonLoad = new Gson();
+        String mSRM = mPrefs.getString("mSwipeRightModel","");
+        String mSLM = mPrefs.getString("mSwipeLeftModel", "");
+        String mSUM = mPrefs.getString("mScrollUpModel", "");
+        String mSDM = mPrefs.getString("mScrollDownModel", "");
+        mSwipeRightModel = gsonLoad.fromJson(mSRM, UserModel.class);
+        mSwipeLeftModel = gsonLoad.fromJson(mSLM, UserModel.class);
+        mScrollUpModel = gsonLoad.fromJson(mSUM, UserModel.class);
+        mScrollDownModel = gsonLoad.fromJson(mSDM, UserModel.class);
+
+
+        if(mSwipeRightModel != null){
+            Log.v("TEST", "Loading mSRM");
+            counterSwipeRight = 0;
+            Log.v("TEST", "mSRM LOADED");
+
+        }
+        else{
+            mSwipeRightModel = new UserModel();
+            counterSwipeRight = NUMBER_OF_INTENT - mSwipeRightList.size();
+            Log.v("TEST", "mSRM not found");
+
+        }
+
+        if(mSwipeLeftModel != null){
+            counterSwipeLeft = 0;
+        }
+        else{
+            mSwipeLeftModel = new UserModel();
+            counterSwipeLeft = NUMBER_OF_INTENT - mSwipeLeftList.size();
+        }
+
+        if(mScrollUpModel != null){
+            counterScrollUp = 0;
+        }
+        else{
+            mScrollUpModel = new UserModel();
+            counterScrollUp = NUMBER_OF_INTENT - mScrollUpList.size();
+        }
+
+        if(mScrollDownModel != null){
+            counterScrollDown = 0;
+        }
+        else{
+            mScrollDownModel = new UserModel();
+            counterScrollDown = NUMBER_OF_INTENT - mScrollDownList.size();
+        }
+
+        mSwipeLeftModel = new UserModel();
+        mScrollUpModel = new UserModel();
+        mScrollDownModel = new UserModel();
 
         mIstantValuesDisplay = findViewById(R.id.instantValuesDisplay);
         mAvgValuesDisplay = findViewById(R.id.avgValuesDispay);
@@ -120,10 +163,15 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
                                 mScrollUpModel.clear();
                                 mScrollDownModel.clear();
 
-                                counterSwipeRight = 10;
-                                counterSwipeLeft = 10;
-                                counterScrollUp = 10;
-                                counterScrollDown = 10;
+                                SharedPreferences.Editor prefsEditor = mPrefs.edit();
+                                prefsEditor.clear();
+                                prefsEditor.apply();
+
+
+                                counterSwipeRight = NUMBER_OF_INTENT - mSwipeRightList.size();
+                                counterSwipeLeft = NUMBER_OF_INTENT - mSwipeLeftList.size();
+                                counterScrollUp = NUMBER_OF_INTENT - mScrollUpList.size();
+                                counterScrollDown = NUMBER_OF_INTENT - mScrollDownList.size();
 
                                 mTextCounterSwipeRight.setText(Integer.toString(counterSwipeRight));
                                 mTextCounterSwipeLeft.setText(Integer.toString(counterSwipeLeft));
@@ -274,11 +322,9 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
                     }
                     mSwitch = true;
                 }
-                if (mSwitch) {
                     mStructMotionElemts.compute(event, mPointsList, mVelocityTracker);
                     //DISPLAY
                     mIstantValuesDisplay.setText(mStructMotionElemts.toString());
-                }
                 break;
 
             case MotionEvent.ACTION_UP:
@@ -323,8 +369,14 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
         if (counterSwipeRight >= 1) {
             mSwipeRightList.add(mStructMotionFeatures.clone());
             counterSwipeRight = NUMBER_OF_INTENT - mSwipeRightList.size();
-            if (counterSwipeRight == 0 && mSwipeRightModel.getIsComputed() == 0) {
+            if (counterSwipeRight == 0 && mSwipeRightModel.getIsComputed()==0) {
                 mSwipeRightModel.compute(mSwipeRightList);
+                SharedPreferences  mPrefs = getPreferences(MODE_PRIVATE);
+                SharedPreferences.Editor prefsEditor = mPrefs.edit();
+                Gson gsonSave = new Gson();
+                String json = gsonSave.toJson(mSwipeRightModel);
+                prefsEditor.putString("mSwipeRightModel", json);
+                prefsEditor.apply();
             }
             mTextCounterSwipeRight.setText(String.format("%d", counterSwipeRight));
         } else {
@@ -338,6 +390,12 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
             counterSwipeLeft = NUMBER_OF_INTENT - mSwipeLeftList.size();
             if (counterSwipeLeft == 0 && mSwipeLeftModel.getIsComputed() == 0) {
                 mSwipeLeftModel.compute(mSwipeLeftList);
+                SharedPreferences  mPrefs = getPreferences(MODE_PRIVATE);
+                SharedPreferences.Editor prefsEditor = mPrefs.edit();
+                Gson gsonSave = new Gson();
+                String json = gsonSave.toJson(mSwipeLeftModel);
+                prefsEditor.putString("mSwipeLeftModel", json);
+                prefsEditor.apply();
             }
             mTextCounterSwipeLeft.setText(String.format("%d", counterSwipeLeft));
         } else {
@@ -351,6 +409,12 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
             counterScrollUp = NUMBER_OF_INTENT - mScrollUpList.size();
             if (counterScrollUp == 0 && mScrollUpModel.getIsComputed() == 0) {
                 mScrollUpModel.compute(mScrollUpList);
+                SharedPreferences  mPrefs = getPreferences(MODE_PRIVATE);
+                SharedPreferences.Editor prefsEditor = mPrefs.edit();
+                Gson gsonSave = new Gson();
+                String json = gsonSave.toJson(mScrollUpModel);
+                prefsEditor.putString("mScrollUpModel", json);
+                prefsEditor.apply();
             }
             mTextCounterScollUp.setText(String.format("%d", counterScrollUp));
         } else {
@@ -364,6 +428,12 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
             counterScrollDown = NUMBER_OF_INTENT - mScrollDownList.size();
             if (counterScrollDown == 0 && mScrollDownModel.getIsComputed() == 0) {
                 mScrollDownModel.compute(mScrollDownList);
+                SharedPreferences  mPrefs = getPreferences(MODE_PRIVATE);
+                SharedPreferences.Editor prefsEditor = mPrefs.edit();
+                Gson gsonSave = new Gson();
+                String json = gsonSave.toJson(mScrollDownModel);
+                prefsEditor.putString("mScrollDownModel", json);
+                prefsEditor.apply();
             }
             mTextCounterScrollDown.setText(String.format("%d", counterScrollDown));
         } else {
