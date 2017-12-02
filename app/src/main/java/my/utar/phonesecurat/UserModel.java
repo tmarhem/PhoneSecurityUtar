@@ -7,8 +7,6 @@ package my.utar.phonesecurat;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
-
 import java.util.ArrayList;
 
 public class UserModel implements Parcelable {
@@ -70,8 +68,6 @@ public class UserModel implements Parcelable {
      * @param mMotionList
      */
     public void compute(ArrayList<StructMotionFeatures> mMotionList) {
-        Log.v("TEST","Entered compute");
-
         int i = 0;
         double sumAbsLength = 0;
         long sumLength = 0;

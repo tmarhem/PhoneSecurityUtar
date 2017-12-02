@@ -10,40 +10,39 @@
     tools:layout_editor_absoluteY="81dp">
 
     <TextView
-        android:id="@+id/speedDisplayTitle"
+        android:id="@+id/instantValuesTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignStart="@+id/btnReset"
         android:layout_marginTop="7dp"
         android:gravity="center_horizontal"
-        android:text="INSTANT VALUES">
-    </TextView>
+        android:text="INSTANT VALUES"></TextView>
 
     <TextView
-        android:id="@+id/speedDisplay"
+        android:id="@+id/instantValuesDisplay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/speedDisplayTitle"
-        android:layout_below="@+id/speedDisplayTitle"
+        android:layout_alignStart="@+id/instantValuesTitle"
+        android:layout_below="@+id/instantValuesTitle"
         android:text="..............."></TextView>
 
     <TextView
-        android:id="@+id/motionInfo"
+        android:id="@+id/avgValuesDispay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/motionInfoTitle"
+        android:layout_below="@+id/avgValuesTitle"
         android:layout_toEndOf="@+id/LengthMatchTitle"
         android:text=".............."></TextView>
 
     <TextView
-        android:id="@+id/motionInfoTitle"
+        android:id="@+id/avgValuesTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/speedDisplayTitle"
-        android:layout_alignBottom="@+id/speedDisplayTitle"
+        android:layout_alignBaseline="@+id/instantValuesTitle"
+        android:layout_alignBottom="@+id/instantValuesTitle"
         android:layout_marginStart="53dp"
-        android:layout_toEndOf="@+id/speedDisplayTitle"
+        android:layout_toEndOf="@+id/instantValuesTitle"
         android:gravity="center_horizontal"
         android:text="MOTION VALUES">
     </TextView>

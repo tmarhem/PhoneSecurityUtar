@@ -18,28 +18,29 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
 import java.util.ArrayList;
 
 public class BaseProfilingActivity extends Activity implements View.OnTouchListener {
 
     private final Context mContext = this;
     private VelocityTracker mVelocityTracker;
-    private TextView mMotionInfo;
-    private TextView mSpeedDisplay;
+    private TextView mAvgValuesDisplay;
+    private TextView mIstantValuesDisplay;
     private TextView mTextCounterSwipeRight, mTextCounterSwipeLeft, mTextCounterScollUp, mTextCounterScrollDown;
     private ArrayList<StructMotionElemts> mPointsList;
-    private ArrayList<StructMotionFeatures> mRightSwipeList, mLeftSwipeList, mScrollUpList, mScrollDownList;
-    private UserModel mRightSwipeModel, mLeftSwipeModel, mScrollUpModel, mScrollDownModel;
+    private ArrayList<StructMotionFeatures> mSwipeRightList, mSwipeLeftList, mScrollUpList, mScrollDownList;
+    private UserModel mSwipeRightModel, mSwipeLeftModel, mScrollUpModel, mScrollDownModel;
     private StructMotionElemts mStructMotionElemts;
     private StructMotionFeatures mStructMotionFeatures;
     private GestureDetector gestureDetector;
     private int counterSwipeRight, counterSwipeLeft, counterScrollUp, counterScrollDown;
     private final static int NUMBER_OF_INTENT = 10;
-    private boolean mSwitch;
+    private boolean mSwitch, switchScrollUp, switchScrollDown;
     Button mBtnReset;
 
 
-    TextView mAbs;
+    TextView absLength;
     TextView length;
     TextView duration;
     TextView speed;
@@ -47,67 +48,97 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
 
     /**
      * Method launched on the creation of the activity
+     * Retrieves and initialize everything that is needed
+     *
      * @param savedInstanceState Bundle that saves information in case of sudden shutdown of the app
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        /**
-         * Retrieving and initializing all what is necessary in the Activity
-         */
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_profiling);
         mSwitch = false;
+        switchScrollUp = false;
+        switchScrollDown = false;
 
-        mRightSwipeModel = new UserModel();
-        mRightSwipeList = new ArrayList<>();
-        counterSwipeRight = NUMBER_OF_INTENT - mRightSwipeList.size();
-        mSpeedDisplay = findViewById(R.id.speedDisplay);
-        mMotionInfo = findViewById(R.id.motionInfo);
-        mTextCounterSwipeRight = findViewById(R.id.counterSwipeRight);
-        mTextCounterSwipeRight.setText(Integer.toString(counterSwipeRight));
-        mBtnReset = findViewById(R.id.btnReset);
-        gestureDetector = new GestureDetector(mContext, new GestureListener());
-        mAbs = findViewById(R.id.absLengthMatchResult);
+        //TODO Retrieve saved models, if none, create these new ones
+        mSwipeRightModel = new UserModel();
+        mSwipeLeftModel = new UserModel();
+        mScrollUpModel = new UserModel();
+        mScrollDownModel = new UserModel();
+
+        mSwipeRightList = new ArrayList<>();
+        mSwipeLeftList = new ArrayList<>();
+        mScrollUpList = new ArrayList<>();
+        mScrollDownList = new ArrayList<>();
+
+        counterSwipeRight = NUMBER_OF_INTENT - mSwipeRightList.size();
+        counterSwipeLeft = NUMBER_OF_INTENT - mSwipeLeftList.size();
+        counterScrollUp = NUMBER_OF_INTENT - mScrollUpList.size();
+        counterScrollDown = NUMBER_OF_INTENT - mScrollDownList.size();
+
+        mIstantValuesDisplay = findViewById(R.id.instantValuesDisplay);
+        mAvgValuesDisplay = findViewById(R.id.avgValuesDispay);
+        absLength = findViewById(R.id.absLengthMatchResult);
         length = findViewById(R.id.lengthMatchResult);
         duration = findViewById(R.id.durationMatchResult);
         speed = findViewById(R.id.speedMatchResult);
         pressure = findViewById(R.id.pressureMatchResult);
 
+        mTextCounterSwipeRight = findViewById(R.id.counterSwipeRight);
+        mTextCounterSwipeLeft = findViewById(R.id.counterSwipeLeft);
+        mTextCounterScollUp = findViewById(R.id.counterScrollUp);
+        mTextCounterScrollDown = findViewById(R.id.counterScrollDown);
+
+        mTextCounterSwipeRight.setText(Integer.toString(counterSwipeRight));
+        mTextCounterSwipeLeft.setText(Integer.toString(counterSwipeLeft));
+        mTextCounterScollUp.setText(Integer.toString(counterScrollUp));
+        mTextCounterScrollDown.setText(Integer.toString(counterScrollDown));
+
+        mBtnReset = findViewById(R.id.btnReset);
+        gestureDetector = new GestureDetector(mContext, new GestureListener());
+
         mBtnReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
-                // set title
                 alertDialogBuilder.setTitle("Warning");
-                // set dialog message
                 alertDialogBuilder
                         .setMessage("Are you sure you want to wipe the current saved model ?")
                         .setCancelable(true)
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                // if this button is clicked, close
-                                // current activity
-                                mRightSwipeList.clear();
-                                mRightSwipeModel.clear();
+                                mSwipeRightList.clear();
+                                mSwipeLeftList.clear();
+                                mScrollUpList.clear();
+                                mScrollDownList.clear();
+
+                                mSwipeRightModel.clear();
+                                mSwipeLeftModel.clear();
+                                mScrollUpModel.clear();
+                                mScrollDownModel.clear();
+
                                 counterSwipeRight = 10;
+                                counterSwipeLeft = 10;
+                                counterScrollUp = 10;
+                                counterScrollDown = 10;
+
                                 mTextCounterSwipeRight.setText(Integer.toString(counterSwipeRight));
+                                mTextCounterSwipeLeft.setText(Integer.toString(counterSwipeLeft));
+                                mTextCounterScollUp.setText(Integer.toString(counterScrollUp));
+                                mTextCounterScrollDown.setText(Integer.toString(counterScrollDown));
+
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                // if this button is clicked, just close
-                                // the dialog box and do nothing
                                 dialog.cancel();
                             }
                         });
-                // create alert dialog
                 AlertDialog alertDialog = alertDialogBuilder.create();
-                // show it
                 alertDialog.show();
             }
         });
-
 
 
     }
@@ -115,8 +146,8 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
     /**
      * Display method
      */
-    public void setPendingText(){
-        mAbs.setText("   pending...");
+    public void setPendingText() {
+        absLength.setText("   pending...");
         length.setText("    pending...");
         duration.setText("   pending...");
         speed.setText("   pending...");
@@ -124,12 +155,14 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
     }
 
     /**
-     *Extending the existing class SimpleOnGestureListener to our needs, customization of thresholds and recognized movements
+     * Extending the existing class SimpleOnGestureListener to our needs, customization of thresholds and recognized movements
      */
     private class GestureListener extends SimpleOnGestureListener {
 
         private static final int SWIPE_DISTANCE_THRESHOLD = 66;
         private static final int SWIPE_VELOCITY_THRESHOLD = 66;
+        private static final int SCROLL_VELOCITY_THRESHOLD = 35;
+
 
         @Override
         public boolean onDown(MotionEvent e) {
@@ -139,8 +172,9 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
         /**
          * Overriding existing method on SimpleOnGestureListener that triggers on a Swipe
          * Computing speed and direction to launch SwipeRight() or SwipeLeft()
-         * @param e1 MotionEvent
-         * @param e2 Motion Event
+         *
+         * @param e1        MotionEvent
+         * @param e2        Motion Event
          * @param velocityX X axis instant Velocity
          * @param velocityY Y axis instant velocity
          * @return boolean true if movement considered onFling after checking thresholds
@@ -161,22 +195,35 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
 
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            float distanceX = e2.getX() - e1.getX();
-            float distanceY = e2.getY() - e1.getY();
-            if (Math.abs(distanceX) > Math.abs(distanceY) && Math.abs(distanceX) > SWIPE_DISTANCE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
-                if (distanceY > 0)
-                    onScrollUp();
-                else
-                    onScrollDown();
-                return true;
-            }
-            return false;
+            /*switch(e1.getActionMasked()){
+                case MotionEvent.ACTION_DOWN:
+                    Log.v("TEST", "ACTION DOWN");
+                case MotionEvent.ACTION_MOVE:
+                    Log.v("TEST", "ACTION MOVE");
+                case MotionEvent.ACTION_UP:
+                    Log.v("TEST", "ACTION UP");
+            }*/
+                float distanceY = e2.getY() - e1.getY();
+                if (Math.abs(velocityY) > SCROLL_VELOCITY_THRESHOLD) {
+                    if (distanceY < 0) {
+                        Log.v("TEST", "SCROLL UP TRIGGERED");
+                        switchScrollUp = true;
+                        //onScrollUp();
+                    }
+                    else if (distanceY > 0){
+                        Log.v("TEST", "SCROLL DOWN TRIGGERED");
+                        switchScrollDown = true;
+                        //onScrollDown();
+                    }
+                    return true;
+                }
+                return false;
         }
-
     }
 
     /**
      * Method not used, forced to implement it when implementing View.OnTouchListener in the Activity
+     *
      * @param v
      * @param event
      * @return
@@ -186,9 +233,9 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
     }
 
 
-
     /**
      * Method that triggers when you touch the screen
+     *
      * @param event
      * @return
      */
@@ -232,125 +279,121 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
                     }
                     mSwitch = true;
                 }
-                if(mSwitch) {
+                if (mSwitch) {
                     mStructMotionElemts.compute(event, mPointsList, mVelocityTracker);
                     //DISPLAY
-                    mSpeedDisplay.setText(mStructMotionElemts.toString());
+                    mIstantValuesDisplay.setText(mStructMotionElemts.toString());
                 }
                 break;
 
             case MotionEvent.ACTION_UP:
-                if(mSwitch) {
-                    //TODO DEBUG
+                if (mSwitch) {
                     mStructMotionFeatures.compute(mPointsList);
-                    //DISPLAY
-                    mMotionInfo.setText(mStructMotionFeatures.toString());
+                    mAvgValuesDisplay.setText(mStructMotionFeatures.toString());
                     mSwitch = false;
+
+                    if(switchScrollUp){
+                        switchScrollUp = false;
+                        onScrollUp();
+                    } else if (switchScrollDown){
+                        switchScrollDown = false;
+                        onScrollDown();
+                    }
                 }
                 break;
         }
-        //Used at the end of a move to trigger OnFling method
+        //Used at the end of a motionEvent move to trigger OnFling method
         return gestureDetector.onTouchEvent(event);
     }
-    
+
     /**
-     * If rmovement is recognized as right swipe, add movement to the list
-     * When sample ma number is reached, model is computed
+     * If movement is recognized as right swipe, add movement to the list
+     * When sample max number is reached, model is computed
      * If model is already computed, goes to comparison
      */
     public void onSwipeRight() {
         if (counterSwipeRight >= 1) {
-            mRightSwipeList.add(mStructMotionFeatures.clone());
-            counterSwipeRight = NUMBER_OF_INTENT - mRightSwipeList.size();
-            if (counterSwipeRight == 0 && mRightSwipeModel.getIsComputed()==0) {
-                mRightSwipeModel.compute(mRightSwipeList);
+            mSwipeRightList.add(mStructMotionFeatures.clone());
+            counterSwipeRight = NUMBER_OF_INTENT - mSwipeRightList.size();
+            if (counterSwipeRight == 0 && mSwipeRightModel.getIsComputed() == 0) {
+                mSwipeRightModel.compute(mSwipeRightList);
             }
             mTextCounterSwipeRight.setText(String.format("%d", counterSwipeRight));
-        }
-        else {
-            compare(mRightSwipeModel,mStructMotionFeatures);
+        } else {
+            compare(mSwipeRightModel, mStructMotionFeatures);
         }
     }
 
     public void onSwipeLeft() {
         if (counterSwipeLeft >= 1) {
-            mLeftSwipeList.add(mStructMotionFeatures.clone());
-            counterSwipeLeft = NUMBER_OF_INTENT - mLeftSwipeList.size();
-            if (counterSwipeLeft == 0 && mLeftSwipeModel.getIsComputed()==0) {
-                mLeftSwipeModel.compute(mLeftSwipeList);
+            mSwipeLeftList.add(mStructMotionFeatures.clone());
+            counterSwipeLeft = NUMBER_OF_INTENT - mSwipeLeftList.size();
+            if (counterSwipeLeft == 0 && mSwipeLeftModel.getIsComputed() == 0) {
+                mSwipeLeftModel.compute(mSwipeLeftList);
             }
-            mTextCounterSwipeRight.setText(String.format("%d", counterSwipeLeft));
-        }
-        else {
-            compare(mLeftSwipeModel,mStructMotionFeatures);
+            mTextCounterSwipeLeft.setText(String.format("%d", counterSwipeLeft));
+        } else {
+            compare(mSwipeLeftModel, mStructMotionFeatures);
         }
     }
-    
+
     public void onScrollUp() {
         if (counterScrollUp >= 1) {
             mScrollUpList.add(mStructMotionFeatures.clone());
             counterScrollUp = NUMBER_OF_INTENT - mScrollUpList.size();
-            if (counterScrollUp == 0 && mScrollUpModel.getIsComputed()==0) {
+            if (counterScrollUp == 0 && mScrollUpModel.getIsComputed() == 0) {
                 mScrollUpModel.compute(mScrollUpList);
             }
-            mTextCounterSwipeRight.setText(String.format("%d", counterScrollUp));
-        }
-        else {
-            compare(mScrollUpModel,mStructMotionFeatures);
+            mTextCounterScollUp.setText(String.format("%d", counterScrollUp));
+        } else {
+            compare(mScrollUpModel, mStructMotionFeatures);
         }
     }
-    
+
     public void onScrollDown() {
         if (counterScrollDown >= 1) {
             mScrollDownList.add(mStructMotionFeatures.clone());
             counterScrollDown = NUMBER_OF_INTENT - mScrollDownList.size();
-            if (counterScrollDown == 0 && mScrollDownModel.getIsComputed()==0) {
+            if (counterScrollDown == 0 && mScrollDownModel.getIsComputed() == 0) {
                 mScrollDownModel.compute(mScrollDownList);
             }
-            mTextCounterSwipeRight.setText(String.format("%d", counterScrollDown));
-        }
-        else {
-            compare(mScrollDownModel,mStructMotionFeatures);
+            mTextCounterScrollDown.setText(String.format("%d", counterScrollDown));
+        } else {
+            compare(mScrollDownModel, mStructMotionFeatures);
         }
     }
 
     /**
      * Compares a move to the model
+     *
      * @param mUserModel
      * @param mStrangerMotion
      * @return
      */
     public boolean compare(UserModel mUserModel, StructMotionFeatures mStrangerMotion) {
 
-        TextView mAbs = findViewById(R.id.absLengthMatchResult);
+        TextView absLength = findViewById(R.id.absLengthMatchResult);
         TextView length = findViewById(R.id.lengthMatchResult);
         TextView duration = findViewById(R.id.durationMatchResult);
         TextView speed = findViewById(R.id.speedMatchResult);
         TextView pressure = findViewById(R.id.pressureMatchResult);
 
-
-
-
-        Log.v("TEST","Entered cmp");
         boolean isAbsLengthMatched = false;
         boolean isLengthMatched = false;
         boolean isDurationMatched = false;
         boolean isSpeedMatched = false;
         boolean isPressureMatched = false;
-        mAbs.setText("   not matched");
+        absLength.setText("   not matched");
         length.setText("   not matched");
         duration.setText("   not matched");
         speed.setText("   not matched");
         pressure.setText("   not matched");
 
-
-
-
         double sensibility = 0.75;
 
         if (Math.abs(mUserModel.getAvgAbsLength() / mStrangerMotion.getMotionAbsLength()) >= sensibility) {
             isAbsLengthMatched = true;
-            mAbs.setText("   MATCHED");
+            absLength.setText("   MATCHED");
         }
         if (Math.abs((double) mUserModel.getAvgLength() / (double) mStrangerMotion.getMotionLength()) >= sensibility) {
             isLengthMatched = true;
