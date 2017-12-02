@@ -44,8 +44,9 @@ public class MainActivity extends Activity {
         mButtonRunInBackground = findViewById(R.id.ButtonRunInBackground);
         mButtonStopService = findViewById(R.id.ButtonStopService);
 
-
-        requestSystemAlertPermission(MainActivity.this,5463);
+        if(!Settings.canDrawOverlays(this)){
+            requestSystemAlertPermission(MainActivity.this,5463);
+        }
 
 
         mButtonSettings.setOnClickListener(new View.OnClickListener() {

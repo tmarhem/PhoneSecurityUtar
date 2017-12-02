@@ -18,8 +18,6 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class BaseProfilingActivity extends Activity implements View.OnTouchListener {
@@ -28,7 +26,7 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
     private VelocityTracker mVelocityTracker;
     private TextView mMotionInfo;
     private TextView mSpeedDisplay;
-    private TextView mTextCounter;
+    private TextView mTextCounterSwipeRight, mTextCounterSwipeLeft, mTextCounterScollUp, mTextCounterScrollDown;
     private ArrayList<StructMotionElemts> mPointsList;
     private ArrayList<StructMotionFeatures> mRightSwipeList, mLeftSwipeList, mScrollUpList, mScrollDownList;
     private UserModel mRightSwipeModel, mLeftSwipeModel, mScrollUpModel, mScrollDownModel;
@@ -62,12 +60,12 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
         mSwitch = false;
 
         mRightSwipeModel = new UserModel();
-        mRightSwipeList = new StructMotionFeaturesList();
+        mRightSwipeList = new ArrayList<>();
         counterSwipeRight = NUMBER_OF_INTENT - mRightSwipeList.size();
         mSpeedDisplay = findViewById(R.id.speedDisplay);
         mMotionInfo = findViewById(R.id.motionInfo);
-        mTextCounter = findViewById(R.id.counterSwipeRight);
-        mTextCounter.setText(Integer.toString(counterSwipeRight));
+        mTextCounterSwipeRight = findViewById(R.id.counterSwipeRight);
+        mTextCounterSwipeRight.setText(Integer.toString(counterSwipeRight));
         mBtnReset = findViewById(R.id.btnReset);
         gestureDetector = new GestureDetector(mContext, new GestureListener());
         mAbs = findViewById(R.id.absLengthMatchResult);
@@ -93,7 +91,7 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
                                 mRightSwipeList.clear();
                                 mRightSwipeModel.clear();
                                 counterSwipeRight = 10;
-                                mTextCounter.setText(Integer.toString(counterSwipeRight));
+                                mTextCounterSwipeRight.setText(Integer.toString(counterSwipeRight));
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -160,6 +158,21 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
             }
             return false;
         }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            float distanceX = e2.getX() - e1.getX();
+            float distanceY = e2.getY() - e1.getY();
+            if (Math.abs(distanceX) > Math.abs(distanceY) && Math.abs(distanceX) > SWIPE_DISTANCE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                if (distanceY > 0)
+                    onScrollUp();
+                else
+                    onScrollDown();
+                return true;
+            }
+            return false;
+        }
+
     }
 
     /**
@@ -239,31 +252,66 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
         //Used at the end of a move to trigger OnFling method
         return gestureDetector.onTouchEvent(event);
     }
-
-    public void onSwipeLeft() {
-    }
-
+    
     /**
      * If rmovement is recognized as right swipe, add movement to the list
      * When sample ma number is reached, model is computed
      * If model is already computed, goes to comparison
      */
     public void onSwipeRight() {
-
         if (counterSwipeRight >= 1) {
-
             mRightSwipeList.add(mStructMotionFeatures.clone());
             counterSwipeRight = NUMBER_OF_INTENT - mRightSwipeList.size();
             if (counterSwipeRight == 0 && mRightSwipeModel.getIsComputed()==0) {
                 mRightSwipeModel.compute(mRightSwipeList);
             }
-            mTextCounter.setText(String.format("%d", counterSwipeRight));
-
+            mTextCounterSwipeRight.setText(String.format("%d", counterSwipeRight));
         }
         else {
             compare(mRightSwipeModel,mStructMotionFeatures);
         }
+    }
 
+    public void onSwipeLeft() {
+        if (counterSwipeLeft >= 1) {
+            mLeftSwipeList.add(mStructMotionFeatures.clone());
+            counterSwipeLeft = NUMBER_OF_INTENT - mLeftSwipeList.size();
+            if (counterSwipeLeft == 0 && mLeftSwipeModel.getIsComputed()==0) {
+                mLeftSwipeModel.compute(mLeftSwipeList);
+            }
+            mTextCounterSwipeRight.setText(String.format("%d", counterSwipeLeft));
+        }
+        else {
+            compare(mLeftSwipeModel,mStructMotionFeatures);
+        }
+    }
+    
+    public void onScrollUp() {
+        if (counterScrollUp >= 1) {
+            mScrollUpList.add(mStructMotionFeatures.clone());
+            counterScrollUp = NUMBER_OF_INTENT - mScrollUpList.size();
+            if (counterScrollUp == 0 && mScrollUpModel.getIsComputed()==0) {
+                mScrollUpModel.compute(mScrollUpList);
+            }
+            mTextCounterSwipeRight.setText(String.format("%d", counterScrollUp));
+        }
+        else {
+            compare(mScrollUpModel,mStructMotionFeatures);
+        }
+    }
+    
+    public void onScrollDown() {
+        if (counterScrollDown >= 1) {
+            mScrollDownList.add(mStructMotionFeatures.clone());
+            counterScrollDown = NUMBER_OF_INTENT - mScrollDownList.size();
+            if (counterScrollDown == 0 && mScrollDownModel.getIsComputed()==0) {
+                mScrollDownModel.compute(mScrollDownList);
+            }
+            mTextCounterSwipeRight.setText(String.format("%d", counterScrollDown));
+        }
+        else {
+            compare(mScrollDownModel,mStructMotionFeatures);
+        }
     }
 
     /**
