@@ -1,9 +1,5 @@
 package my.utar.phonesecurat;
-/**
- * Learning phase Activity
- * Used to retrieve 10 right swipes them compute the model
- * After that the next swipes are compared to the model
- */
+
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -22,7 +18,12 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.lang.Math;
 
-public class BaseProfilingActivity extends Activity implements View.OnTouchListener {
+/**
+ * Learning phase Activity
+ * Used to retrieve 10 right swipes them compute the model
+ * After that the next swipes are compared to the model
+ */
+public class BaseProfilingActivity extends Activity {
 
     private final Context mContext = this;
     private VelocityTracker mVelocityTracker;
@@ -158,6 +159,8 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
                                 mScrollUpModel.clear();
                                 mScrollDownModel.clear();
 
+                                setPendingText();
+
                                 SharedPreferences.Editor prefsEditor = mPrefs.edit();
                                 prefsEditor.clear();
                                 prefsEditor.apply();
@@ -257,27 +260,16 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
         }
     }
 
-    /**
-     * Method not used, forced to implement it when implementing View.OnTouchListener in the Activity
-     *
-     * @param v
-     * @param event
-     * @return
-     */
-    public boolean onTouch(View v, MotionEvent event) {
-        return false;
-    }
-
 
     /**
      * Method that triggers when you touch the screen
      *
-     * @param event
-     * @return
+     * @param event MotionEvent
+     * @return boolean
      */
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getActionMasked()) {
-/**
+/*
  * ACTION_DOWN is the first touch of the screen
  * ACTION_UP is the last touch of the screen
  * ACTION_MOVE is all the intermediate points in between
@@ -437,11 +429,10 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
     /**
      * Compares a move to the model
      *
-     * @param mUserModel
-     * @param mStrangerMotion
-     * @return
+     * @param mUserModel UserModel
+     * @param mStrangerMotion StructMotionsFeatures
      */
-    public boolean compare(UserModel mUserModel, StructMotionFeatures mStrangerMotion) {
+    public void compare(UserModel mUserModel, StructMotionFeatures mStrangerMotion) {
 
         TextView absLength = findViewById(R.id.absLengthMatchResult);
         TextView length = findViewById(R.id.lengthMatchResult);
@@ -449,11 +440,11 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
         TextView speed = findViewById(R.id.speedMatchResult);
         TextView pressure = findViewById(R.id.pressureMatchResult);
 
-        boolean isAbsLengthMatched = false;
+        /*boolean isAbsLengthMatched = false;
         boolean isLengthMatched = false;
         boolean isDurationMatched = false;
         boolean isSpeedMatched = false;
-        boolean isPressureMatched = false;
+        boolean isPressureMatched = false;*/
         absLength.setText("   not matched");
         length.setText("   not matched");
         duration.setText("   not matched");
@@ -463,30 +454,29 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
         double sensibility = 0.75;
 
         if (Math.abs(mUserModel.getAvgAbsLength() / mStrangerMotion.getMotionAbsLength()) >= sensibility) {
-            isAbsLengthMatched = true;
+            //isAbsLengthMatched = true;
             absLength.setText("   MATCHED");
         }
         if (Math.abs((double) mUserModel.getAvgLength() / (double) mStrangerMotion.getMotionLength()) >= sensibility) {
-            isLengthMatched = true;
+            //isLengthMatched = true;
             length.setText("   MATCHED");
         }
 
         if (Math.abs((double) mUserModel.getAvgDuration() / (double) mStrangerMotion.getMotionDuration()) >= sensibility) {
-            isDurationMatched = true;
+            //isDurationMatched = true;
             duration.setText("   MATCHED");
         }
 
         if (Math.abs(mUserModel.getAvgSpeed() / mStrangerMotion.getMotionAvgSpeed()) >= sensibility) {
-            isSpeedMatched = true;
+            //isSpeedMatched = true;
             speed.setText("   MATCHED");
         }
 
         if (Math.abs(mUserModel.getAvgPressure() / mStrangerMotion.getMotionAvgPressure()) >= sensibility) {
-            isPressureMatched = true;
+            //isPressureMatched = true;
             pressure.setText("   MATCHED");
         }
 
-        return (isAbsLengthMatched && isLengthMatched && isDurationMatched && isSpeedMatched && isPressureMatched);
     }
 }
 
