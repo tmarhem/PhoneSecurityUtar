@@ -69,7 +69,8 @@ public class AuthenticationCheck extends IntentService {
 
             mParams.type = WindowManager.LayoutParams.TYPE_PHONE;
             mParams.flags = WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH|
-                    WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL|
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
 
             mParams.gravity = Gravity.END | Gravity.TOP;
 
@@ -78,8 +79,7 @@ public class AuthenticationCheck extends IntentService {
 
 
         } else if (intent.getAction().equals(Constants.ACTION.STOP_FOREGROUND_ACTION)) {
-            stopForeground(true);
-            stopSelf();
+            this.onDestroy();
         }
 
         return START_STICKY;
@@ -99,7 +99,7 @@ public class AuthenticationCheck extends IntentService {
     @Override
     public void onDestroy() {
         stopForeground(true);
-        stopSelf();
+        mWindowManager.removeView(mSavedView);
         notifyUSer(Constants.TOAST.DESTRUCTION);
         super.onDestroy();
     }
