@@ -11,7 +11,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
@@ -82,16 +81,12 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
 
 
         if(mSwipeRightModel != null){
-            Log.v("TEST", "Loading mSRM");
             counterSwipeRight = 0;
-            Log.v("TEST", "mSRM LOADED");
 
         }
         else{
             mSwipeRightModel = new UserModel();
             counterSwipeRight = NUMBER_OF_INTENT - mSwipeRightList.size();
-            Log.v("TEST", "mSRM not found");
-
         }
 
         if(mSwipeLeftModel != null){
@@ -252,10 +247,8 @@ public class BaseProfilingActivity extends Activity implements View.OnTouchListe
 
             if (Math.abs(velocityY) > SCROLL_VELOCITY_THRESHOLD) {
                 if (distanceY < 0) {
-                    Log.v("TEST", "SCROLL UP TRIGGERED");
                     switchScrollUp = true;
                 } else if (distanceY > 0) {
-                    Log.v("TEST", "SCROLL DOWN TRIGGERED");
                     switchScrollDown = true;
                 }
                 return true;

@@ -71,8 +71,9 @@ public class MainActivity extends Activity {
         mButtonRunInBackground.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent authService = new Intent(MainActivity.this, AuthenticationCheck.class);
-                    startService(authService);
+                Intent startIntent = new Intent(MainActivity.this, AuthenticationCheck.class);
+                startIntent.setAction(Constants.ACTION.STARTFOREGROUND_ACTION);
+                startService(startIntent);
                 }
             }
 
@@ -81,8 +82,9 @@ public class MainActivity extends Activity {
         mButtonStopService.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent authService = new Intent(MainActivity.this, AuthenticationCheck.class);
-                stopService(authService);
+                Intent stopIntent = new Intent(MainActivity.this, AuthenticationCheck.class);
+                stopIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
+                stopService(stopIntent);
             }
 
         });
