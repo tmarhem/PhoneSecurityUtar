@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-public class AuthenticationCheck extends IntentService{
+public class AuthenticationCheck extends IntentService {
 
     private final Context ctx = this;
     private WindowManager mWindowManager;
@@ -40,11 +40,10 @@ public class AuthenticationCheck extends IntentService{
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.v("VERBOSE", "onStartCommand");
+        notifyUSer(Constants.TOAST.CREATION);
 
         //Foreground Service
-        if (intent.getAction().equals(Constants.ACTION.STARTFOREGROUND_ACTION)) {
-            Log.i("VERBOSE", "Received Start Foreground Intent ");
+        if (intent.getAction().equals(Constants.ACTION.START_FOREGROUND_ACTION)) {
             Intent notificationIntent = new Intent(ctx, MainActivity.class);
             notificationIntent.setAction(Constants.ACTION.MAIN_ACTION);
             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
@@ -59,45 +58,30 @@ public class AuthenticationCheck extends IntentService{
             startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
 
 
-            // Window adding and listener
-            mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-            WindowManager.LayoutParams mParams = new WindowManager.LayoutParams(
-                    700,
-                    700,
-                    //WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
-                    //WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
-                    WindowManager.LayoutParams.TYPE_PHONE,
-                    WindowManager.LayoutParams.FIRST_SUB_WINDOW,
-                    WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-            );
-            mParams.gravity = Gravity.END | Gravity.TOP;
-            //View mView = LayoutInflater.from(AuthenticationCheck.this).inflate(R.layout.floating_layout, null);
+            // Window adding
             View mView = new HUDView(ctx);
             mSavedView = mView;
+            mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+            WindowManager.LayoutParams mParams = new WindowManager.LayoutParams();
+
+            mParams.height = 70;
+            mParams.width = 70;
+            mParams.type = WindowManager.LayoutParams.TYPE_PHONE;
+            mParams.flags = WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
+            mParams.gravity = Gravity.END | Gravity.TOP;
+
             mWindowManager.addView(mView, mParams);
-
-
-            //Listener
             gestureDetector = new GestureDetector(ctx, new GestureListener());
 
 
-            mView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    Log.i("VERBOSE", "ENTERED ONTOucH");
-                    gestureDetector.onTouchEvent(event);
-                    return false;
-                }});
-
-        } else if (intent.getAction().equals(
-                Constants.ACTION.STOPFOREGROUND_ACTION)) {
+        } else if (intent.getAction().equals(Constants.ACTION.STOP_FOREGROUND_ACTION)) {
             stopForeground(true);
             stopSelf();
         }
 
-
         return START_STICKY;
     }
+
 
     @Nullable
     @Override
@@ -111,21 +95,31 @@ public class AuthenticationCheck extends IntentService{
 
     @Override
     public void onDestroy() {
-        mWindowManager.removeView(mSavedView);
-        notifyOnDestroy();
+        stopForeground(true);
+        stopSelf();
+        notifyUSer(Constants.TOAST.DESTRUCTION);
         super.onDestroy();
     }
 
-    public void notifyOnDestroy() {
-        Log.v("VERBOSE", "Service destroyed");
+    public void notifyUSer(int id) {
+        switch (id){
+            case Constants.TOAST.CREATION :
+                Toast.makeText(ctx, "Service started", Toast.LENGTH_SHORT).show();
+            case Constants.TOAST.DESTRUCTION :
+                Toast.makeText(ctx, "Service stopped", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void onSwipeRight() {
-        compare(mSwipeRightModel, mStructMotionFeatures);
+        Log.v("VERBOSE", "Entered onSwipeRight");
+
+        //compare(mSwipeRightModel, mStructMotionFeatures);
     }
 
     public void onSwipeLeft() {
-        compare(mSwipeLeftModel, mStructMotionFeatures);
+        Log.v("VERBOSE", "Entered onSwipeLeft");
+
+        //compare(mSwipeLeftModel, mStructMotionFeatures);
     }
 
     public void onScrollUp() {
@@ -227,7 +221,7 @@ public class AuthenticationCheck extends IntentService{
         }
     }
 
-    class HUDView extends ViewGroup implements View.OnTouchListener{
+    class HUDView extends ViewGroup implements View.OnTouchListener {
 
         public HUDView(Context context) {
             super(context);
@@ -240,22 +234,20 @@ public class AuthenticationCheck extends IntentService{
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            Log.v("VERBOSE", "Entered OnTouch");
             return false;
         }
 
         @Override
         public boolean onTouchEvent(MotionEvent event) {
             Log.v("VERBOSE", "Entered OnTouchEvent");
-            performClick();
-            return true;
+            //performClick();
+            return gestureDetector.onTouchEvent(event);
         }
 
         @Override
-        public boolean performClick(){
-           return super.performClick();
+        public boolean performClick() {
+            return super.performClick();
         }
-
 
 
     }

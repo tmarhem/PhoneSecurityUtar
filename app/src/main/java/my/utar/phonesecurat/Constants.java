@@ -8,12 +8,17 @@ package my.utar.phonesecurat;
 
 public class Constants {
     public interface ACTION {
-        public static String MAIN_ACTION = "my.utar.phonesecurat.action.main";
-        public static String STARTFOREGROUND_ACTION = "my.utar.phonesecurat.action.startForeground";
-        public static String STOPFOREGROUND_ACTION = "my.utar.phonesecurat.action.stopForeground";
+        String MAIN_ACTION = "my.utar.phonesecurat.action.main";
+        String START_FOREGROUND_ACTION = "my.utar.phonesecurat.action.startForeground";
+        String STOP_FOREGROUND_ACTION = "my.utar.phonesecurat.action.stopForeground";
     }
 
     public interface NOTIFICATION_ID {
-        public static int FOREGROUND_SERVICE = 101;
+        int FOREGROUND_SERVICE = 101;
+    }
+
+    public interface TOAST{
+        int CREATION = 1;
+        int DESTRUCTION = 2;
     }
 }

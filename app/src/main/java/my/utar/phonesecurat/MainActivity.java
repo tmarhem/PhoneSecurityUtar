@@ -1,9 +1,12 @@
 package my.utar.phonesecurat;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,6 +25,7 @@ import java.util.List;
  */
 public class MainActivity extends Activity {
 
+    final Context ctx = this;
     public static void requestSystemAlertPermission(Activity context, int requestCode) {
         final String packageName = context.getPackageName();
         final Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + packageName));
@@ -48,7 +52,6 @@ public class MainActivity extends Activity {
             requestSystemAlertPermission(MainActivity.this,5463);
         }
 
-
         mButtonSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,8 +74,27 @@ public class MainActivity extends Activity {
         mButtonRunInBackground.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
+                boolean baseProfilingComplete = ( mPrefs.contains("mSwipeRightModel") ||
+                        mPrefs.contains("mSwipeLeftModel") ||
+                        mPrefs.contains("mScrollUpModel") ||
+                        mPrefs.contains("mScrollDownModel") );
+                if(!baseProfilingComplete) {
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ctx);
+                    alertDialogBuilder.setTitle("Information");
+                    alertDialogBuilder
+                            .setMessage("The base profiling is incomplete, please fulfill " +
+                                    "all first measurements to ensure the service is fully functional")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
+                }
                 Intent startIntent = new Intent(MainActivity.this, AuthenticationCheck.class);
-                startIntent.setAction(Constants.ACTION.STARTFOREGROUND_ACTION);
+                startIntent.setAction(Constants.ACTION.START_FOREGROUND_ACTION);
                 startService(startIntent);
                 }
             }
@@ -83,7 +105,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent stopIntent = new Intent(MainActivity.this, AuthenticationCheck.class);
-                stopIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
+                stopIntent.setAction(Constants.ACTION.STOP_FOREGROUND_ACTION);
                 stopService(stopIntent);
             }
 
