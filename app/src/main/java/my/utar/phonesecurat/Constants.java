@@ -1,7 +1,9 @@
 package my.utar.phonesecurat;
 
 /**
- * Created by tmarh on 06/12/2017.
+ * TODO Work on Service
+ * TODO Make BaseProfiling Activity working by extending the new GestureListener class from the package
+ * TODO Make the windowsManager work via XML settings file
  */
 
 public class Constants {

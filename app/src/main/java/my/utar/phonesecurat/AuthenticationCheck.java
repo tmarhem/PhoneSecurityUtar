@@ -89,7 +89,10 @@ public class AuthenticationCheck extends IntentService implements View.OnTouchLi
             mView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
-                    return false;}
+                    Log.v("TEST","ENTERED ON TOUCH");
+                    return false;
+
+                }
 
 
             });
