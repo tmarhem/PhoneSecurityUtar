@@ -225,7 +225,6 @@ public class AuthenticationCheck extends IntentService {
 
         public HUDView(Context context) {
             super(context);
-            Toast.makeText(getContext(), "HUDView", Toast.LENGTH_LONG).show();
         }
 
         @Override
@@ -241,7 +240,8 @@ public class AuthenticationCheck extends IntentService {
         public boolean onTouchEvent(MotionEvent event) {
             Log.v("VERBOSE", "Entered OnTouchEvent");
             //performClick();
-            return gestureDetector.onTouchEvent(event);
+            gestureDetector.onTouchEvent(event);
+            return false;
         }
 
         @Override

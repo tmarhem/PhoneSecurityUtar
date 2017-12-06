@@ -64,6 +64,9 @@ public class MainActivity extends Activity {
         mButtonStartBaseProfiling.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent stopIntent = new Intent(MainActivity.this, AuthenticationCheck.class);
+                stopIntent.setAction(Constants.ACTION.STOP_FOREGROUND_ACTION);
+                stopService(stopIntent);
                 Intent goToStartBaseProfiling = new Intent(MainActivity.this, BaseProfilingActivity.class);
                 startActivity(goToStartBaseProfiling);
             }
@@ -85,17 +88,22 @@ public class MainActivity extends Activity {
                     alertDialogBuilder
                             .setMessage("The base profiling is incomplete, please fulfill " +
                                     "all first measurements to ensure the service is fully functional")
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            .setPositiveButton("Agreed", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
+                                    Intent startIntent = new Intent(MainActivity.this, AuthenticationCheck.class);
+                                    startIntent.setAction(Constants.ACTION.START_FOREGROUND_ACTION);
+                                    startService(startIntent);
                                 }
                             });
                     AlertDialog alertDialog = alertDialogBuilder.create();
                     alertDialog.show();
                 }
-                Intent startIntent = new Intent(MainActivity.this, AuthenticationCheck.class);
-                startIntent.setAction(Constants.ACTION.START_FOREGROUND_ACTION);
-                startService(startIntent);
+                else {
+                    Intent startIntent = new Intent(MainActivity.this, AuthenticationCheck.class);
+                    startIntent.setAction(Constants.ACTION.START_FOREGROUND_ACTION);
+                    startService(startIntent);
+                }
                 }
             }
 
