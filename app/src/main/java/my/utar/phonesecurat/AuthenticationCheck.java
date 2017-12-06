@@ -64,10 +64,13 @@ public class AuthenticationCheck extends IntentService {
             mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
             WindowManager.LayoutParams mParams = new WindowManager.LayoutParams();
 
-            mParams.height = 70;
-            mParams.width = 70;
+            mParams.height = 1;
+            mParams.width = 1;
+
             mParams.type = WindowManager.LayoutParams.TYPE_PHONE;
-            mParams.flags = WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
+            mParams.flags = WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH|
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
+
             mParams.gravity = Gravity.END | Gravity.TOP;
 
             mWindowManager.addView(mView, mParams);
@@ -105,8 +108,10 @@ public class AuthenticationCheck extends IntentService {
         switch (id){
             case Constants.TOAST.CREATION :
                 Toast.makeText(ctx, "Service started", Toast.LENGTH_SHORT).show();
+                break;
             case Constants.TOAST.DESTRUCTION :
                 Toast.makeText(ctx, "Service stopped", Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 
@@ -175,7 +180,7 @@ public class AuthenticationCheck extends IntentService {
 
         @Override
         public boolean onDown(MotionEvent e) {
-            return true;
+            return false;
         }
 
         /**
@@ -186,7 +191,7 @@ public class AuthenticationCheck extends IntentService {
          * @param e2        Motion Event
          * @param velocityX X axis instant Velocity
          * @param velocityY Y axis instant velocity
-         * @return boolean true if movement considered onFling after checking thresholds
+         * @return boolean false for not consuming the event
          */
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
@@ -198,7 +203,6 @@ public class AuthenticationCheck extends IntentService {
                         onSwipeRight();
                     else
                         onSwipeLeft();
-                    return true;
                 }
             }
             return false;
@@ -215,7 +219,6 @@ public class AuthenticationCheck extends IntentService {
                 } else if (distanceY > 0) {
                     switchScrollDown = true;
                 }
-                return true;
             }
             return false;
         }
@@ -238,14 +241,14 @@ public class AuthenticationCheck extends IntentService {
 
         @Override
         public boolean onTouchEvent(MotionEvent event) {
-            Log.v("VERBOSE", "Entered OnTouchEvent");
-            //performClick();
-            gestureDetector.onTouchEvent(event);
-            return false;
+            Log.v("VERBOSE", Integer.toString(event.getActionMasked()));
+            performClick();
+            return gestureDetector.onTouchEvent(event);
         }
 
         @Override
         public boolean performClick() {
+
             return super.performClick();
         }
 
