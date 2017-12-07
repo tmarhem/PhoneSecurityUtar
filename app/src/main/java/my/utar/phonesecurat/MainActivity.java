@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Main activity that launches the application, heads directly to the menu
+ * Main activity that launches the application, heads directly to the menu.
  */
 public class MainActivity extends Activity {
 
