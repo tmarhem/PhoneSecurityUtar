@@ -27,11 +27,6 @@ import java.util.List;
 public class MainActivity extends Activity {
 
     final Context ctx = this;
-    public static void requestSystemAlertPermission(Activity context, int requestCode) {
-        final String packageName = context.getPackageName();
-        final Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + packageName));
-            context.startActivityForResult(intent, requestCode);
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,10 +43,6 @@ public class MainActivity extends Activity {
         mButtonStartBaseProfiling = findViewById(R.id.ButtonStartBaseProfiling);
         mButtonRunInBackground = findViewById(R.id.ButtonRunInBackground);
         mButtonStopService = findViewById(R.id.ButtonStopService);
-
-        if(!Settings.canDrawOverlays(this)){
-            requestSystemAlertPermission(MainActivity.this,5463);
-        }
 
         mButtonSettings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,6 +110,12 @@ public class MainActivity extends Activity {
             }
 
         });
+
+        Intent stopIntent = new Intent(MainActivity.this, AuthenticationCheck.class);
+        stopIntent.setAction(Constants.ACTION.STOP_FOREGROUND_ACTION);
+        stopService(stopIntent);
+        Intent goToStartBaseProfiling = new Intent(MainActivity.this, BaseProfilingActivity.class);
+        startActivity(goToStartBaseProfiling);
 
     }
 }

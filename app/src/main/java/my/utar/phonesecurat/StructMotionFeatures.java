@@ -21,6 +21,7 @@ public class StructMotionFeatures {
     private double motionAvgSpeed;
     private double motionAvgPressure;
     float firstPosX, lastPosX, firstPosY, lastPosY;
+    private String moveType, userId, PhoneId;
 
 
     @Override
@@ -31,6 +32,8 @@ public class StructMotionFeatures {
         mClone.setMotionDuration(this.getMotionDuration());
         mClone.setMotionAvgSpeed(this.getMotionAvgSpeed());
         mClone.setMotionAvgPressure(this.getMotionAvgPressure());
+        mClone.setUserId(this.getUserId());
+        mClone.setPhoneId(this.getPhoneId());
         return mClone;
     }
 
@@ -46,6 +49,30 @@ public class StructMotionFeatures {
         firstPosY = 0;
         lastPosY = 0;
 
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getPhoneId() {
+        return PhoneId;
+    }
+
+    public void setPhoneId(String phoneId) {
+        PhoneId = phoneId;
+    }
+
+    public String getMoveType() {
+        return moveType;
+    }
+
+    public void setMoveType(String moveType) {
+        this.moveType = moveType;
     }
 
     public float getFirstPosX() {
@@ -182,6 +209,7 @@ public class StructMotionFeatures {
 
                 motionDuration = endTime - startTime;
                 motionAbsLength = sqrt(pow((lastPosX - firstPosX), 2) + pow((lastPosY - firstPosY), 2));
+
             } else {
                 Log.v("ERROR", "MLIST RETURNED EMPTY, COMPUTING COULD NOT COMPLETE");
             }

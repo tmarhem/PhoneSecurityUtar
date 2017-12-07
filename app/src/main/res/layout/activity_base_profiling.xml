@@ -10,49 +10,13 @@
     tools:layout_editor_absoluteY="81dp">
 
     <TextView
-        android:id="@+id/instantValuesTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/btnReset"
-        android:layout_marginTop="7dp"
-        android:gravity="center_horizontal"
-        android:text="INSTANT VALUES"></TextView>
-
-    <TextView
-        android:id="@+id/instantValuesDisplay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/instantValuesTitle"
-        android:layout_below="@+id/instantValuesTitle"
-        android:text="..............."></TextView>
-
-    <TextView
-        android:id="@+id/avgValuesDispay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/avgValuesTitle"
-        android:layout_toEndOf="@+id/LengthMatchTitle"
-        android:text=".............."></TextView>
-
-    <TextView
-        android:id="@+id/avgValuesTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/instantValuesTitle"
-        android:layout_alignBottom="@+id/instantValuesTitle"
-        android:layout_marginStart="53dp"
-        android:layout_toEndOf="@+id/instantValuesTitle"
-        android:gravity="center_horizontal"
-        android:text="MOTION VALUES">
-    </TextView>
-
-    <TextView
         android:id="@+id/counterSwipeRight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="185dp"
-        android:layout_marginTop="350dp"
+        android:layout_alignBaseline="@+id/counterSwipeLeft"
+        android:layout_alignBottom="@+id/counterSwipeLeft"
+        android:layout_marginStart="50dp"
+        android:layout_toEndOf="@+id/btnReset"
         android:text="SR" />
 
     <Button
@@ -61,109 +25,31 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="25dp"
-        android:layout_marginLeft="25dp"
-        android:text="Reset"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="33dp"
+        android:text="EXPORT" />
 
-    <TextView
-        android:id="@+id/AbsLengthMatchTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="103dp"
-        android:layout_marginTop="150dp"
-        android:text="Abs Length match"/>
-
-    <TextView
-        android:id="@+id/LengthMatchTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/AbsLengthMatchTitle"
-        android:layout_marginStart="103dp"
-        android:text="Length match"/>
-
-    <TextView
-        android:id="@+id/DurationMatchTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/LengthMatchTitle"
-        android:layout_marginStart="103dp"
-        android:text="Duration match"/>
-
-
-    <TextView
-        android:id="@+id/SpeedMatchTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/DurationMatchTitle"
-        android:layout_marginStart="103dp"
-        android:text="Speed match"/>
-
-    <TextView
-        android:id="@+id/PressureMatchTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/SpeedMatchTitle"
-        android:layout_marginStart="103dp"
-        android:text="Pressure match"/>
-
-    <TextView
-        android:id="@+id/absLengthMatchResult"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/AbsLengthMatchTitle"
-        android:layout_toEndOf="@+id/AbsLengthMatchTitle"
-        android:text="  pending..."/>
-
-    <TextView
-        android:id="@+id/lengthMatchResult"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/AbsLengthMatchTitle"
-        android:layout_toEndOf="@+id/LengthMatchTitle"
-        android:text="  pending..."/>
-
-    <TextView
-        android:id="@+id/durationMatchResult"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/lengthMatchResult"
-        android:layout_toEndOf="@+id/DurationMatchTitle"
-        android:text="  pending..."/>
-
-    <TextView
-        android:id="@+id/speedMatchResult"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/DurationMatchTitle"
-        android:layout_toEndOf="@+id/SpeedMatchTitle"
-        android:text="  pending..."/>
-
-    <TextView
-        android:id="@+id/pressureMatchResult"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/speedMatchResult"
-        android:layout_toEndOf="@+id/PressureMatchTitle"
-        android:text="  pending..."/>
 
     <TextView
         android:id="@+id/counterScrollUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_below="@+id/phoneID"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="300dp"
+        android:layout_centerInParent="false"
+        android:layout_marginTop="22dp"
         android:text="SU" />
 
     <TextView
         android:id="@+id/counterSwipeLeft"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/btnReset"
         android:layout_alignWithParentIfMissing="false"
-        android:layout_centerHorizontal="false"
+        android:layout_below="@+id/counterScrollUp"
         android:layout_centerInParent="false"
-        android:layout_marginLeft="100dp"
-        android:layout_marginTop="350dp"
+        android:layout_marginTop="43dp"
         android:autoText="false"
         android:clickable="false"
         android:contextClickable="false"
@@ -175,9 +61,44 @@
         android:id="@+id/counterScrollDown"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/counterSwipeRight"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="400dp"
+        android:layout_marginTop="36dp"
         android:text="SD" />
+
+    <EditText
+        android:id="@+id/userID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/fileName"
+        android:layout_below="@+id/fileName"
+        android:layout_marginTop="18dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="User Name" />
+
+    <EditText
+        android:id="@+id/phoneID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/userID"
+        android:layout_below="@+id/userID"
+        android:layout_marginTop="21dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Phone Name" />
+
+    <EditText
+        android:id="@+id/fileName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="11dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Filename.xls" />
 
 
 </RelativeLayout>
