@@ -207,9 +207,9 @@ public class BaseProfilingActivity extends Activity {
      */
     private class GestureListener extends SimpleOnGestureListener {
 
-        private static final int SWIPE_DISTANCE_THRESHOLD = 66;
-        private static final int SWIPE_VELOCITY_THRESHOLD = 66;
-        private static final int SCROLL_VELOCITY_THRESHOLD = 35;
+        private static final int SWIPE_DISTANCE_THRESHOLD = 45;
+        private static final int SWIPE_VELOCITY_THRESHOLD = 45;
+        private static final int SCROLL_VELOCITY_THRESHOLD = 15;
 
 
         @Override
