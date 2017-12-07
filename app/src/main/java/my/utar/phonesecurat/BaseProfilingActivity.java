@@ -26,9 +26,7 @@ import java.util.ArrayList;
 import java.lang.Math;
 
 /**
- * Learning phase Activity
- * Used to retrieve 10 right swipes them compute the model
- * After that the next swipes are compared to the model
+ * XLS EXPORT
  */
 public class BaseProfilingActivity extends Activity {
 
