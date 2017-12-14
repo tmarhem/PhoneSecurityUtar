@@ -40,7 +40,7 @@ public class BaseProfilingActivity extends Activity {
     private GestureDetector gestureDetector;
     private int counterSwipeRight, counterSwipeLeft, counterScrollUp, counterScrollDown;
     private boolean mSwitch, switchScrollUp, switchScrollDown, switchBlockSwipe;
-    Button mBtnReset;
+    Button mBtnExport, mBtnReset;
 
 
     /**
@@ -64,27 +64,22 @@ public class BaseProfilingActivity extends Activity {
         mScrollUpList = new ArrayList<>();
         mScrollDownList = new ArrayList<>();
 
-        counterSwipeRight = 0;
-        counterSwipeLeft = 0;
-        counterScrollUp = 0;
-        counterScrollDown = 0;
+        refreshCounters();
 
         mTextCounterSwipeRight = findViewById(R.id.counterSwipeRight);
         mTextCounterSwipeLeft = findViewById(R.id.counterSwipeLeft);
         mTextCounterScollUp = findViewById(R.id.counterScrollUp);
         mTextCounterScrollDown = findViewById(R.id.counterScrollDown);
 
-        mTextCounterSwipeRight.setText(Integer.toString(counterSwipeRight));
-        mTextCounterSwipeLeft.setText(Integer.toString(counterSwipeLeft));
-        mTextCounterScollUp.setText(Integer.toString(counterScrollUp));
-        mTextCounterScrollDown.setText(Integer.toString(counterScrollDown));
+        refreshCountersDisplays();
 
+        mBtnExport = findViewById(R.id.btnExport);
         mBtnReset = findViewById(R.id.btnReset);
+
         gestureDetector = new GestureDetector(mContext, new GestureListener());
 
 
-
-        mBtnReset.setOnClickListener(new View.OnClickListener() {
+        mBtnExport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 final EditText fileNAME = findViewById(R.id.fileName);
@@ -94,10 +89,45 @@ public class BaseProfilingActivity extends Activity {
                 alertDialogBuilder.setTitle(fname);
                 alertDialogBuilder
                         .setMessage("File will be saved to " + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS))
-                        .setCancelable(false)
+                        .setCancelable(true)
                         .setPositiveButton("Save", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 writeToXls();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+            }
+        });
+
+        mBtnReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
+                alertDialogBuilder.setTitle("Confirmation");
+                alertDialogBuilder
+                        .setMessage("Do you want to reset this set of moves without saving ?" + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS))
+                        .setCancelable(true)
+                        .setPositiveButton("Reset", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                mSwipeRightList.clear();
+                                mSwipeLeftList.clear();
+                                mScrollUpList.clear();
+                                mScrollDownList.clear();
+
+                                refreshCounters();
+                                refreshCountersDisplays();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
                             }
                         });
                 AlertDialog alertDialog = alertDialogBuilder.create();
@@ -361,7 +391,7 @@ public class BaseProfilingActivity extends Activity {
         mStructMotionFeatures.setPhoneId(phoneId);
         mSwipeRightList.add(mStructMotionFeatures.clone());
         counterSwipeRight++;
-        mTextCounterSwipeRight.setText(String.format("%d", counterSwipeRight));
+        refreshCountersDisplays();
     }
 
 
@@ -377,7 +407,7 @@ public class BaseProfilingActivity extends Activity {
         mStructMotionFeatures.setPhoneId(phoneId);
         mSwipeLeftList.add(mStructMotionFeatures.clone());
         counterSwipeLeft++;
-        mTextCounterSwipeLeft.setText(String.format("%d", counterSwipeLeft));
+        refreshCountersDisplays();
     }
 
     public void onScrollUp() {
@@ -392,7 +422,7 @@ public class BaseProfilingActivity extends Activity {
         mStructMotionFeatures.setPhoneId(phoneId);
         mScrollUpList.add(mStructMotionFeatures.clone());
         counterScrollUp++;
-        mTextCounterScollUp.setText(String.format("%d", counterScrollUp));
+        refreshCountersDisplays();
     }
 
     public void onScrollDown() {
@@ -407,7 +437,23 @@ public class BaseProfilingActivity extends Activity {
         mStructMotionFeatures.setPhoneId(phoneId);
         mScrollDownList.add(mStructMotionFeatures.clone());
         counterScrollDown++;
-        mTextCounterScrollDown.setText(String.format("%d", counterScrollDown));
+        refreshCountersDisplays();
     }
+
+    public void refreshCountersDisplays() {
+        mTextCounterSwipeRight.setText(Integer.toString(counterSwipeRight));
+        mTextCounterSwipeLeft.setText(Integer.toString(counterSwipeLeft));
+        mTextCounterScollUp.setText(Integer.toString(counterScrollUp));
+        mTextCounterScrollDown.setText(Integer.toString(counterScrollDown));
+    }
+
+    public void refreshCounters(){
+        counterSwipeRight = mSwipeRightList.size();
+        counterSwipeLeft = mSwipeLeftList.size();
+        counterScrollUp = mScrollUpList.size();
+        counterScrollDown = mScrollDownList.size();
+    }
+    
+    
 }
 

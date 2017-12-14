@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
+    android:windowSoftInputMode="stateHidden"
     tools:context="my.utar.phonesecurat.SettingsActivity"
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="81dp">
@@ -15,19 +15,32 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/counterSwipeLeft"
         android:layout_alignBottom="@+id/counterSwipeLeft"
-        android:layout_marginStart="50dp"
-        android:layout_toEndOf="@+id/btnReset"
+        android:layout_alignStart="@+id/btnReset"
         android:text="SR" />
+
+    <Button
+        android:id="@+id/btnExport"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerHorizontal="false"
+        android:layout_centerInParent="false"
+        android:layout_marginBottom="29dp"
+        android:layout_marginLeft="50dp"
+        android:text="EXPORT" />
 
     <Button
         android:id="@+id/btnReset"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="33dp"
-        android:text="EXPORT" />
+        android:layout_alignBaseline="@+id/btnExport"
+        android:layout_alignBottom="@+id/btnExport"
+        android:layout_marginStart="17dp"
+        android:layout_toEndOf="@+id/phoneID"
+        android:text="RESET" />
 
 
     <TextView
@@ -45,7 +58,7 @@
         android:id="@+id/counterSwipeLeft"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/btnReset"
+        android:layout_alignEnd="@+id/btnExport"
         android:layout_alignWithParentIfMissing="false"
         android:layout_below="@+id/counterScrollUp"
         android:layout_centerInParent="false"
@@ -92,13 +105,25 @@
         android:id="@+id/fileName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
+        android:layout_alignParentStart="false"
         android:layout_alignParentTop="true"
         android:layout_marginStart="18dp"
         android:layout_marginTop="11dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="Filename.xls" />
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="false"
+        android:text="CheckBox"
+        android:visibility="invisible">
+
+        <requestFocus />
+    </CheckBox>
 
 
 </RelativeLayout>
