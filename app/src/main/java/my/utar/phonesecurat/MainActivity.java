@@ -91,9 +91,9 @@ public class MainActivity extends Activity {
                                     dialog.dismiss();
                                     Intent startIntent = new Intent(MainActivity.this, AuthenticationCheck.class);
                                     startIntent.setAction(Constants.ACTION.START_FOREGROUND_ACTION);
-                                    PendingIntent mPendingIntent = PendingIntent.getActivity(ctx,0,startIntent,0);
-                                    mAlarmManager.setInexactRepeating(AlarmManager.RTC,System.currentTimeMillis()+5000,5000,mPendingIntent);
-                                    //startService(startIntent);
+                                    //PendingIntent mPendingIntent = PendingIntent.getActivity(ctx,0,startIntent,0);
+                                    //mAlarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,System.currentTimeMillis()+5000,500,mPendingIntent);
+                                    startService(startIntent);
                                 }
                             });
                     AlertDialog alertDialog = alertDialogBuilder.create();

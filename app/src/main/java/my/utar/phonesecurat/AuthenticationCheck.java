@@ -5,6 +5,7 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.app.NotificationCompat;
@@ -23,6 +24,7 @@ public class AuthenticationCheck extends IntentService {
     private WindowManager mWindowManager;
     private GestureDetector gestureDetector;
     View mSavedView;
+    private Handler mHandler;
     private boolean mSwitch, switchScrollUp, switchScrollDown, switchBlockSwipe;
     private UserModel mSwipeRightModel, mSwipeLeftModel, mScrollUpModel, mScrollDownModel;
     private StructMotionElemts mStructMotionElmts;
@@ -58,25 +60,8 @@ public class AuthenticationCheck extends IntentService {
 
             startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
 
-
-            // Window adding
-            View mView = new HUDView(ctx);
-            mSavedView = mView;
-            mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-            WindowManager.LayoutParams mParams = new WindowManager.LayoutParams();
-
-            mParams.height = 1;
-            mParams.width = 1;
-
-            mParams.type = WindowManager.LayoutParams.TYPE_PHONE;
-            mParams.flags = WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH/*|
-                    WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL|
-                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE*/;
-
-            mParams.gravity = Gravity.END | Gravity.TOP;
-
-            mWindowManager.addView(mView, mParams);
-            gestureDetector = new GestureDetector(ctx, new GestureListener());
+            mHandler = new Handler();
+            mHandler.postDelayed(addListeningWindow, 10000);
 
 
         } else if (intent.getAction().equals(Constants.ACTION.STOP_FOREGROUND_ACTION)) {
@@ -85,6 +70,34 @@ public class AuthenticationCheck extends IntentService {
 
         return START_STICKY;
     }
+
+    private Runnable addListeningWindow = new Runnable()
+    {
+        public void run()
+        {
+            Log.v("VERBOSE","Entered runnable");
+            mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+            WindowManager.LayoutParams mParams = new WindowManager.LayoutParams();
+            /*if(mSavedView != null) {
+                mWindowManager.removeView(mSavedView);
+            }*/
+            // Window adding
+            View mView = new HUDView(ctx);
+            mSavedView = mView;
+            mParams.height = 1;
+            mParams.width = 1;
+
+            mParams.type = WindowManager.LayoutParams.TYPE_PHONE;
+            mParams.flags = WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH/*|
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL|
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE*/;
+            mParams.gravity = Gravity.END | Gravity.TOP;
+            mWindowManager.addView(mView, mParams);
+            gestureDetector = new GestureDetector(ctx, new GestureListener());
+            mHandler.postDelayed(addListeningWindow, 10000);
+            Log.v("VERBOSE","Exiting runnable");
+        }
+    };
 
 
     @Nullable
@@ -106,6 +119,7 @@ public class AuthenticationCheck extends IntentService {
         super.onDestroy();
     }
 
+
     public void notifyUSer(int id) {
         switch (id){
             case Constants.TOAST.CREATION :
@@ -121,24 +135,28 @@ public class AuthenticationCheck extends IntentService {
         Log.v("VERBOSE", "Entered onSwipeRight");
 
         //compare(mSwipeRightModel, mStructMotionFeatures);
-        onDestroy();
+        mWindowManager.removeView(mSavedView);
+        Log.v("VERBOSE", "View closed");
+
     }
 
     public void onSwipeLeft() {
         Log.v("VERBOSE", "Entered onSwipeLeft");
 
         //compare(mSwipeLeftModel, mStructMotionFeatures);
-        onDestroy();
+        mWindowManager.removeView(mSavedView);
+        Log.v("VERBOSE", "View closed");
+
     }
 
     public void onScrollUp() {
         compare(mScrollUpModel, mStructMotionFeatures);
-        onDestroy();
+        mWindowManager.removeView(mSavedView);
     }
 
     public void onScrollDown() {
         compare(mScrollDownModel, mStructMotionFeatures);
-        onDestroy();
+        mWindowManager.removeView(mSavedView);
     }
 
     public void compare(UserModel mUserModel, StructMotionFeatures mStrangerMotion) {
