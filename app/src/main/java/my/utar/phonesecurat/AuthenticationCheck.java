@@ -40,6 +40,7 @@ public class AuthenticationCheck extends IntentService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.v("TEST","Service cree");
         notifyUSer(Constants.TOAST.CREATION);
 
         //Foreground Service
@@ -68,9 +69,9 @@ public class AuthenticationCheck extends IntentService {
             mParams.width = 1;
 
             mParams.type = WindowManager.LayoutParams.TYPE_PHONE;
-            mParams.flags = WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH|
+            mParams.flags = WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH/*|
                     WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL|
-                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE*/;
 
             mParams.gravity = Gravity.END | Gravity.TOP;
 
@@ -98,6 +99,7 @@ public class AuthenticationCheck extends IntentService {
 
     @Override
     public void onDestroy() {
+        Log.v("TEST","Service stopee");
         stopForeground(true);
         mWindowManager.removeView(mSavedView);
         notifyUSer(Constants.TOAST.DESTRUCTION);
@@ -119,20 +121,24 @@ public class AuthenticationCheck extends IntentService {
         Log.v("VERBOSE", "Entered onSwipeRight");
 
         //compare(mSwipeRightModel, mStructMotionFeatures);
+        onDestroy();
     }
 
     public void onSwipeLeft() {
         Log.v("VERBOSE", "Entered onSwipeLeft");
 
         //compare(mSwipeLeftModel, mStructMotionFeatures);
+        onDestroy();
     }
 
     public void onScrollUp() {
         compare(mScrollUpModel, mStructMotionFeatures);
+        onDestroy();
     }
 
     public void onScrollDown() {
         compare(mScrollDownModel, mStructMotionFeatures);
+        onDestroy();
     }
 
     public void compare(UserModel mUserModel, StructMotionFeatures mStrangerMotion) {

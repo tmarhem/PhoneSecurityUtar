@@ -1,24 +1,19 @@
 package my.utar.phonesecurat;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.Fragment;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Main activity that launches the application, heads directly to the menu.
@@ -42,15 +37,17 @@ public class MainActivity extends Activity {
         Button mButtonStartBaseProfiling;
         Button mButtonRunInBackground;
         Button mButtonStopService;
+        final AlarmManager mAlarmManager;
+
+        if(!Settings.canDrawOverlays(this)){
+            requestSystemAlertPermission(MainActivity.this,5463);
+        }
 
         mButtonSettings = findViewById(R.id.ButtonSettings);
         mButtonStartBaseProfiling = findViewById(R.id.ButtonStartBaseProfiling);
         mButtonRunInBackground = findViewById(R.id.ButtonRunInBackground);
         mButtonStopService = findViewById(R.id.ButtonStopService);
-
-        if(!Settings.canDrawOverlays(this)){
-            requestSystemAlertPermission(MainActivity.this,5463);
-        }
+        mAlarmManager = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
 
         mButtonSettings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,6 +79,7 @@ public class MainActivity extends Activity {
                         mPrefs.contains("mSwipeLeftModel") ||
                         mPrefs.contains("mScrollUpModel") ||
                         mPrefs.contains("mScrollDownModel") );
+                baseProfilingComplete = true;
                 if(!baseProfilingComplete) {
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ctx);
                     alertDialogBuilder.setTitle("Information");
@@ -93,7 +91,9 @@ public class MainActivity extends Activity {
                                     dialog.dismiss();
                                     Intent startIntent = new Intent(MainActivity.this, AuthenticationCheck.class);
                                     startIntent.setAction(Constants.ACTION.START_FOREGROUND_ACTION);
-                                    startService(startIntent);
+                                    PendingIntent mPendingIntent = PendingIntent.getActivity(ctx,0,startIntent,0);
+                                    mAlarmManager.setInexactRepeating(AlarmManager.RTC,System.currentTimeMillis()+5000,5000,mPendingIntent);
+                                    //startService(startIntent);
                                 }
                             });
                     AlertDialog alertDialog = alertDialogBuilder.create();
@@ -112,9 +112,12 @@ public class MainActivity extends Activity {
         mButtonStopService.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent stopIntent = new Intent(MainActivity.this, AuthenticationCheck.class);
+                Intent startIntent = new Intent(MainActivity.this, AuthenticationCheck.class);
+                PendingIntent mPendingIntent = PendingIntent.getActivity(ctx,0,startIntent,0);
+                mAlarmManager.cancel(mPendingIntent);
+                /*Intent stopIntent = new Intent(MainActivity.this, AuthenticationCheck.class);
                 stopIntent.setAction(Constants.ACTION.STOP_FOREGROUND_ACTION);
-                stopService(stopIntent);
+                stopService(stopIntent);*/
             }
 
         });
