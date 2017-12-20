@@ -20,7 +20,7 @@ public class StructMotionFeatures {
     private long motionDuration;
     private double motionAvgSpeed;
     private double motionAvgPressure;
-    float firstPosX, lastPosX, firstPosY, lastPosY;
+    private float firstPosX, lastPosX, firstPosY, lastPosY;
 
 
     @Override

@@ -3,7 +3,6 @@ package my.utar.phonesecurat;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,6 +16,7 @@ import android.widget.Button;
 
 /**
  * Main activity that launches the application, heads directly to the menu.
+ * TODO 20.12 Managing BackButton pressing while stealing a move
  */
 public class MainActivity extends Activity {
 
@@ -25,6 +25,13 @@ public class MainActivity extends Activity {
         final String packageName = context.getPackageName();
         final Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + packageName));
             context.startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Write your code here
+        Log.v("TEST","Back pressed");
+        super.onBackPressed();
     }
 
     @Override
@@ -112,12 +119,9 @@ public class MainActivity extends Activity {
         mButtonStopService.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent startIntent = new Intent(MainActivity.this, AuthenticationCheck.class);
-                PendingIntent mPendingIntent = PendingIntent.getActivity(ctx,0,startIntent,0);
-                mAlarmManager.cancel(mPendingIntent);
-                /*Intent stopIntent = new Intent(MainActivity.this, AuthenticationCheck.class);
+                Intent stopIntent = new Intent(MainActivity.this, AuthenticationCheck.class);
                 stopIntent.setAction(Constants.ACTION.STOP_FOREGROUND_ACTION);
-                stopService(stopIntent);*/
+                stopService(stopIntent);
             }
 
         });

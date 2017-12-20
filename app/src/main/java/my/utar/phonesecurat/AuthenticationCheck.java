@@ -5,18 +5,26 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
+
+import java.util.ArrayList;
 
 public class AuthenticationCheck extends IntentService {
 
@@ -25,10 +33,12 @@ public class AuthenticationCheck extends IntentService {
     private GestureDetector gestureDetector;
     View mSavedView;
     private Handler mHandler;
-    private boolean mSwitch, switchScrollUp, switchScrollDown, switchBlockSwipe;
-    private UserModel mSwipeRightModel, mSwipeLeftModel, mScrollUpModel, mScrollDownModel;
-    private StructMotionElemts mStructMotionElmts;
+    private boolean switchInitialize, switchScrollUp, switchScrollDown, switchBlockSwipe;
     private StructMotionFeatures mStructMotionFeatures;
+    private VelocityTracker mVelocityTracker;
+    private ArrayList<StructMotionElemts> mPointsList;
+    private StructMotionElemts mStructMotionElemts;
+    private boolean isRunning;
 
 
     public AuthenticationCheck() {
@@ -42,8 +52,46 @@ public class AuthenticationCheck extends IntentService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.v("TEST","Service cree");
+        boolean sSR, sSL, sSD, sSU;
+        UserModel mSwipeRightModel, mSwipeLeftModel, mScrollUpModel, mScrollDownModel;
+
+        Log.v("TEST", "Service cree");
         notifyUSer(Constants.TOAST.CREATION);
+        isRunning = false;
+        switchInitialize = false;
+        switchBlockSwipe = false;
+        mHandler = new Handler();
+
+
+        final SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        Gson gsonLoad = new Gson();
+        String mSRM = mPrefs.getString("mSwipeRightModel", "");
+        String mSLM = mPrefs.getString("mSwipeLeftModel", "");
+        String mSUM = mPrefs.getString("mScrollUpModel", "");
+        String mSDM = mPrefs.getString("mScrollDownModel", "");
+        mSwipeRightModel = gsonLoad.fromJson(mSRM, UserModel.class);
+        mSwipeLeftModel = gsonLoad.fromJson(mSLM, UserModel.class);
+        mScrollUpModel = gsonLoad.fromJson(mSUM, UserModel.class);
+        mScrollDownModel = gsonLoad.fromJson(mSDM, UserModel.class);
+        sSR = false;
+        sSL = false;
+        sSU = false;
+        sSD = false;
+
+        if (mSwipeRightModel != null) {
+            sSR = true;
+        }
+        if (mSwipeLeftModel != null) {
+            sSL = true;
+        }
+        if (mScrollUpModel != null) {
+            sSU = true;
+        }
+        if (mScrollDownModel != null) {
+            sSD = true;
+        }
+
+        Log.v("TEST", Boolean.toString(sSR) + Boolean.toString(sSL) + Boolean.toString(sSU) + Boolean.toString(sSD));
 
         //Foreground Service
         if (intent.getAction().equals(Constants.ACTION.START_FOREGROUND_ACTION)) {
@@ -60,7 +108,6 @@ public class AuthenticationCheck extends IntentService {
 
             startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
 
-            mHandler = new Handler();
             mHandler.postDelayed(addListeningWindow, 10000);
 
 
@@ -71,31 +118,33 @@ public class AuthenticationCheck extends IntentService {
         return START_STICKY;
     }
 
-    private Runnable addListeningWindow = new Runnable()
-    {
-        public void run()
-        {
-            Log.v("VERBOSE","Entered runnable");
-            mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-            WindowManager.LayoutParams mParams = new WindowManager.LayoutParams();
+    private Runnable addListeningWindow = new Runnable() {
+        public void run() {
+            Log.v("VERBOSE", "Entered runnable");
+            if (!isRunning) {
+                mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+                WindowManager.LayoutParams mParams = new WindowManager.LayoutParams();
             /*if(mSavedView != null) {
                 mWindowManager.removeView(mSavedView);
             }*/
-            // Window adding
-            View mView = new HUDView(ctx);
-            mSavedView = mView;
-            mParams.height = 1;
-            mParams.width = 1;
-
-            mParams.type = WindowManager.LayoutParams.TYPE_PHONE;
-            mParams.flags = WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH/*|
-                    WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL|
-                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE*/;
-            mParams.gravity = Gravity.END | Gravity.TOP;
-            mWindowManager.addView(mView, mParams);
-            gestureDetector = new GestureDetector(ctx, new GestureListener());
-            mHandler.postDelayed(addListeningWindow, 10000);
-            Log.v("VERBOSE","Exiting runnable");
+                // Window adding
+                View mView = new HUDView(ctx);
+                mSavedView = mView;
+                mParams.height = 1;
+                mParams.width = 1;
+                mParams.type = WindowManager.LayoutParams.TYPE_PHONE;
+                mParams.flags = WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
+                /*
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                */
+                mParams.gravity = Gravity.END | Gravity.TOP;
+                mWindowManager.addView(mView, mParams);
+                gestureDetector = new GestureDetector(ctx, new GestureListener());
+                mHandler.postDelayed(addListeningWindow, 10000);
+                isRunning = true;
+            }
+            Log.v("VERBOSE", "Exiting runnable");
         }
     };
 
@@ -112,20 +161,20 @@ public class AuthenticationCheck extends IntentService {
 
     @Override
     public void onDestroy() {
-        Log.v("TEST","Service stopee");
+        Log.v("TEST", "Service stopee");
         stopForeground(true);
-        mWindowManager.removeView(mSavedView);
         notifyUSer(Constants.TOAST.DESTRUCTION);
+        mHandler.removeCallbacksAndMessages(null);
         super.onDestroy();
     }
 
 
     public void notifyUSer(int id) {
-        switch (id){
-            case Constants.TOAST.CREATION :
+        switch (id) {
+            case Constants.TOAST.CREATION:
                 Toast.makeText(ctx, "Service started", Toast.LENGTH_SHORT).show();
                 break;
-            case Constants.TOAST.DESTRUCTION :
+            case Constants.TOAST.DESTRUCTION:
                 Toast.makeText(ctx, "Service stopped", Toast.LENGTH_SHORT).show();
                 break;
         }
@@ -136,6 +185,7 @@ public class AuthenticationCheck extends IntentService {
 
         //compare(mSwipeRightModel, mStructMotionFeatures);
         mWindowManager.removeView(mSavedView);
+        isRunning = false;
         Log.v("VERBOSE", "View closed");
 
     }
@@ -145,18 +195,23 @@ public class AuthenticationCheck extends IntentService {
 
         //compare(mSwipeLeftModel, mStructMotionFeatures);
         mWindowManager.removeView(mSavedView);
+        isRunning = false;
         Log.v("VERBOSE", "View closed");
 
     }
 
     public void onScrollUp() {
-        compare(mScrollUpModel, mStructMotionFeatures);
+        //compare(mScrollUpModel, mStructMotionFeatures);
         mWindowManager.removeView(mSavedView);
+        isRunning = false;
+
     }
 
     public void onScrollDown() {
-        compare(mScrollDownModel, mStructMotionFeatures);
+        //compare(mScrollDownModel, mStructMotionFeatures);
         mWindowManager.removeView(mSavedView);
+        isRunning = false;
+
     }
 
     public void compare(UserModel mUserModel, StructMotionFeatures mStrangerMotion) {
@@ -259,13 +314,95 @@ public class AuthenticationCheck extends IntentService {
         }
 
         @Override
+        public boolean onKeyDown(int keyCode, KeyEvent event) {
+            Log.d(this.getClass().getName(), "onkeydown");
+
+            if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+                Log.d(this.getClass().getName(), "back button pressed");
+            }
+            return super.onKeyDown(keyCode, event);
+        }
+
+
+        @Override
         public boolean onTouch(View v, MotionEvent event) {
             return false;
         }
 
         @Override
         public boolean onTouchEvent(MotionEvent event) {
-            Log.v("VERBOSE", Integer.toString(event.getActionMasked()));
+            switch (event.getActionMasked()) {
+/*
+ * ACTION_DOWN is the first touch of the screen
+ * ACTION_UP is the last touch of the screen
+ * ACTION_MOVE is all the intermediate points in between
+ * We focus on ACTION_MOVE because on ACTION_DOWN / UP The speed can be 0 and mess the average
+ */
+                case MotionEvent.ACTION_DOWN:
+                    break;
+
+                case MotionEvent.ACTION_MOVE:
+                    if (!switchInitialize) {
+                        //INITIALISATION
+                        if (mVelocityTracker == null) {
+                            mVelocityTracker = VelocityTracker.obtain();
+                        } else {
+                            mVelocityTracker.clear();
+                        }
+                        //Creation or reinitialisation du List
+                        if (mPointsList == null) {
+                            mPointsList = new ArrayList<>();
+                        } else {
+                            mPointsList.clear();
+                        }
+                        //Creation or reinitialisation du StructMotionElemts
+                        if (mStructMotionElemts == null) {
+                            mStructMotionElemts = new StructMotionElemts();
+                        } else {
+                            mStructMotionElemts.clear();
+                        }
+                        //Creation or reinitialisation du StructMotionFeatures
+                        if (mStructMotionFeatures == null) {
+                            mStructMotionFeatures = new StructMotionFeatures();
+                        } else {
+                            mStructMotionFeatures.clear();
+                        }
+                        switchInitialize = true;
+                    }
+                    mStructMotionElemts.compute(event, mPointsList, mVelocityTracker);
+                    //DISPLAY
+                    break;
+
+                case MotionEvent.ACTION_UP:
+                    if (switchInitialize) {
+                        mStructMotionFeatures.compute(mPointsList);
+                        switchInitialize = false;
+                        switchBlockSwipe = false;
+
+                        float distanceY = mStructMotionFeatures.getLastPosY() - mStructMotionFeatures.getFirstPosY();
+                        float distanceX = mStructMotionFeatures.getLastPosX() - mStructMotionFeatures.getFirstPosX();
+                        double angle = Math.toDegrees(Math.atan(distanceY / distanceX));
+
+                        if (switchScrollUp && !((angle > -50.0) && (angle < 50.0))) {
+                            switchScrollUp = false;
+                            switchBlockSwipe = true;
+                            onScrollUp();
+                        }
+
+
+                        if (switchScrollDown && !((angle > -50.0) && (angle < 50.0))) {
+                            switchScrollDown = false;
+                            switchBlockSwipe = true;
+                            onScrollDown();
+                        }
+
+                        switchScrollDown = false;
+                        switchScrollUp = false;
+                    }
+                    mWindowManager.removeView(mSavedView);
+                    isRunning = false;
+                    break;
+            }
             performClick();
             return gestureDetector.onTouchEvent(event);
         }
