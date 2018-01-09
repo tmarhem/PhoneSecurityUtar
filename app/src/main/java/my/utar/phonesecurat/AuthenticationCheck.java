@@ -5,10 +5,8 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
@@ -24,6 +22,8 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 public class AuthenticationCheck extends IntentService {
@@ -39,7 +39,6 @@ public class AuthenticationCheck extends IntentService {
     private ArrayList<StructMotionElemts> mPointsList;
     private StructMotionElemts mStructMotionElemts;
     private boolean isRunning;
-    //boolean sSR, sSL, sSD, sSU;
     UserModel mSwipeRightModel, mSwipeLeftModel, mScrollUpModel, mScrollDownModel;
 
 
@@ -63,43 +62,11 @@ public class AuthenticationCheck extends IntentService {
         switchBlockSwipe = false;
         mHandler = new Handler();
 
+        mSwipeRightModel = intent.getParcelableExtra("mSwipeRightModel");
+        mSwipeLeftModel = intent.getParcelableExtra("mSwipeLeftModel");
+        mScrollUpModel = intent.getParcelableExtra("mScrollUpModel");
+        mScrollDownModel = intent.getParcelableExtra("mScrollDownModel");
 
-        /*final SharedPreferences mPrefs = getSharedPreferences("mPrefs", MODE_PRIVATE);
-        Gson gsonLoad = new Gson();
-        Log.v("TEST", Boolean.toString(mPrefs.contains("mSwipeRightModel")));
-        Log.v("TEST", Boolean.toString(mPrefs.contains("mSwipeLeftModel")));
-        Log.v("TEST", Boolean.toString(mPrefs.contains("mScrollUpModel")));
-        Log.v("TEST", Boolean.toString(mPrefs.contains("mScrollDownModel")));
-
-        String mSRM = mPrefs.getString("mSwipeRightModel", "");
-        String mSLM = mPrefs.getString("mSwipeLeftModel", "");
-        String mSUM = mPrefs.getString("mScrollUpModel", "");
-        String mSDM = mPrefs.getString("mScrollDownModel", "");
-        mSwipeRightModel = gsonLoad.fromJson(mSRM, UserModel.class);
-        mSwipeLeftModel = gsonLoad.fromJson(mSLM, UserModel.class);
-        mScrollUpModel = gsonLoad.fromJson(mSUM, UserModel.class);
-        mScrollDownModel = gsonLoad.fromJson(mSDM, UserModel.class);
-        sSR = false;
-        sSL = false;
-        sSU = false;
-        sSD = false;
-
-        if (mSwipeRightModel != null) {
-            sSR = true;
-        }
-        if (mSwipeLeftModel != null) {
-            sSL = true;
-        }
-        if (mScrollUpModel != null) {
-            sSU = true;
-        }
-        if (mScrollDownModel != null) {
-            sSD = true;
-        }
-
-        Log.v("TEST", Boolean.toString(sSR) + Boolean.toString(sSL) + Boolean.toString(sSU) + Boolean.toString(sSD));*/
-
-        //Foreground Service
         if (intent.getAction().equals(Constants.ACTION.START_FOREGROUND_ACTION)) {
             Intent notificationIntent = new Intent(ctx, MainActivity.class);
             notificationIntent.setAction(Constants.ACTION.MAIN_ACTION);
@@ -128,6 +95,7 @@ public class AuthenticationCheck extends IntentService {
         public void run() {
             Log.v("VERBOSE", "Entered runnable");
             if (!isRunning) {
+                notifyUSer(Constants.TOAST.STEALING);
                 mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
                 WindowManager.LayoutParams mParams = new WindowManager.LayoutParams();
             /*if(mSavedView != null) {
@@ -141,6 +109,7 @@ public class AuthenticationCheck extends IntentService {
                 mParams.type = WindowManager.LayoutParams.TYPE_PHONE;
                 mParams.flags = WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
                 /*
+                    //Parameters for fully transparent retrieving (Requires rooted phone)
                     WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
                     WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                 */
@@ -183,13 +152,17 @@ public class AuthenticationCheck extends IntentService {
             case Constants.TOAST.DESTRUCTION:
                 Toast.makeText(ctx, "Service stopped", Toast.LENGTH_SHORT).show();
                 break;
+            case Constants.TOAST.STEALING:
+                Toast.makeText(ctx, "Retrieving Touch", Toast.LENGTH_SHORT).show();
+                break;
+
         }
     }
 
     public void onSwipeRight() {
         Log.v("VERBOSE", "Entered onSwipeRight");
 
-        //compare(mSwipeRightModel, mStructMotionFeatures);
+        compare(mSwipeRightModel, mStructMotionFeatures);
         mWindowManager.removeView(mSavedView);
         isRunning = false;
         Log.v("VERBOSE", "View closed");
@@ -199,7 +172,7 @@ public class AuthenticationCheck extends IntentService {
     public void onSwipeLeft() {
         Log.v("VERBOSE", "Entered onSwipeLeft");
 
-        //compare(mSwipeLeftModel, mStructMotionFeatures);
+        compare(mSwipeLeftModel, mStructMotionFeatures);
         mWindowManager.removeView(mSavedView);
         isRunning = false;
         Log.v("VERBOSE", "View closed");
@@ -207,54 +180,64 @@ public class AuthenticationCheck extends IntentService {
     }
 
     public void onScrollUp() {
-        //compare(mScrollUpModel, mStructMotionFeatures);
+        compare(mScrollUpModel, mStructMotionFeatures);
         mWindowManager.removeView(mSavedView);
         isRunning = false;
 
     }
 
     public void onScrollDown() {
-        //compare(mScrollDownModel, mStructMotionFeatures);
+        compare(mScrollDownModel, mStructMotionFeatures);
         mWindowManager.removeView(mSavedView);
         isRunning = false;
 
     }
 
-    public void compare(UserModel mUserModel, StructMotionFeatures mStrangerMotion) {
-        /*boolean isAbsLengthMatched = false;
-        boolean isLengthMatched = false;
-        boolean isDurationMatched = false;
-        boolean isSpeedMatched = false;
-        boolean isPressureMatched = false;*/
-        double sensibility = 0.75;
+    /**
+     * Tranform Double entity into a string with 2 decimals
+     *
+     * @param ratio Double entity
+     * @return String equivalent matching the format
+     */
+    public String toPercentage(Double ratio) {
+        NumberFormat nf = new DecimalFormat("0.##");
 
-        if (Math.abs(mUserModel.getAvgAbsLength() / mStrangerMotion.getMotionAbsLength()) >= sensibility) {
-            //isAbsLengthMatched = true;
-            Log.v("RESULT", "absLength matched");
+        if (ratio > 1) {
+            ratio = 1 / ratio;
         }
-        if (Math.abs((double) mUserModel.getAvgLength() / (double) mStrangerMotion.getMotionLength()) >= sensibility) {
-            //isLengthMatched = true;
-            Log.v("RESULT", "length matched");
-        }
+        ratio = ratio * 100;
 
-        if (Math.abs((double) mUserModel.getAvgDuration() / (double) mStrangerMotion.getMotionDuration()) >= sensibility) {
-            //isDurationMatched = true;
-            Log.v("RESULT", "duration matched");
-        }
-
-        if (Math.abs(mUserModel.getAvgSpeed() / mStrangerMotion.getMotionAvgSpeed()) >= sensibility) {
-            //isSpeedMatched = true;
-            Log.v("RESULT", "duration matched");
-        }
-
-        if (Math.abs(mUserModel.getAvgPressure() / mStrangerMotion.getMotionAvgPressure()) >= sensibility) {
-            //isPressureMatched = true;
-            Log.v("RESULT", "pressure matched");
-        }
+        return nf.format(ratio);
     }
 
     /**
-     * Extending the existing class SimpleOnGestureListener to our needs, customization of thresholds and recognized movements
+     * Compares a move to the model
+     *
+     * @param mUserModel      UserModel
+     * @param mStrangerMotion StructMotionsFeatures
+     */
+    public void compare(UserModel mUserModel, StructMotionFeatures mStrangerMotion) {
+
+        double modelRatioLength = mUserModel.getAvgAbsLength() / mUserModel.getAvgLength();
+        double strangerRatioLength = mStrangerMotion.getMotionAbsLength() / mStrangerMotion.getMotionLength();
+
+        double ratioCurve = strangerRatioLength / modelRatioLength;
+        double ratioLength = Long.valueOf(mUserModel.getAvgLength()).doubleValue() / Long.valueOf(mStrangerMotion.getMotionLength()).doubleValue();
+        double ratioDuration = Long.valueOf(mUserModel.getAvgDuration()).doubleValue() / Long.valueOf(mStrangerMotion.getMotionDuration()).doubleValue();
+        double ratioSpeed = mUserModel.getAvgSpeed() / mStrangerMotion.getMotionAvgSpeed();
+        double ratioPressure = mUserModel.getAvgPressure() / mStrangerMotion.getMotionAvgPressure();
+
+        Log.v("VERBOSE", "Match results:\n" +
+                toPercentage(ratioCurve) + " %(ratioCurve)\n" +
+                toPercentage(ratioLength) + "%(ratioLength)\n" +
+                toPercentage(ratioDuration) + "%(ratioDuration)\n" +
+                toPercentage(ratioSpeed) + "%(ratioSpeed)\n" +
+                toPercentage(ratioPressure) + "%(ratioPressure)\n"
+        );
+    }
+
+    /**
+     * Extending the existing class SimpleOnGestureListener to our needs, for customization of thresholds and recognized movements
      */
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
 

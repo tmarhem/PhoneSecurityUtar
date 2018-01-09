@@ -151,7 +151,6 @@ public class BaseProfilingActivity extends Activity {
         modelsFeedbackIntent.putExtra("mScrollUpModel", mScrollUpModel);
         modelsFeedbackIntent.putExtra("mScrollDownModel", mScrollDownModel);
 
-
         setResult(RESULT_OK, modelsFeedbackIntent);
         super.onBackPressed();
     }
@@ -375,24 +374,17 @@ public class BaseProfilingActivity extends Activity {
      */
     public void compare(UserModel mUserModel, StructMotionFeatures mStrangerMotion) {
 
-
         TextView absLength = findViewById(R.id.absLengthMatchResult);
         TextView length = findViewById(R.id.lengthMatchResult);
         TextView duration = findViewById(R.id.durationMatchResult);
         TextView speed = findViewById(R.id.speedMatchResult);
         TextView pressure = findViewById(R.id.pressureMatchResult);
 
-        /*boolean isAbsLengthMatched = false;
-        boolean isLengthMatched = false;
-        boolean isDurationMatched = false;
-        boolean isSpeedMatched = false;
-        boolean isPressureMatched = false;*/
         absLength.setText("   not matched");
         length.setText("   not matched");
         duration.setText("   not matched");
         speed.setText("   not matched");
         pressure.setText("   not matched");
-
 
         double modelRatioLength = mUserModel.getAvgAbsLength() / mUserModel.getAvgLength();
         double strangerRatioLength = mStrangerMotion.getMotionAbsLength() / mStrangerMotion.getMotionLength();

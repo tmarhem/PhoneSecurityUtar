@@ -18,6 +18,8 @@ public class Constants {
     public interface TOAST{
         int CREATION = 1;
         int DESTRUCTION = 2;
+        int STEALING = 3;
+
     }
 
     public interface REQUEST_CODE{
