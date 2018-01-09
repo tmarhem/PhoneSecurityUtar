@@ -72,7 +72,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="103dp"
         android:layout_marginTop="150dp"
-        android:text="Abs Length match"/>
+        android:text="Curve match" />
 
     <TextView
         android:id="@+id/LengthMatchTitle"

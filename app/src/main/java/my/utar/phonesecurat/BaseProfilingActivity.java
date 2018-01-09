@@ -19,6 +19,8 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.lang.Math;
 
@@ -373,6 +375,7 @@ public class BaseProfilingActivity extends Activity {
      */
     public void compare(UserModel mUserModel, StructMotionFeatures mStrangerMotion) {
 
+
         TextView absLength = findViewById(R.id.absLengthMatchResult);
         TextView length = findViewById(R.id.lengthMatchResult);
         TextView duration = findViewById(R.id.durationMatchResult);
@@ -390,40 +393,22 @@ public class BaseProfilingActivity extends Activity {
         speed.setText("   not matched");
         pressure.setText("   not matched");
 
-        double modelRatioLength = (Math.abs((double) mUserModel.getAvgLength() / (double) mStrangerMotion.getMotionLength()))
-        / (Math.abs(mUserModel.getAvgAbsLength() / mStrangerMotion.getMotionAbsLength()));
 
-        absLength.setText(Double.toString(modelRatioLength) + " %");
-        length.setText(Double.toString(Math.abs((double) mUserModel.getAvgLength() / (double) mStrangerMotion.getMotionLength())) + " %");
-        duration.setText(Double.toString(Math.abs((double) mUserModel.getAvgDuration() / (double) mStrangerMotion.getMotionDuration())) + " %");
-        speed.setText(Double.toString(Math.abs(mUserModel.getAvgSpeed() / mStrangerMotion.getMotionAvgSpeed())) + " %");
-        pressure.setText(Double.toString(Math.abs(mUserModel.getAvgPressure() / mStrangerMotion.getMotionAvgPressure())) + " %");
+        double modelRatioLength = mUserModel.getAvgAbsLength() / mUserModel.getAvgLength();
+        double strangerRatioLength = mStrangerMotion.getMotionAbsLength() / mStrangerMotion.getMotionLength();
+        double ratioCurve = strangerRatioLength / modelRatioLength;
 
-        /*double sensibility = 0.75;
-        if (Math.abs(mUserModel.getAvgAbsLength() / mStrangerMotion.getMotionAbsLength()) >= sensibility) {
-            //isAbsLengthMatched = true;
-            absLength.setText("   MATCHED");
-        }
-        if (Math.abs((double) mUserModel.getAvgLength() / (double) mStrangerMotion.getMotionLength()) >= sensibility) {
-            //isLengthMatched = true;
-            length.setText("   MATCHED");
-        }
+        double ratioLength = Long.valueOf(mUserModel.getAvgLength()).doubleValue() / Long.valueOf(mStrangerMotion.getMotionLength()).doubleValue();
+        double ratioDuration = Long.valueOf(mUserModel.getAvgDuration()).doubleValue() / Long.valueOf(mStrangerMotion.getMotionDuration()).doubleValue();
+        double ratioSpeed = mUserModel.getAvgSpeed() / mStrangerMotion.getMotionAvgSpeed();
+        double ratioPressure = mUserModel.getAvgPressure() / mStrangerMotion.getMotionAvgPressure();
 
-        if (Math.abs((double) mUserModel.getAvgDuration() / (double) mStrangerMotion.getMotionDuration()) >= sensibility) {
-            //isDurationMatched = true;
-            duration.setText("   MATCHED");
-        }
 
-        if (Math.abs(mUserModel.getAvgSpeed() / mStrangerMotion.getMotionAvgSpeed()) >= sensibility) {
-            //isSpeedMatched = true;
-            speed.setText("   MATCHED");
-        }
-
-        if (Math.abs(mUserModel.getAvgPressure() / mStrangerMotion.getMotionAvgPressure()) >= sensibility) {
-            //isPressureMatched = true;
-            pressure.setText("   MATCHED");
-        }*/
-
+        absLength.setText("   " + toPercentage(ratioCurve) + " %");
+        length.setText("   " + toPercentage(ratioLength) + " %");
+        duration.setText("   " + toPercentage(ratioDuration) + " %");
+        speed.setText("   " + toPercentage(ratioSpeed) + " %");
+        pressure.setText("   " + toPercentage(ratioPressure) + " %");
     }
 
     public void refreshCounters() {
@@ -455,6 +440,17 @@ public class BaseProfilingActivity extends Activity {
         mTextCounterSwipeLeft.setText(Integer.toString(counterSwipeLeft));
         mTextCounterScollUp.setText(Integer.toString(counterScrollUp));
         mTextCounterScrollDown.setText(Integer.toString(counterScrollDown));
+    }
+
+    public String toPercentage(Double ratio) {
+        NumberFormat nf = new DecimalFormat("0.##");
+
+        if (ratio > 1) {
+            ratio = 1 / ratio;
+        }
+        ratio = ratio * 100;
+
+        return nf.format(ratio);
     }
 }
 
