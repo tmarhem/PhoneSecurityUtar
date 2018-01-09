@@ -17,11 +17,13 @@ import com.google.gson.Gson;
 
 /**
  * Main activity that launches the application, heads directly to the menu.
+ * TODO 09.01 Replacing matching boolean by percentages
  * TODO 09.01 Managing save profiles from the MainActivity
  * TODO 20.12 Managing BackButton not working while trying to steal a move
  * TODO 9.01 Replacing that by shutting the capture while touching the bottom of the device
  * TODO 20.12 visual style of the first menu
  * TODO 20.12 Classifier
+ * TODO 09.01 Arranger les pourcentages affichés (entre 0 et 1), limiter le nombres de décimales
  */
 public class MainActivity extends Activity {
 
@@ -127,10 +129,16 @@ public class MainActivity extends Activity {
         {
             @Override
             public void onClick(View v) {
+                //Shutting down the background service when going to BaseProfilingActivity
                 Intent stopIntent = new Intent(MainActivity.this, AuthenticationCheck.class);
                 stopIntent.setAction(Constants.ACTION.STOP_FOREGROUND_ACTION);
                 stopService(stopIntent);
+
                 Intent goToStartBaseProfiling = new Intent(MainActivity.this, BaseProfilingActivity.class);
+                goToStartBaseProfiling.putExtra("mSwipeRightModel",mSwipeRightModel);
+                goToStartBaseProfiling.putExtra("mSwipeLeftModel",mSwipeLeftModel);
+                goToStartBaseProfiling.putExtra("mScrollUpModel",mScrollUpModel);
+                goToStartBaseProfiling.putExtra("mScrollDownModel",mScrollDownModel);
                 startActivityForResult(goToStartBaseProfiling, Constants.REQUEST_CODE.MODELS_RETRIEVING);
             }
 

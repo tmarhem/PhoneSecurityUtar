@@ -44,8 +44,7 @@ public class BaseProfilingActivity extends Activity {
     private final static int NUMBER_OF_INTENT = 10;
     private boolean mSwitch, switchScrollUp, switchScrollDown, switchBlockSwipe;
     Button mBtnReset;
-    Intent modelsFeedbackIntent;
-
+    Intent startIntent;
 
     TextView absLength;
     TextView length;
@@ -74,54 +73,12 @@ public class BaseProfilingActivity extends Activity {
         mScrollUpList = new ArrayList<>();
         mScrollDownList = new ArrayList<>();
 
-        modelsFeedbackIntent = new Intent();
+        startIntent = this.getIntent();
 
-        final SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
-
-        Gson gsonLoad = new Gson();
-        String mSRM = mPrefs.getString("mSwipeRightModel", "");
-        String mSLM = mPrefs.getString("mSwipeLeftModel", "");
-        String mSUM = mPrefs.getString("mScrollUpModel", "");
-        String mSDM = mPrefs.getString("mScrollDownModel", "");
-        mSwipeRightModel = gsonLoad.fromJson(mSRM, UserModel.class);
-        mSwipeLeftModel = gsonLoad.fromJson(mSLM, UserModel.class);
-        mScrollUpModel = gsonLoad.fromJson(mSUM, UserModel.class);
-        mScrollDownModel = gsonLoad.fromJson(mSDM, UserModel.class);
-
-
-        if (mSwipeRightModel != null) {
-            Log.v("TEST", "mSwipeRightModel was found");
-            counterSwipeRight = 0;
-
-        } else {
-            mSwipeRightModel = new UserModel();
-            counterSwipeRight = NUMBER_OF_INTENT - mSwipeRightList.size();
-        }
-
-        if (mSwipeLeftModel != null) {
-            counterSwipeLeft = 0;
-        } else {
-            mSwipeLeftModel = new UserModel();
-            counterSwipeLeft = NUMBER_OF_INTENT - mSwipeLeftList.size();
-        }
-
-        if (mScrollUpModel != null) {
-            counterScrollUp = 0;
-        } else {
-            mScrollUpModel = new UserModel();
-            counterScrollUp = NUMBER_OF_INTENT - mScrollUpList.size();
-        }
-
-        if (mScrollDownModel != null) {
-            counterScrollDown = 0;
-        } else {
-            mScrollDownModel = new UserModel();
-            counterScrollDown = NUMBER_OF_INTENT - mScrollDownList.size();
-        }
-
-        mSwipeLeftModel = new UserModel();
-        mScrollUpModel = new UserModel();
-        mScrollDownModel = new UserModel();
+        mSwipeRightModel = startIntent.getParcelableExtra("mSwipeRightModel");
+        mSwipeLeftModel = startIntent.getParcelableExtra("mSwipeLeftModel");
+        mScrollUpModel = startIntent.getParcelableExtra("mScrollUpModel");
+        mScrollDownModel = startIntent.getParcelableExtra("mScrollDownModel");
 
         mInstantValuesDisplay = findViewById(R.id.instantValuesDisplay);
         mAvgValuesDisplay = findViewById(R.id.avgValuesDispay);
@@ -140,6 +97,8 @@ public class BaseProfilingActivity extends Activity {
         mTextCounterSwipeLeft.setText(Integer.toString(counterSwipeLeft));
         mTextCounterScollUp.setText(Integer.toString(counterScrollUp));
         mTextCounterScrollDown.setText(Integer.toString(counterScrollDown));
+
+        refreshCounters();
 
         mBtnReset = findViewById(R.id.btnReset);
         gestureDetector = new GestureDetector(mContext, new GestureListener());
@@ -165,21 +124,7 @@ public class BaseProfilingActivity extends Activity {
                                 mScrollDownModel.clear();
 
                                 setPendingText();
-
-                                SharedPreferences.Editor prefsEditor = mPrefs.edit();
-                                prefsEditor.clear();
-                                prefsEditor.apply();
-
-
-                                counterSwipeRight = NUMBER_OF_INTENT - mSwipeRightList.size();
-                                counterSwipeLeft = NUMBER_OF_INTENT - mSwipeLeftList.size();
-                                counterScrollUp = NUMBER_OF_INTENT - mScrollUpList.size();
-                                counterScrollDown = NUMBER_OF_INTENT - mScrollDownList.size();
-
-                                mTextCounterSwipeRight.setText(Integer.toString(counterSwipeRight));
-                                mTextCounterSwipeLeft.setText(Integer.toString(counterSwipeLeft));
-                                mTextCounterScollUp.setText(Integer.toString(counterScrollUp));
-                                mTextCounterScrollDown.setText(Integer.toString(counterScrollDown));
+                                refreshCounters();
 
                             }
                         })
@@ -198,7 +143,14 @@ public class BaseProfilingActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-            setResult(RESULT_OK,modelsFeedbackIntent);
+        Intent modelsFeedbackIntent = new Intent();
+        modelsFeedbackIntent.putExtra("mSwipeRightModel", mSwipeRightModel);
+        modelsFeedbackIntent.putExtra("mSwipeLeftModel", mSwipeLeftModel);
+        modelsFeedbackIntent.putExtra("mScrollUpModel", mScrollUpModel);
+        modelsFeedbackIntent.putExtra("mScrollDownModel", mScrollDownModel);
+
+
+        setResult(RESULT_OK, modelsFeedbackIntent);
         super.onBackPressed();
     }
 
@@ -367,15 +319,8 @@ public class BaseProfilingActivity extends Activity {
             counterSwipeRight = NUMBER_OF_INTENT - mSwipeRightList.size();
             if (counterSwipeRight == 0 && mSwipeRightModel.getIsComputed() == 0) {
                 mSwipeRightModel.compute(mSwipeRightList);
-                SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
-                SharedPreferences.Editor prefsEditor = mPrefs.edit();
-                Gson gsonSave = new Gson();
-                String json = gsonSave.toJson(mSwipeRightModel);
-                prefsEditor.putString("mSwipeRightModel", json);
-                prefsEditor.apply();
-                modelsFeedbackIntent.putExtra("mSwipeRightModel",mSwipeRightModel);
             }
-            mTextCounterSwipeRight.setText(String.format("%d", counterSwipeRight));
+            refreshCounters();
         } else {
             compare(mSwipeRightModel, mStructMotionFeatures);
         }
@@ -387,16 +332,8 @@ public class BaseProfilingActivity extends Activity {
             counterSwipeLeft = NUMBER_OF_INTENT - mSwipeLeftList.size();
             if (counterSwipeLeft == 0 && mSwipeLeftModel.getIsComputed() == 0) {
                 mSwipeLeftModel.compute(mSwipeLeftList);
-                SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
-                SharedPreferences.Editor prefsEditor = mPrefs.edit();
-                Gson gsonSave = new Gson();
-                String json = gsonSave.toJson(mSwipeLeftModel);
-                prefsEditor.putString("mSwipeLeftModel", json);
-                prefsEditor.apply();
-                modelsFeedbackIntent.putExtra("mSwipeLeftModel",mSwipeLeftModel);
-
             }
-            mTextCounterSwipeLeft.setText(String.format("%d", counterSwipeLeft));
+            refreshCounters();
         } else {
             compare(mSwipeLeftModel, mStructMotionFeatures);
         }
@@ -408,15 +345,8 @@ public class BaseProfilingActivity extends Activity {
             counterScrollUp = NUMBER_OF_INTENT - mScrollUpList.size();
             if (counterScrollUp == 0 && mScrollUpModel.getIsComputed() == 0) {
                 mScrollUpModel.compute(mScrollUpList);
-                SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
-                SharedPreferences.Editor prefsEditor = mPrefs.edit();
-                Gson gsonSave = new Gson();
-                String json = gsonSave.toJson(mScrollUpModel);
-                prefsEditor.putString("mScrollUpModel", json);
-                prefsEditor.apply();
-                modelsFeedbackIntent.putExtra("mScrollUpModel",mScrollUpModel);
             }
-            mTextCounterScollUp.setText(String.format("%d", counterScrollUp));
+            refreshCounters();
         } else {
             compare(mScrollUpModel, mStructMotionFeatures);
         }
@@ -428,15 +358,8 @@ public class BaseProfilingActivity extends Activity {
             counterScrollDown = NUMBER_OF_INTENT - mScrollDownList.size();
             if (counterScrollDown == 0 && mScrollDownModel.getIsComputed() == 0) {
                 mScrollDownModel.compute(mScrollDownList);
-                SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
-                SharedPreferences.Editor prefsEditor = mPrefs.edit();
-                Gson gsonSave = new Gson();
-                String json = gsonSave.toJson(mScrollDownModel);
-                prefsEditor.putString("mScrollDownModel", json);
-                prefsEditor.apply();
-                modelsFeedbackIntent.putExtra("mScrollDownModel",mScrollDownModel);
             }
-            mTextCounterScrollDown.setText(String.format("%d", counterScrollDown));
+            refreshCounters();
         } else {
             compare(mScrollDownModel, mStructMotionFeatures);
         }
@@ -467,8 +390,16 @@ public class BaseProfilingActivity extends Activity {
         speed.setText("   not matched");
         pressure.setText("   not matched");
 
-        double sensibility = 0.75;
+        double modelRatioLength = (Math.abs((double) mUserModel.getAvgLength() / (double) mStrangerMotion.getMotionLength()))
+        / (Math.abs(mUserModel.getAvgAbsLength() / mStrangerMotion.getMotionAbsLength()));
 
+        absLength.setText(Double.toString(modelRatioLength) + " %");
+        length.setText(Double.toString(Math.abs((double) mUserModel.getAvgLength() / (double) mStrangerMotion.getMotionLength())) + " %");
+        duration.setText(Double.toString(Math.abs((double) mUserModel.getAvgDuration() / (double) mStrangerMotion.getMotionDuration())) + " %");
+        speed.setText(Double.toString(Math.abs(mUserModel.getAvgSpeed() / mStrangerMotion.getMotionAvgSpeed())) + " %");
+        pressure.setText(Double.toString(Math.abs(mUserModel.getAvgPressure() / mStrangerMotion.getMotionAvgPressure())) + " %");
+
+        /*double sensibility = 0.75;
         if (Math.abs(mUserModel.getAvgAbsLength() / mStrangerMotion.getMotionAbsLength()) >= sensibility) {
             //isAbsLengthMatched = true;
             absLength.setText("   MATCHED");
@@ -491,8 +422,39 @@ public class BaseProfilingActivity extends Activity {
         if (Math.abs(mUserModel.getAvgPressure() / mStrangerMotion.getMotionAvgPressure()) >= sensibility) {
             //isPressureMatched = true;
             pressure.setText("   MATCHED");
+        }*/
+
+    }
+
+    public void refreshCounters() {
+        if (mSwipeRightModel.getIsComputed() == 1) {
+            counterSwipeRight = 0;
+        } else {
+            counterSwipeRight = NUMBER_OF_INTENT - mSwipeRightList.size();
         }
 
+        if (mSwipeLeftModel.getIsComputed() == 1) {
+            counterSwipeLeft = 0;
+        } else {
+            counterSwipeLeft = NUMBER_OF_INTENT - mSwipeLeftList.size();
+        }
+
+        if (mScrollUpModel.getIsComputed() == 1) {
+            counterScrollUp = 0;
+        } else {
+            counterScrollUp = NUMBER_OF_INTENT - mScrollUpList.size();
+        }
+
+        if (mScrollDownModel.getIsComputed() == 1) {
+            counterScrollDown = 0;
+        } else {
+            counterScrollDown = NUMBER_OF_INTENT - mScrollDownList.size();
+        }
+
+        mTextCounterSwipeRight.setText(Integer.toString(counterSwipeRight));
+        mTextCounterSwipeLeft.setText(Integer.toString(counterSwipeLeft));
+        mTextCounterScollUp.setText(Integer.toString(counterScrollUp));
+        mTextCounterScrollDown.setText(Integer.toString(counterScrollDown));
     }
 }
 
