@@ -19,4 +19,8 @@ public class Constants {
         int CREATION = 1;
         int DESTRUCTION = 2;
     }
+
+    public interface REQUEST_CODE{
+        int MODELS_RETRIEVING = 4444;
+    }
 }

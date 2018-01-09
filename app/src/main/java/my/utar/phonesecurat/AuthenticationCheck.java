@@ -39,6 +39,8 @@ public class AuthenticationCheck extends IntentService {
     private ArrayList<StructMotionElemts> mPointsList;
     private StructMotionElemts mStructMotionElemts;
     private boolean isRunning;
+    //boolean sSR, sSL, sSD, sSU;
+    UserModel mSwipeRightModel, mSwipeLeftModel, mScrollUpModel, mScrollDownModel;
 
 
     public AuthenticationCheck() {
@@ -52,8 +54,7 @@ public class AuthenticationCheck extends IntentService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        boolean sSR, sSL, sSD, sSU;
-        UserModel mSwipeRightModel, mSwipeLeftModel, mScrollUpModel, mScrollDownModel;
+
 
         Log.v("TEST", "Service cree");
         notifyUSer(Constants.TOAST.CREATION);
@@ -63,8 +64,13 @@ public class AuthenticationCheck extends IntentService {
         mHandler = new Handler();
 
 
-        final SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        /*final SharedPreferences mPrefs = getSharedPreferences("mPrefs", MODE_PRIVATE);
         Gson gsonLoad = new Gson();
+        Log.v("TEST", Boolean.toString(mPrefs.contains("mSwipeRightModel")));
+        Log.v("TEST", Boolean.toString(mPrefs.contains("mSwipeLeftModel")));
+        Log.v("TEST", Boolean.toString(mPrefs.contains("mScrollUpModel")));
+        Log.v("TEST", Boolean.toString(mPrefs.contains("mScrollDownModel")));
+
         String mSRM = mPrefs.getString("mSwipeRightModel", "");
         String mSLM = mPrefs.getString("mSwipeLeftModel", "");
         String mSUM = mPrefs.getString("mScrollUpModel", "");
@@ -91,7 +97,7 @@ public class AuthenticationCheck extends IntentService {
             sSD = true;
         }
 
-        Log.v("TEST", Boolean.toString(sSR) + Boolean.toString(sSL) + Boolean.toString(sSU) + Boolean.toString(sSD));
+        Log.v("TEST", Boolean.toString(sSR) + Boolean.toString(sSL) + Boolean.toString(sSU) + Boolean.toString(sSD));*/
 
         //Foreground Service
         if (intent.getAction().equals(Constants.ACTION.START_FOREGROUND_ACTION)) {

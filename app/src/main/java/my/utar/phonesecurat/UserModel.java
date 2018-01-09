@@ -7,6 +7,7 @@ package my.utar.phonesecurat;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import java.util.ArrayList;
 
 public class UserModel implements Parcelable {
@@ -34,6 +35,7 @@ public class UserModel implements Parcelable {
 
     /**
      * Required for PARCELABLE
+     *
      * @param in Parcel
      */
     public UserModel(Parcel in) {
@@ -65,6 +67,7 @@ public class UserModel implements Parcelable {
 
     /**
      * Compute the model out of the moves list
+     *
      * @param mMotionList
      */
     public void compute(ArrayList<StructMotionFeatures> mMotionList) {
@@ -143,6 +146,7 @@ public class UserModel implements Parcelable {
 
     /**
      * Required for PARCELABLE
+     *
      * @return 0
      */
     @Override
@@ -153,7 +157,8 @@ public class UserModel implements Parcelable {
 
     /**
      * Required for PARCELABLE
-     * @param dest Parcel
+     *
+     * @param dest  Parcel
      * @param flags int
      */
     @Override
@@ -164,5 +169,11 @@ public class UserModel implements Parcelable {
         dest.writeLong(avgDuration);
         dest.writeDouble(avgSpeed);
         dest.writeDouble(avgPressure);
+        dest.writeInt(isComputed);
+    }
+
+    @Override
+    public String toString() {
+        return avgAbsLength + " " + avgLength + " " + avgDuration + " " + avgSpeed + " " + avgPressure + " " + isComputed;
     }
 }

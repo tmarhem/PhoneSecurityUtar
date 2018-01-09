@@ -5,8 +5,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
@@ -14,7 +16,9 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
 import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.lang.Math;
 
@@ -28,7 +32,7 @@ public class BaseProfilingActivity extends Activity {
     private final Context mContext = this;
     private VelocityTracker mVelocityTracker;
     private TextView mAvgValuesDisplay;
-    private TextView mIstantValuesDisplay;
+    private TextView mInstantValuesDisplay;
     private TextView mTextCounterSwipeRight, mTextCounterSwipeLeft, mTextCounterScollUp, mTextCounterScrollDown;
     private ArrayList<StructMotionElemts> mPointsList;
     private ArrayList<StructMotionFeatures> mSwipeRightList, mSwipeLeftList, mScrollUpList, mScrollDownList;
@@ -40,6 +44,7 @@ public class BaseProfilingActivity extends Activity {
     private final static int NUMBER_OF_INTENT = 10;
     private boolean mSwitch, switchScrollUp, switchScrollDown, switchBlockSwipe;
     Button mBtnReset;
+    Intent modelsFeedbackIntent;
 
 
     TextView absLength;
@@ -69,9 +74,12 @@ public class BaseProfilingActivity extends Activity {
         mScrollUpList = new ArrayList<>();
         mScrollDownList = new ArrayList<>();
 
+        modelsFeedbackIntent = new Intent();
+
         final SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
+
         Gson gsonLoad = new Gson();
-        String mSRM = mPrefs.getString("mSwipeRightModel","");
+        String mSRM = mPrefs.getString("mSwipeRightModel", "");
         String mSLM = mPrefs.getString("mSwipeLeftModel", "");
         String mSUM = mPrefs.getString("mScrollUpModel", "");
         String mSDM = mPrefs.getString("mScrollDownModel", "");
@@ -81,35 +89,32 @@ public class BaseProfilingActivity extends Activity {
         mScrollDownModel = gsonLoad.fromJson(mSDM, UserModel.class);
 
 
-        if(mSwipeRightModel != null){
+        if (mSwipeRightModel != null) {
+            Log.v("TEST", "mSwipeRightModel was found");
             counterSwipeRight = 0;
 
-        }
-        else{
+        } else {
             mSwipeRightModel = new UserModel();
             counterSwipeRight = NUMBER_OF_INTENT - mSwipeRightList.size();
         }
 
-        if(mSwipeLeftModel != null){
+        if (mSwipeLeftModel != null) {
             counterSwipeLeft = 0;
-        }
-        else{
+        } else {
             mSwipeLeftModel = new UserModel();
             counterSwipeLeft = NUMBER_OF_INTENT - mSwipeLeftList.size();
         }
 
-        if(mScrollUpModel != null){
+        if (mScrollUpModel != null) {
             counterScrollUp = 0;
-        }
-        else{
+        } else {
             mScrollUpModel = new UserModel();
             counterScrollUp = NUMBER_OF_INTENT - mScrollUpList.size();
         }
 
-        if(mScrollDownModel != null){
+        if (mScrollDownModel != null) {
             counterScrollDown = 0;
-        }
-        else{
+        } else {
             mScrollDownModel = new UserModel();
             counterScrollDown = NUMBER_OF_INTENT - mScrollDownList.size();
         }
@@ -118,7 +123,7 @@ public class BaseProfilingActivity extends Activity {
         mScrollUpModel = new UserModel();
         mScrollDownModel = new UserModel();
 
-        mIstantValuesDisplay = findViewById(R.id.instantValuesDisplay);
+        mInstantValuesDisplay = findViewById(R.id.instantValuesDisplay);
         mAvgValuesDisplay = findViewById(R.id.avgValuesDispay);
         absLength = findViewById(R.id.absLengthMatchResult);
         length = findViewById(R.id.lengthMatchResult);
@@ -191,6 +196,12 @@ public class BaseProfilingActivity extends Activity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+            setResult(RESULT_OK,modelsFeedbackIntent);
+        super.onBackPressed();
+    }
+
     /**
      * Display method
      */
@@ -231,7 +242,7 @@ public class BaseProfilingActivity extends Activity {
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
             float distanceX = e2.getX() - e1.getX();
             float distanceY = e2.getY() - e1.getY();
-            if(!switchBlockSwipe) {
+            if (!switchBlockSwipe) {
                 if (Math.abs(distanceX) > Math.abs(distanceY) && Math.abs(distanceX) > SWIPE_DISTANCE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
                     if (distanceX > 0)
                         onSwipeRight();
@@ -307,9 +318,9 @@ public class BaseProfilingActivity extends Activity {
                     }
                     mSwitch = true;
                 }
-                    mStructMotionElemts.compute(event, mPointsList, mVelocityTracker);
-                    //DISPLAY
-                    mIstantValuesDisplay.setText(mStructMotionElemts.toString());
+                mStructMotionElemts.compute(event, mPointsList, mVelocityTracker);
+                //DISPLAY
+                mInstantValuesDisplay.setText(mStructMotionElemts.toString());
                 break;
 
             case MotionEvent.ACTION_UP:
@@ -354,14 +365,15 @@ public class BaseProfilingActivity extends Activity {
         if (counterSwipeRight >= 1) {
             mSwipeRightList.add(mStructMotionFeatures.clone());
             counterSwipeRight = NUMBER_OF_INTENT - mSwipeRightList.size();
-            if (counterSwipeRight == 0 && mSwipeRightModel.getIsComputed()==0) {
+            if (counterSwipeRight == 0 && mSwipeRightModel.getIsComputed() == 0) {
                 mSwipeRightModel.compute(mSwipeRightList);
-                SharedPreferences  mPrefs = getPreferences(MODE_PRIVATE);
+                SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
                 SharedPreferences.Editor prefsEditor = mPrefs.edit();
                 Gson gsonSave = new Gson();
                 String json = gsonSave.toJson(mSwipeRightModel);
                 prefsEditor.putString("mSwipeRightModel", json);
                 prefsEditor.apply();
+                modelsFeedbackIntent.putExtra("mSwipeRightModel",mSwipeRightModel);
             }
             mTextCounterSwipeRight.setText(String.format("%d", counterSwipeRight));
         } else {
@@ -375,12 +387,14 @@ public class BaseProfilingActivity extends Activity {
             counterSwipeLeft = NUMBER_OF_INTENT - mSwipeLeftList.size();
             if (counterSwipeLeft == 0 && mSwipeLeftModel.getIsComputed() == 0) {
                 mSwipeLeftModel.compute(mSwipeLeftList);
-                SharedPreferences  mPrefs = getPreferences(MODE_PRIVATE);
+                SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
                 SharedPreferences.Editor prefsEditor = mPrefs.edit();
                 Gson gsonSave = new Gson();
                 String json = gsonSave.toJson(mSwipeLeftModel);
                 prefsEditor.putString("mSwipeLeftModel", json);
                 prefsEditor.apply();
+                modelsFeedbackIntent.putExtra("mSwipeLeftModel",mSwipeLeftModel);
+
             }
             mTextCounterSwipeLeft.setText(String.format("%d", counterSwipeLeft));
         } else {
@@ -394,12 +408,13 @@ public class BaseProfilingActivity extends Activity {
             counterScrollUp = NUMBER_OF_INTENT - mScrollUpList.size();
             if (counterScrollUp == 0 && mScrollUpModel.getIsComputed() == 0) {
                 mScrollUpModel.compute(mScrollUpList);
-                SharedPreferences  mPrefs = getPreferences(MODE_PRIVATE);
+                SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
                 SharedPreferences.Editor prefsEditor = mPrefs.edit();
                 Gson gsonSave = new Gson();
                 String json = gsonSave.toJson(mScrollUpModel);
                 prefsEditor.putString("mScrollUpModel", json);
                 prefsEditor.apply();
+                modelsFeedbackIntent.putExtra("mScrollUpModel",mScrollUpModel);
             }
             mTextCounterScollUp.setText(String.format("%d", counterScrollUp));
         } else {
@@ -413,12 +428,13 @@ public class BaseProfilingActivity extends Activity {
             counterScrollDown = NUMBER_OF_INTENT - mScrollDownList.size();
             if (counterScrollDown == 0 && mScrollDownModel.getIsComputed() == 0) {
                 mScrollDownModel.compute(mScrollDownList);
-                SharedPreferences  mPrefs = getPreferences(MODE_PRIVATE);
+                SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
                 SharedPreferences.Editor prefsEditor = mPrefs.edit();
                 Gson gsonSave = new Gson();
                 String json = gsonSave.toJson(mScrollDownModel);
                 prefsEditor.putString("mScrollDownModel", json);
                 prefsEditor.apply();
+                modelsFeedbackIntent.putExtra("mScrollDownModel",mScrollDownModel);
             }
             mTextCounterScrollDown.setText(String.format("%d", counterScrollDown));
         } else {
@@ -429,7 +445,7 @@ public class BaseProfilingActivity extends Activity {
     /**
      * Compares a move to the model
      *
-     * @param mUserModel UserModel
+     * @param mUserModel      UserModel
      * @param mStrangerMotion StructMotionsFeatures
      */
     public void compare(UserModel mUserModel, StructMotionFeatures mStrangerMotion) {
