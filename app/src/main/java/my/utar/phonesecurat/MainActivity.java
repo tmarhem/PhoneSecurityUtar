@@ -13,8 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import weka.core.*;
-import weka.classifiers.*;
-import weka.estimators.*;
+import weka.classifiers.functions.LibSVM;
 
 import com.google.gson.Gson;
 
