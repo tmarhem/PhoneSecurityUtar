@@ -17,8 +17,6 @@ import com.google.gson.Gson;
 
 /**
  * Main activity that launches the application, heads directly to the menu.
- * TODO 09.01 add saving to sharedpreferences in onActivityResult
- * TODO 09.01 Managing save profiles from the MainActivity
  * TODO 20.12 Managing BackButton not working while trying to steal a move
  * TODO 9.01 Replacing that by shutting the capture while touching the bottom of the device
  * TODO 20.12 visual style of the first menu
@@ -198,6 +196,21 @@ public class MainActivity extends Activity {
                 mSwipeLeftModel = data.getParcelableExtra("mSwipeLeftModel");
                 mScrollUpModel = data.getParcelableExtra("mScrollUpModel");
                 mScrollDownModel = data.getParcelableExtra("mScrollDownModel");
+
+                final SharedPreferences mPrefs = getSharedPreferences("mPrefs", MODE_PRIVATE);
+                SharedPreferences.Editor prefsEditor = mPrefs.edit();
+                Gson gsonSave = new Gson();
+                String mSRM = gsonSave.toJson(mSwipeRightModel);
+                String mSLM = gsonSave.toJson(mSwipeLeftModel);
+                String mSUM = gsonSave.toJson(mScrollUpModel);
+                String mSDM = gsonSave.toJson(mScrollDownModel);
+
+                prefsEditor.putString("mSwipeRightModel", mSRM);
+                prefsEditor.putString("mSwipeLeftModel", mSLM);
+                prefsEditor.putString("mScrollUpModel", mSUM);
+                prefsEditor.putString("mScrollDownModel", mSDM);
+
+                prefsEditor.apply();
             }
         }
     }
