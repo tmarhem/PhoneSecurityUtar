@@ -23,6 +23,10 @@ import com.google.gson.Gson;
  * TODO 9.01 Replacing that by shutting the capture while touching the bottom of the device
  * TODO 20.12 visual style of the first menu
  * TODO 20.12 Classifier
+ *              Through WEKA, Use LibSVM
+ *              Process Idea : Use WEKA windows app for testing features using extract from 'EXPORT ONLY' version of app
+ *                             Through empirical test, find the global settings parameters for our one class classifier
+ *                             Implement it through Android
  */
 public class MainActivity extends Activity {
 
