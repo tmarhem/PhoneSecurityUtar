@@ -36,10 +36,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             addPreferencesFromResource(R.xml.pref_main);
 
             // gallery EditText change listener
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.key_gallery_name)));
+            //bindPreferenceSummaryToValue(findPreference(getString(R.string.key_gallery_name)));
 
             // notification preference change listener
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.key_notifications_new_message_ringtone)));
+            //bindPreferenceSummaryToValue(findPreference(getString(R.string.key_notifications_new_message_ringtone)));
 
             // feedback preference click listener
             Preference myPref = findPreference(getString(R.string.key_send_feedback));
@@ -78,7 +78,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         public boolean onPreferenceChange(Preference preference, Object newValue) {
             String stringValue = newValue.toString();
 
-            if (preference instanceof ListPreference) {
+            /*if (preference instanceof ListPreference) {
                 // For list preferences, look up the correct display value in
                 // the preference's 'entries' list.
                 ListPreference listPreference = (ListPreference) preference;
@@ -90,29 +90,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                                 ? listPreference.getEntries()[index]
                                 : null);
 
-            } else if (preference instanceof RingtonePreference) {
-                // For ringtone preferences, look up the correct display value
-                // using RingtoneManager.
-                if (TextUtils.isEmpty(stringValue)) {
-                    // Empty values correspond to 'silent' (no ringtone).
-                    preference.setSummary(R.string.pref_ringtone_silent);
-
-                } else {
-                    Ringtone ringtone = RingtoneManager.getRingtone(
-                            preference.getContext(), Uri.parse(stringValue));
-
-                    if (ringtone == null) {
-                        // Clear the summary if there was a lookup error.
-                        preference.setSummary(R.string.summary_choose_ringtone);
-                    } else {
-                        // Set the summary to reflect the new ringtone display
-                        // name.
-                        String name = ringtone.getTitle(preference.getContext());
-                        preference.setSummary(name);
-                    }
-                }
-
-            } else if (preference instanceof EditTextPreference) {
+            } else*/ if (preference instanceof EditTextPreference) {
                 if (preference.getKey().equals("key_gallery_name")) {
                     // update the changed gallery name to summary filed
                     preference.setSummary(stringValue);
@@ -140,7 +118,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         }
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("message/rfc822");
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"contact@androidhive.info"});
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"t.marhem@gmail.com"});
         intent.putExtra(Intent.EXTRA_SUBJECT, "Query from android app");
         intent.putExtra(Intent.EXTRA_TEXT, body);
         context.startActivity(Intent.createChooser(intent, context.getString(R.string.choose_email_client)));
