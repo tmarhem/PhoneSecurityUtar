@@ -14,6 +14,7 @@
     <string name="pref_header_about">About</string>
     <string name="summary_about">This application is a live implementation from Mobile Authentication Services research work. It is led by master students from the UTAR Malaysia.</string>
     <string name="app_version">3.5</string>
+    <string name="default_learningNotCompleted">Basic learning is incomplete, please finish the base profiling</string>
     <string name="summary_support">Got any queries? We are happy to help!</string>
     <string name="title_send_feedback">Send Feedback</string>
     <string name="title_faq">FAQ</string>

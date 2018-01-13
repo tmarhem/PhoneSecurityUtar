@@ -12,22 +12,13 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+//WEKA Libs
 import weka.core.*;
 import weka.classifiers.functions.LibSVM;
 
 import com.google.gson.Gson;
 
-/**
- * Main activity that launches the application, heads directly to the menu.
- * TODO 20.12 Managing BackButton not working while trying to steal a move
- * TODO 9.01 Replacing that by shutting the capture while touching the bottom of the device
- * TODO 20.12 visual style of the first menu
- * TODO 20.12 Classifier
- *              Through WEKA, Use LibSVM
- *              Process Idea : Use WEKA windows app for testing features using extract from 'EXPORT ONLY' version of app
- *                             Through empirical test, find the global settings parameters for our one class classifier
- *                             Implement it through Android
- */
+
 public class MainActivity extends Activity {
 
     final Context ctx = this;
@@ -59,22 +50,19 @@ public class MainActivity extends Activity {
         Button mButtonRunInBackground;
         Button mButtonStopService;
 
-        if (!Settings.canDrawOverlays(this)) {
-            requestSystemAlertPermission(MainActivity.this, 5463);
-        }
-
         mButtonSettings = findViewById(R.id.ButtonSettings);
         mButtonStartBaseProfiling = findViewById(R.id.ButtonStartBaseProfiling);
         mButtonRunInBackground = findViewById(R.id.ButtonRunInBackground);
         mButtonStopService = findViewById(R.id.ButtonStopService);
 
+        //Authorization check
+        if (!Settings.canDrawOverlays(this)) {
+            requestSystemAlertPermission(MainActivity.this, 5463);
+        }
+
         //RETRIEVING MODELS ON STARTUP
         final SharedPreferences mPrefs = getSharedPreferences("mPrefs", MODE_PRIVATE);
         Gson gsonLoad = new Gson();
-        Log.v("TEST", Boolean.toString(mPrefs.contains("mSwipeRightModel")));
-        Log.v("TEST", Boolean.toString(mPrefs.contains("mSwipeLeftModel")));
-        Log.v("TEST", Boolean.toString(mPrefs.contains("mScrollUpModel")));
-        Log.v("TEST", Boolean.toString(mPrefs.contains("mScrollDownModel")));
 
         String mSRM = mPrefs.getString("mSwipeRightModel", "");
         String mSLM = mPrefs.getString("mSwipeLeftModel", "");

@@ -5,6 +5,7 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -19,6 +20,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -59,10 +63,49 @@ public class AuthenticationCheck extends IntentService {
         switchBlockSwipe = false;
         mHandler = new Handler();
 
-        mSwipeRightModel = intent.getParcelableExtra("mSwipeRightModel");
-        mSwipeLeftModel = intent.getParcelableExtra("mSwipeLeftModel");
-        mScrollUpModel = intent.getParcelableExtra("mScrollUpModel");
-        mScrollDownModel = intent.getParcelableExtra("mScrollDownModel");
+        /////////////////////INIT
+        final SharedPreferences mPrefs = getSharedPreferences("mPrefs", MODE_PRIVATE);
+        Gson gsonLoad = new Gson();
+
+        String mSRM = mPrefs.getString("mSwipeRightModel", "");
+        String mSLM = mPrefs.getString("mSwipeLeftModel", "");
+        String mSUM = mPrefs.getString("mScrollUpModel", "");
+        String mSDM = mPrefs.getString("mScrollDownModel", "");
+        mSwipeRightModel = gsonLoad.fromJson(mSRM, UserModel.class);
+        mSwipeLeftModel = gsonLoad.fromJson(mSLM, UserModel.class);
+        mScrollUpModel = gsonLoad.fromJson(mSUM, UserModel.class);
+        mScrollDownModel = gsonLoad.fromJson(mSDM, UserModel.class);
+
+        if (mSwipeRightModel != null) {
+            if (mSwipeRightModel.getIsComputed() == 1) {
+                Log.v("TEST","mRSM mSwipeRightModel");
+            }
+        } else mSwipeRightModel = new UserModel();
+
+        if (mSwipeLeftModel != null) {
+            if (mSwipeLeftModel.getIsComputed() == 1) {
+                Log.v("TEST","mRSM mSwipeLeftModel");
+
+            }
+        } else mSwipeLeftModel = new UserModel();
+
+
+        if (mScrollUpModel != null) {
+            if (mScrollUpModel.getIsComputed() == 1) {
+                Log.v("TEST","mRSM mScrollUpModel");
+
+            }
+        } else mScrollUpModel = new UserModel();
+
+
+        if (mScrollDownModel != null) {
+            if (mScrollDownModel.getIsComputed() == 1) {
+                Log.v("TEST","mRSM mScrollDownModel");
+
+            }
+        } else mScrollDownModel = new UserModel();
+        /////////////////////INIT
+
 
         if (intent.getAction().equals(Constants.ACTION.START_FOREGROUND_ACTION)) {
             Intent notificationIntent = new Intent(ctx, MainActivity.class);
@@ -163,7 +206,6 @@ public class AuthenticationCheck extends IntentService {
         mWindowManager.removeView(mSavedView);
         isRunning = false;
         Log.v("VERBOSE", "View closed");
-
     }
 
     public void onSwipeLeft() {
@@ -173,21 +215,18 @@ public class AuthenticationCheck extends IntentService {
         mWindowManager.removeView(mSavedView);
         isRunning = false;
         Log.v("VERBOSE", "View closed");
-
     }
 
     public void onScrollUp() {
         compare(mScrollUpModel, mStructMotionFeatures);
         mWindowManager.removeView(mSavedView);
         isRunning = false;
-
     }
 
     public void onScrollDown() {
         compare(mScrollDownModel, mStructMotionFeatures);
         mWindowManager.removeView(mSavedView);
         isRunning = false;
-
     }
 
     /**

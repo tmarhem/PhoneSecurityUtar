@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -15,6 +16,9 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.google.gson.Gson;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -58,9 +62,45 @@ public class BaseProfilingActivity extends Activity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_profiling);
+
+        /////////////////////INIT
+        final SharedPreferences mPrefs = getSharedPreferences("mPrefs", MODE_PRIVATE);
+        Gson gsonLoad = new Gson();
+
+        String mSRM = mPrefs.getString("mSwipeRightModel", "");
+        String mSLM = mPrefs.getString("mSwipeLeftModel", "");
+        String mSUM = mPrefs.getString("mScrollUpModel", "");
+        String mSDM = mPrefs.getString("mScrollDownModel", "");
+        mSwipeRightModel = gsonLoad.fromJson(mSRM, UserModel.class);
+        mSwipeLeftModel = gsonLoad.fromJson(mSLM, UserModel.class);
+        mScrollUpModel = gsonLoad.fromJson(mSUM, UserModel.class);
+        mScrollDownModel = gsonLoad.fromJson(mSDM, UserModel.class);
+
+        if (mSwipeRightModel != null) {
+            if (mSwipeRightModel.getIsComputed() == 1) {
+            }
+        } else mSwipeRightModel = new UserModel();
+
+        if (mSwipeLeftModel != null) {
+            if (mSwipeLeftModel.getIsComputed() == 1) {
+            }
+        } else mSwipeLeftModel = new UserModel();
+
+
+        if (mScrollUpModel != null) {
+            if (mScrollUpModel.getIsComputed() == 1) {
+            }
+        } else mScrollUpModel = new UserModel();
+
+
+        if (mScrollDownModel != null) {
+            if (mScrollDownModel.getIsComputed() == 1) {
+            }
+        } else mScrollDownModel = new UserModel();
+        /////////////////////INIT
+
         mSwitch = false;
         switchScrollUp = false;
         switchScrollDown = false;
@@ -70,13 +110,6 @@ public class BaseProfilingActivity extends Activity {
         mSwipeLeftList = new ArrayList<>();
         mScrollUpList = new ArrayList<>();
         mScrollDownList = new ArrayList<>();
-
-        startIntent = this.getIntent();
-
-        mSwipeRightModel = startIntent.getParcelableExtra("mSwipeRightModel");
-        mSwipeLeftModel = startIntent.getParcelableExtra("mSwipeLeftModel");
-        mScrollUpModel = startIntent.getParcelableExtra("mScrollUpModel");
-        mScrollDownModel = startIntent.getParcelableExtra("mScrollDownModel");
 
         mInstantValuesDisplay = findViewById(R.id.instantValuesDisplay);
         mAvgValuesDisplay = findViewById(R.id.avgValuesDispay);
@@ -141,13 +174,22 @@ public class BaseProfilingActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        Intent modelsFeedbackIntent = new Intent();
-        modelsFeedbackIntent.putExtra("mSwipeRightModel", mSwipeRightModel);
-        modelsFeedbackIntent.putExtra("mSwipeLeftModel", mSwipeLeftModel);
-        modelsFeedbackIntent.putExtra("mScrollUpModel", mScrollUpModel);
-        modelsFeedbackIntent.putExtra("mScrollDownModel", mScrollDownModel);
+        Intent feedbackIntent = new Intent();
+        setResult(RESULT_OK, feedbackIntent);
+        final SharedPreferences mPrefs = getSharedPreferences("mPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+        Gson gsonSave = new Gson();
+        String mSRM = gsonSave.toJson(mSwipeRightModel);
+        String mSLM = gsonSave.toJson(mSwipeLeftModel);
+        String mSUM = gsonSave.toJson(mScrollUpModel);
+        String mSDM = gsonSave.toJson(mScrollDownModel);
 
-        setResult(RESULT_OK, modelsFeedbackIntent);
+        prefsEditor.putString("mSwipeRightModel", mSRM);
+        prefsEditor.putString("mSwipeLeftModel", mSLM);
+        prefsEditor.putString("mScrollUpModel", mSUM);
+        prefsEditor.putString("mScrollDownModel", mSDM);
+
+        prefsEditor.apply();
         super.onBackPressed();
     }
 
