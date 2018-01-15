@@ -18,7 +18,10 @@ import weka.classifiers.functions.LibSVM;
 
 import com.google.gson.Gson;
 
-
+/**
+ * FORMER main menu, not used anymore
+ * REPLACED BY SETTINGS ACTIVITY
+ */
 public class MainActivity extends Activity {
 
     final Context ctx = this;

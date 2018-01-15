@@ -29,6 +29,10 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
+/**
+ * Background Authentication Service
+ * A handler gets touch movement every X seconds and compares it to the model
+ */
 public class AuthenticationCheck extends IntentService {
 
     private final Context ctx = this;
@@ -173,7 +177,7 @@ public class AuthenticationCheck extends IntentService {
 
     @Override
     public void onDestroy() {
-        Log.v("TEST", "Service stopee");
+        Log.v("TEST", "Service stopped");
         stopForeground(true);
         notifyUSer(Constants.TOAST.DESTRUCTION);
         mHandler.removeCallbacksAndMessages(null);
@@ -197,32 +201,40 @@ public class AuthenticationCheck extends IntentService {
     }
 
     public void onSwipeRight() {
-        boolean result = compare(mSwipeRightModel, mStructMotionFeatures);
-        manageSuspiciousAttempts(result);
+        if (mSwipeRightModel.getIsComputed() == 1) {
+            boolean result = compare(mSwipeRightModel, mStructMotionFeatures);
+            manageSuspiciousAttempts(result);
+        }
         mWindowManager.removeView(mSavedView);
         isRunning = false;
         Log.v("VERBOSE", "View closed");
     }
 
     public void onSwipeLeft() {
-        boolean result = compare(mSwipeLeftModel, mStructMotionFeatures);
-        manageSuspiciousAttempts(result);
+        if (mSwipeLeftModel.getIsComputed() == 1) {
+            boolean result = compare(mSwipeLeftModel, mStructMotionFeatures);
+            manageSuspiciousAttempts(result);
+        }
         mWindowManager.removeView(mSavedView);
         isRunning = false;
         Log.v("VERBOSE", "View closed");
     }
 
     public void onScrollUp() {
-        boolean result = compare(mScrollUpModel, mStructMotionFeatures);
-        manageSuspiciousAttempts(result);
+        if (mScrollUpModel.getIsComputed()==1) {
+            boolean result = compare(mScrollUpModel, mStructMotionFeatures);
+            manageSuspiciousAttempts(result);
+        }
         mWindowManager.removeView(mSavedView);
         isRunning = false;
         Log.v("VERBOSE", "View closed");
     }
 
     public void onScrollDown() {
-        boolean result = compare(mScrollDownModel, mStructMotionFeatures);
-        manageSuspiciousAttempts(result);
+        if (mScrollDownModel.getIsComputed()==1) {
+            boolean result = compare(mScrollDownModel, mStructMotionFeatures);
+            manageSuspiciousAttempts(result);
+        }
         mWindowManager.removeView(mSavedView);
         isRunning = false;
         Log.v("VERBOSE", "View closed");
@@ -245,6 +257,13 @@ public class AuthenticationCheck extends IntentService {
         return nf.format(ratio);
     }
 
+    public Double toProbability(Double ratio) {
+        if (ratio > 1) {
+            ratio = 1 / ratio;
+        }
+        return ratio;
+    }
+
     public void manageSuspiciousAttempts(boolean result) {
         if (!result) {
             numberOfSuspiciousAttempts++;
@@ -265,7 +284,7 @@ public class AuthenticationCheck extends IntentService {
      * @param mStrangerMotion StructMotionsFeatures
      */
     public boolean compare(UserModel mUserModel, StructMotionFeatures mStrangerMotion) {
-        double matchingScore = 0;
+        double matchingScore;
         double marchingScoreLimit = 0.85;
 
         double weightCurve = 1.0;
@@ -277,11 +296,13 @@ public class AuthenticationCheck extends IntentService {
         double modelRatioLength = mUserModel.getAvgAbsLength() / mUserModel.getAvgLength();
         double strangerRatioLength = mStrangerMotion.getMotionAbsLength() / mStrangerMotion.getMotionLength();
 
-        double ratioCurve = strangerRatioLength / modelRatioLength;
-        double ratioLength = Long.valueOf(mUserModel.getAvgLength()).doubleValue() / Long.valueOf(mStrangerMotion.getMotionLength()).doubleValue();
-        double ratioDuration = Long.valueOf(mUserModel.getAvgDuration()).doubleValue() / Long.valueOf(mStrangerMotion.getMotionDuration()).doubleValue();
-        double ratioSpeed = mUserModel.getAvgSpeed() / mStrangerMotion.getMotionAvgSpeed();
-        double ratioPressure = mUserModel.getAvgPressure() / mStrangerMotion.getMotionAvgPressure();
+        double ratioCurve = toProbability(strangerRatioLength / modelRatioLength);
+        double ratioLength = toProbability(Long.valueOf(mUserModel.getAvgLength()).doubleValue() /
+                Long.valueOf(mStrangerMotion.getMotionLength()).doubleValue());
+        double ratioDuration = toProbability(Long.valueOf(mUserModel.getAvgDuration()).doubleValue() /
+                Long.valueOf(mStrangerMotion.getMotionDuration()).doubleValue());
+        double ratioSpeed = toProbability(mUserModel.getAvgSpeed() / mStrangerMotion.getMotionAvgSpeed());
+        double ratioPressure = toProbability(mUserModel.getAvgPressure() / mStrangerMotion.getMotionAvgPressure());
 
         matchingScore = (ratioCurve * weightCurve) + (ratioDuration * weightDuration) + (ratioLength * weightLength)
                 + (ratioPressure * weightPressure) + (ratioSpeed * weightSpeed);
@@ -295,7 +316,6 @@ public class AuthenticationCheck extends IntentService {
                 toPercentage(ratioPressure) + "%(ratioPressure)\n\n" +
                 toPercentage(matchingScore) + "%(Matching score)"
         );
-
         return (matchingScore >= marchingScoreLimit);
     }
 
