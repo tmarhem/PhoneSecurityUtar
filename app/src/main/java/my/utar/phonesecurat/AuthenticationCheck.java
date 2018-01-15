@@ -3,6 +3,8 @@ package my.utar.phonesecurat;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.PendingIntent;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -41,7 +43,7 @@ public class AuthenticationCheck extends IntentService {
     private StructMotionElemts mStructMotionElemts;
     private boolean isRunning;
     UserModel mSwipeRightModel, mSwipeLeftModel, mScrollUpModel, mScrollDownModel;
-
+    private int numberOfSuspiciousAttempts;
 
     public AuthenticationCheck() {
         super("AuthenticationCheck");
@@ -55,15 +57,14 @@ public class AuthenticationCheck extends IntentService {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
+        numberOfSuspiciousAttempts = 0;
 
-        Log.v("TEST", "Service cree");
         notifyUSer(Constants.TOAST.CREATION);
         isRunning = false;
         switchInitialize = false;
         switchBlockSwipe = false;
         mHandler = new Handler();
 
-        /////////////////////INIT
         final SharedPreferences mPrefs = getSharedPreferences("mPrefs", MODE_PRIVATE);
         Gson gsonLoad = new Gson();
 
@@ -78,13 +79,13 @@ public class AuthenticationCheck extends IntentService {
 
         if (mSwipeRightModel != null) {
             if (mSwipeRightModel.getIsComputed() == 1) {
-                Log.v("TEST","mRSM mSwipeRightModel");
+                Log.v("TEST", "mRSM mSwipeRightModel");
             }
         } else mSwipeRightModel = new UserModel();
 
         if (mSwipeLeftModel != null) {
             if (mSwipeLeftModel.getIsComputed() == 1) {
-                Log.v("TEST","mRSM mSwipeLeftModel");
+                Log.v("TEST", "mRSM mSwipeLeftModel");
 
             }
         } else mSwipeLeftModel = new UserModel();
@@ -92,7 +93,7 @@ public class AuthenticationCheck extends IntentService {
 
         if (mScrollUpModel != null) {
             if (mScrollUpModel.getIsComputed() == 1) {
-                Log.v("TEST","mRSM mScrollUpModel");
+                Log.v("TEST", "mRSM mScrollUpModel");
 
             }
         } else mScrollUpModel = new UserModel();
@@ -100,12 +101,10 @@ public class AuthenticationCheck extends IntentService {
 
         if (mScrollDownModel != null) {
             if (mScrollDownModel.getIsComputed() == 1) {
-                Log.v("TEST","mRSM mScrollDownModel");
+                Log.v("TEST", "mRSM mScrollDownModel");
 
             }
         } else mScrollDownModel = new UserModel();
-        /////////////////////INIT
-
 
         if (intent.getAction().equals(Constants.ACTION.START_FOREGROUND_ACTION)) {
             Intent notificationIntent = new Intent(ctx, MainActivity.class);
@@ -121,7 +120,7 @@ public class AuthenticationCheck extends IntentService {
 
             startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
 
-            mHandler.postDelayed(addListeningWindow, 10000);
+            mHandler.postDelayed(addListeningWindow, 6000);
 
 
         } else if (intent.getAction().equals(Constants.ACTION.STOP_FOREGROUND_ACTION)) {
@@ -138,9 +137,7 @@ public class AuthenticationCheck extends IntentService {
                 notifyUSer(Constants.TOAST.STEALING);
                 mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
                 WindowManager.LayoutParams mParams = new WindowManager.LayoutParams();
-            /*if(mSavedView != null) {
-                mWindowManager.removeView(mSavedView);
-            }*/
+
                 // Window adding
                 View mView = new HUDView(ctx);
                 mSavedView = mView;
@@ -200,33 +197,35 @@ public class AuthenticationCheck extends IntentService {
     }
 
     public void onSwipeRight() {
-        Log.v("VERBOSE", "Entered onSwipeRight");
-
-        compare(mSwipeRightModel, mStructMotionFeatures);
+        boolean result = compare(mSwipeRightModel, mStructMotionFeatures);
+        manageSuspiciousAttempts(result);
         mWindowManager.removeView(mSavedView);
         isRunning = false;
         Log.v("VERBOSE", "View closed");
     }
 
     public void onSwipeLeft() {
-        Log.v("VERBOSE", "Entered onSwipeLeft");
-
-        compare(mSwipeLeftModel, mStructMotionFeatures);
+        boolean result = compare(mSwipeLeftModel, mStructMotionFeatures);
+        manageSuspiciousAttempts(result);
         mWindowManager.removeView(mSavedView);
         isRunning = false;
         Log.v("VERBOSE", "View closed");
     }
 
     public void onScrollUp() {
-        compare(mScrollUpModel, mStructMotionFeatures);
+        boolean result = compare(mScrollUpModel, mStructMotionFeatures);
+        manageSuspiciousAttempts(result);
         mWindowManager.removeView(mSavedView);
         isRunning = false;
+        Log.v("VERBOSE", "View closed");
     }
 
     public void onScrollDown() {
-        compare(mScrollDownModel, mStructMotionFeatures);
+        boolean result = compare(mScrollDownModel, mStructMotionFeatures);
+        manageSuspiciousAttempts(result);
         mWindowManager.removeView(mSavedView);
         isRunning = false;
+        Log.v("VERBOSE", "View closed");
     }
 
     /**
@@ -246,13 +245,34 @@ public class AuthenticationCheck extends IntentService {
         return nf.format(ratio);
     }
 
+    public void manageSuspiciousAttempts(boolean result) {
+        if (!result) {
+            numberOfSuspiciousAttempts++;
+            Toast.makeText(this, "Suspicious attempt detected", Toast.LENGTH_SHORT).show();
+            if (numberOfSuspiciousAttempts >= 3) {
+                //phone lock
+                DevicePolicyManager dPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+                dPM.lockNow();
+                numberOfSuspiciousAttempts = 0;
+            }
+        }
+    }
+
     /**
      * Compares a move to the model
      *
      * @param mUserModel      UserModel
      * @param mStrangerMotion StructMotionsFeatures
      */
-    public void compare(UserModel mUserModel, StructMotionFeatures mStrangerMotion) {
+    public boolean compare(UserModel mUserModel, StructMotionFeatures mStrangerMotion) {
+        double matchingScore = 0;
+        double marchingScoreLimit = 0.85;
+
+        double weightCurve = 1.0;
+        double weightLength = 1.0;
+        double weightDuration = 1.0;
+        double weightSpeed = 1.0;
+        double weightPressure = 1.0;
 
         double modelRatioLength = mUserModel.getAvgAbsLength() / mUserModel.getAvgLength();
         double strangerRatioLength = mStrangerMotion.getMotionAbsLength() / mStrangerMotion.getMotionLength();
@@ -263,13 +283,20 @@ public class AuthenticationCheck extends IntentService {
         double ratioSpeed = mUserModel.getAvgSpeed() / mStrangerMotion.getMotionAvgSpeed();
         double ratioPressure = mUserModel.getAvgPressure() / mStrangerMotion.getMotionAvgPressure();
 
+        matchingScore = (ratioCurve * weightCurve) + (ratioDuration * weightDuration) + (ratioLength * weightLength)
+                + (ratioPressure * weightPressure) + (ratioSpeed * weightSpeed);
+        matchingScore = matchingScore / (weightCurve + weightDuration + weightLength + weightPressure + weightSpeed);
+
         Log.v("VERBOSE", "Match results:\n" +
                 toPercentage(ratioCurve) + " %(ratioCurve)\n" +
                 toPercentage(ratioLength) + "%(ratioLength)\n" +
                 toPercentage(ratioDuration) + "%(ratioDuration)\n" +
                 toPercentage(ratioSpeed) + "%(ratioSpeed)\n" +
-                toPercentage(ratioPressure) + "%(ratioPressure)\n"
+                toPercentage(ratioPressure) + "%(ratioPressure)\n\n" +
+                toPercentage(matchingScore) + "%(Matching score)"
         );
+
+        return (matchingScore >= marchingScoreLimit);
     }
 
     /**

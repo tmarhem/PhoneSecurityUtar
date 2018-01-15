@@ -1,6 +1,8 @@
 package my.utar.phonesecurat;
 
 import android.app.Activity;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,7 +15,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.MenuItem;
+import android.widget.Toast;
 //WEKA Libs
 import weka.core.*;
 import weka.classifiers.functions.LibSVM;
@@ -24,8 +26,9 @@ import com.google.gson.Gson;
  * Main activity that launches the application, heads directly to the settings menu.
  * TODO 20.12 Managing BackButton not working while trying to steal a move
  * TODO 9.01 Replacing that by shutting the capture while touching the bottom of the device
- * TODO 13.01 finish new settings menu
+ * TODO 13.01 settings menu add the handler delay with a bar level
  * TODO 20.12 Classifier
+ * TODO 13.01 Improve admin privilege recognition, correct global score from compare()
  * Through WEKA, Use LibSVM
  * Process Idea : Use WEKA windows app for testing features using extract from 'EXPORT ONLY' version of app
  * Through empirical test, find the global settings parameters for our one class classifier
@@ -53,6 +56,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         if (!Settings.canDrawOverlays(this)) {
             requestSystemAlertPermission(SettingsActivity.this, 5463);
         }
+
 
         //Retrieving user models on startup
         final SharedPreferences mPrefs = getSharedPreferences("mPrefs", MODE_PRIVATE);
@@ -160,6 +164,18 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                     return true;
                 }
             });
+
+            // startBaseProfiling preference click listener
+            final Preference myPref4 = findPreference("button_admin");
+            myPref4.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+                    intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, new ComponentName(getActivity(), MyAdminReceiver.class));
+                    intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Description TBH");
+                    startActivityForResult(intent, 5555);
+                    return true;
+                }
+            });
         }
 
         @Override
@@ -244,6 +260,14 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 Intent i1 = new Intent(this, AuthenticationCheck.class);
                 i1.setAction(Constants.ACTION.START_FOREGROUND_ACTION);
                 this.startService(i1);
+            }
+        }
+
+        if (requestCode == 5555) {
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(getApplicationContext(), "Registered As Admin", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(getApplicationContext(), "Failed to register as Admin", Toast.LENGTH_SHORT).show();
             }
         }
         super.onActivityResult(requestCode, resultCode, data);

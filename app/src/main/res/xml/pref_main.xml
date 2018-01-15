@@ -10,10 +10,16 @@
         </Preference>
 
         <Preference
+            android:summary="blabla"
+            android:title="Give admin rights for locking phone"
+            android:key="button_admin">
+        </Preference>
+
+        <!--<Preference
             android:selectable="false"
             android:summary="@string/default_learningNotCompleted"
             android:defaultValue="@string/default_learningNotCompleted"
-            android:title="Learning state" />
+            android:title="Learning state" />-->
 
     </PreferenceCategory>
 
