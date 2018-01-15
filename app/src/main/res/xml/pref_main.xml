@@ -10,7 +10,7 @@
         </Preference>
 
         <Preference
-            android:summary="blabla"
+            android:summary="This should only be necessary on first launch"
             android:title="Give admin rights for locking phone"
             android:key="button_admin">
         </Preference>

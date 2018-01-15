@@ -285,7 +285,7 @@ public class AuthenticationCheck extends IntentService {
      */
     public boolean compare(UserModel mUserModel, StructMotionFeatures mStrangerMotion) {
         double matchingScore;
-        double marchingScoreLimit = 0.85;
+        double marchingScoreLimit = 0.70;
 
         double weightCurve = 1.0;
         double weightLength = 1.0;
