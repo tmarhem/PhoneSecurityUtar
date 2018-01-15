@@ -70,8 +70,9 @@
         android:id="@+id/AbsLengthMatchTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="103dp"
-        android:layout_marginTop="150dp"
+        android:layout_alignStart="@+id/counterSwipeLeft"
+        android:layout_below="@+id/avgValuesDispay"
+        android:layout_marginTop="30dp"
         android:text="Curve match" />
 
     <TextView
@@ -178,6 +179,52 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="400dp"
         android:text="SD" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/counterSwipeRight"
+        android:layout_alignBottom="@+id/counterSwipeRight"
+        android:layout_toEndOf="@+id/counterSwipeRight"
+        android:text=": Swipes right " />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/counterScrollDown"
+        android:layout_alignBottom="@+id/counterScrollDown"
+        android:layout_toEndOf="@+id/SpeedMatchTitle"
+        android:text=": Scrolls down" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/counterScrollUp"
+        android:layout_alignBottom="@+id/counterScrollUp"
+        android:layout_toStartOf="@+id/avgValuesTitle"
+        android:text="Scrolls up :" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/counterSwipeLeft"
+        android:layout_alignBottom="@+id/counterSwipeLeft"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="13dp"
+        android:text="Swipes left :" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/textView6"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:text="REMAINING TRAINING MOVES REQUIRED" />
 
 
 </RelativeLayout>

@@ -124,7 +124,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 }
             });
 
-            //Tun in background switch preference click listener
+            //Run in background switch preference click listener
             final Preference myPref2 = findPreference("switchKey");
             myPref2.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
