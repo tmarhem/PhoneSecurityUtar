@@ -26,9 +26,9 @@ import com.google.gson.Gson;
  * Main activity that launches the application, heads directly to the settings menu.
  * TODO 20.12 Managing BackButton not working while trying to steal a move
  * TODO 9.01 Replacing that by shutting the capture while touching the bottom of the device
- * TODO 13.01 settings menu add the handler delay with a bar level
- * TODO 20.12 Classifier
- * TODO 13.01 Improve admin privilege recognition, correct global score from compare()
+ * UPDATE 15.01 backpressed isnt recognized as touch event, gotta find something else
+ * TODO 15.01 Force portait mode on the app
+ * TODO 20.12 Classifier :
  * Through WEKA, Use LibSVM
  * Process Idea : Use WEKA windows app for testing features using extract from 'EXPORT ONLY' version of app
  * Through empirical test, find the global settings parameters for our one class classifier

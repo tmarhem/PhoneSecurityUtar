@@ -1,5 +1,6 @@
 package my.utar.phonesecurat;
 
+import android.app.Activity;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -8,10 +9,12 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.app.NotificationCompat;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -42,7 +45,7 @@ public class AuthenticationCheck extends IntentService {
     private Handler mHandler;
     private boolean switchInitialize, switchScrollUp, switchScrollDown, switchBlockSwipe;
     private StructMotionFeatures mStructMotionFeatures;
-    private VelocityTracker mVelocityTracker;
+    private VelocityTracker mVelocityTracker, mVT;
     private ArrayList<StructMotionElemts> mPointsList;
     private StructMotionElemts mStructMotionElemts;
     private boolean isRunning;
@@ -411,6 +414,21 @@ public class AuthenticationCheck extends IntentService {
  * We focus on ACTION_MOVE because on ACTION_DOWN / UP The speed can be 0 and mess the average
  */
                 case MotionEvent.ACTION_DOWN:
+                    //Retrieving screen height
+                    int height = Resources.getSystem().getDisplayMetrics().heightPixels;
+
+                    //Retrieving position
+                    int verticalPosition = (int) event.getY();
+                    Log.v("VERBOSE",Integer.toString(verticalPosition));
+
+                    if (verticalPosition >= height){
+                        mWindowManager.removeView(mSavedView);
+                        isRunning = false;
+                        performClick();
+                        Log.v("VERBOSE","Back button pressed during touch retrieving");
+                        return gestureDetector.onTouchEvent(event);
+                    }
+                    
                     break;
 
                 case MotionEvent.ACTION_MOVE:
