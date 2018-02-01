@@ -150,7 +150,7 @@ public class AuthenticationCheck extends IntentService {
                 mSavedView = mView;
                 mParams.height = 1;
                 mParams.width = 1;
-                mParams.type = WindowManager.LayoutParams.TYPE_PHONE;
+                mParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
                 mParams.flags = WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
                 /*
                     //Parameters for fully transparent retrieving (Requires rooted phone)
