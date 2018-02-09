@@ -1,12 +1,14 @@
 package my.utar.phonesecurat;
 
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
@@ -19,6 +21,7 @@ import android.widget.TextView;
 import jxl.Workbook;
 import jxl.write.*;
 import jxl.write.Number;
+import weka.core.pmml.Array;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,6 +57,11 @@ public class BaseProfilingActivity extends Activity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_profiling);
+
+            String myChain[] = {Manifest.permission.READ_EXTERNAL_STORAGE};
+            requestPermissions(myChain, 1111);
+
+
         mSwitch = false;
         switchScrollUp = false;
         switchScrollDown = false;
