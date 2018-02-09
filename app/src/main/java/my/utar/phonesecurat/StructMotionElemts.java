@@ -123,6 +123,9 @@ public class StructMotionElemts {
         this.setPosX(event.getX());
         this.setPosY(event.getY());
         this.setPressure(event.getPressure());
+        if(event.getPressure()==0 || event.getPressure()<0.05 ){
+            this.setPressure(event.getSize());
+        }
         this.setTime(SystemClock.uptimeMillis());
         mList.add(this.clone());
     }
