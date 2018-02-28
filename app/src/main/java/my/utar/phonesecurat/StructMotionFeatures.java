@@ -20,8 +20,8 @@ public class StructMotionFeatures {
     private long motionDuration;
     private double motionAvgSpeed;
     private double motionAvgPressure;
-    float firstPosX, lastPosX, firstPosY, lastPosY;
-    private String moveType, userId, PhoneId;
+    private float firstPosX, lastPosX, firstPosY, lastPosY;
+    private String  userId, PhoneId;
 
 
     @Override
@@ -65,10 +65,6 @@ public class StructMotionFeatures {
 
     public void setPhoneId(String phoneId) {
         PhoneId = phoneId;
-    }
-
-    public void setMoveType(String moveType) {
-        this.moveType = moveType;
     }
 
     public float getFirstPosX() {

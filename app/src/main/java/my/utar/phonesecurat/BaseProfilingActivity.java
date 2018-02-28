@@ -57,7 +57,7 @@ public class BaseProfilingActivity extends Activity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_profiling);
-        
+
         if (android.os.Build.VERSION.SDK_INT>=23) {
             String myChain[] = {Manifest.permission.READ_EXTERNAL_STORAGE};
             requestPermissions(myChain, 1111);
