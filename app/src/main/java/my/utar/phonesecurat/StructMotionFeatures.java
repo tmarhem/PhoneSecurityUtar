@@ -67,10 +67,6 @@ public class StructMotionFeatures {
         PhoneId = phoneId;
     }
 
-    public String getMoveType() {
-        return moveType;
-    }
-
     public void setMoveType(String moveType) {
         this.moveType = moveType;
     }
@@ -115,7 +111,7 @@ public class StructMotionFeatures {
         this.motionDuration = motionDuration;
     }
 
-    protected double getMotionAvgSpeed() {
+    public double getMotionAvgSpeed() {
         return motionAvgSpeed;
     }
 
@@ -123,7 +119,7 @@ public class StructMotionFeatures {
         this.motionAvgSpeed = motionAvgSpeed;
     }
 
-    protected double getMotionAvgPressure() {
+    public double getMotionAvgPressure() {
         return motionAvgPressure;
     }
 
@@ -131,7 +127,7 @@ public class StructMotionFeatures {
         this.motionAvgPressure = motionAvgPressure;
     }
 
-    protected void clear() {
+    public void clear() {
         motionAbsLength = 0;
         motionLength = 0;
         motionDuration = 0;
@@ -150,7 +146,7 @@ public class StructMotionFeatures {
      *
      * @param mList list of point StructMotionElemts
      */
-    protected void compute(ArrayList<StructMotionElemts> mList) {
+    public void compute(ArrayList<StructMotionElemts> mList) {
         double sumSpeed = 0;
         double sumPressure = 0;
         float nowPosX;
