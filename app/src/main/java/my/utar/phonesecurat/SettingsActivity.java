@@ -53,9 +53,13 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         //Load settings fragment
         getFragmentManager().beginTransaction().replace(android.R.id.content, new MainPreferenceFragment()).commit();
         //Authorization check
-        if (!Settings.canDrawOverlays(this)) {
-            requestSystemAlertPermission(SettingsActivity.this, 5463);
+        if (android.os.Build.VERSION.SDK_INT >= 23) {
+
+            if (!Settings.canDrawOverlays(this)) {
+                requestSystemAlertPermission(SettingsActivity.this, 5463);
+            }
         }
+
 
 
         //Retrieving user models on startup
@@ -179,14 +183,14 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         }
 
         @Override
-        public void onDestroy(){
+        public void onDestroy() {
             resetSwitchKey();
             super.onDestroy();
         }
 
         public void resetSwitchKey() {
             SharedPreferences.Editor editor = findPreference("switchKey").getEditor();
-            editor.putBoolean("switchKey",false);
+            editor.putBoolean("switchKey", false);
             editor.commit();
         }
 
@@ -266,7 +270,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         if (requestCode == 5555) {
             if (resultCode == RESULT_OK) {
                 Toast.makeText(getApplicationContext(), "Registered As Admin", Toast.LENGTH_SHORT).show();
-            }else{
+            } else {
                 Toast.makeText(getApplicationContext(), "Failed to register as Admin", Toast.LENGTH_SHORT).show();
             }
         }
