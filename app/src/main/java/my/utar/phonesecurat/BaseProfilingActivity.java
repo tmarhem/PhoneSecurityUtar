@@ -186,6 +186,11 @@ public class BaseProfilingActivity extends Activity {
                 excelSheet.addCell(new Label(5, rowIndex, mSwipeRightList.get(i).getMoveType()));
                 excelSheet.addCell(new Label(6, rowIndex, mSwipeRightList.get(i).getUserId()));
                 excelSheet.addCell(new Label(7, rowIndex, mSwipeRightList.get(i).getPhoneId()));
+                excelSheet.addCell(new Label(8, rowIndex, Float.toString(mSwipeRightList.get(i).getFirstPosX())));
+                excelSheet.addCell(new Label(9, rowIndex, Float.toString(mSwipeRightList.get(i).getFirstPosY())));
+                excelSheet.addCell(new Label(10, rowIndex, Float.toString(mSwipeRightList.get(i).getLastPosX())));
+                excelSheet.addCell(new Label(11, rowIndex, Float.toString(mSwipeRightList.get(i).getLastPosY())));
+
                 rowIndex++;
             }
 
@@ -198,6 +203,10 @@ public class BaseProfilingActivity extends Activity {
                 excelSheet.addCell(new Label(5, rowIndex, mSwipeLeftList.get(i).getMoveType()));
                 excelSheet.addCell(new Label(6, rowIndex, mSwipeLeftList.get(i).getUserId()));
                 excelSheet.addCell(new Label(7, rowIndex, mSwipeLeftList.get(i).getUserId()));
+                excelSheet.addCell(new Label(8, rowIndex, Float.toString(mSwipeLeftList.get(i).getFirstPosX())));
+                excelSheet.addCell(new Label(9, rowIndex, Float.toString(mSwipeLeftList.get(i).getFirstPosY())));
+                excelSheet.addCell(new Label(10, rowIndex, Float.toString(mSwipeLeftList.get(i).getLastPosX())));
+                excelSheet.addCell(new Label(11, rowIndex, Float.toString(mSwipeLeftList.get(i).getLastPosY())));
                 rowIndex++;
             }
 
@@ -210,6 +219,10 @@ public class BaseProfilingActivity extends Activity {
                 excelSheet.addCell(new Label(5, rowIndex, mScrollUpList.get(i).getMoveType()));
                 excelSheet.addCell(new Label(6, rowIndex, mScrollUpList.get(i).getUserId()));
                 excelSheet.addCell(new Label(7, rowIndex, mScrollUpList.get(i).getUserId()));
+                excelSheet.addCell(new Label(8, rowIndex, Float.toString(mScrollUpList.get(i).getFirstPosX())));
+                excelSheet.addCell(new Label(9, rowIndex, Float.toString(mScrollUpList.get(i).getFirstPosY())));
+                excelSheet.addCell(new Label(10, rowIndex, Float.toString(mScrollUpList.get(i).getLastPosX())));
+                excelSheet.addCell(new Label(11, rowIndex, Float.toString(mScrollUpList.get(i).getLastPosY())));
                 rowIndex++;
             }
 
@@ -222,6 +235,10 @@ public class BaseProfilingActivity extends Activity {
                 excelSheet.addCell(new Label(5, rowIndex, mScrollDownList.get(i).getMoveType()));
                 excelSheet.addCell(new Label(6, rowIndex, mScrollDownList.get(i).getUserId()));
                 excelSheet.addCell(new Label(7, rowIndex, mScrollDownList.get(i).getUserId()));
+                excelSheet.addCell(new Label(8, rowIndex, Float.toString(mScrollDownList.get(i).getFirstPosX())));
+                excelSheet.addCell(new Label(9, rowIndex, Float.toString(mScrollDownList.get(i).getFirstPosY())));
+                excelSheet.addCell(new Label(10, rowIndex, Float.toString(mScrollDownList.get(i).getLastPosX())));
+                excelSheet.addCell(new Label(11, rowIndex, Float.toString(mScrollDownList.get(i).getLastPosY())));
                 rowIndex++;
             }
 

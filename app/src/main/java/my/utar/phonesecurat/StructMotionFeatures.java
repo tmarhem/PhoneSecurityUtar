@@ -21,7 +21,7 @@ public class StructMotionFeatures {
     private double motionAvgSpeed;
     private double motionAvgPressure;
     private float firstPosX, lastPosX, firstPosY, lastPosY;
-    private String  userId, PhoneId;
+    private String moveType, userId, PhoneId;
 
 
     @Override
@@ -32,6 +32,11 @@ public class StructMotionFeatures {
         mClone.setMotionDuration(this.getMotionDuration());
         mClone.setMotionAvgSpeed(this.getMotionAvgSpeed());
         mClone.setMotionAvgPressure(this.getMotionAvgPressure());
+        mClone.setFirstPosX(this.getFirstPosX());
+        mClone.setLastPosX(this.getLastPosX());
+        mClone.setFirstPosY(this.getFirstPosY());
+        mClone.setLastPosY(this.getLastPosY());
+        mClone.setMoveType(this.getMoveType());
         mClone.setUserId(this.getUserId());
         mClone.setPhoneId(this.getPhoneId());
         return mClone;
@@ -49,6 +54,14 @@ public class StructMotionFeatures {
         firstPosY = 0;
         lastPosY = 0;
 
+    }
+
+    public String getMoveType() {
+        return moveType;
+    }
+
+    public void setMoveType(String moveType) {
+        this.moveType = moveType;
     }
 
     public String getUserId() {
@@ -77,6 +90,22 @@ public class StructMotionFeatures {
 
     public float getFirstPosY() {
         return firstPosY;
+    }
+
+    public void setFirstPosX(float firstPosX) {
+        this.firstPosX = firstPosX;
+    }
+
+    public void setLastPosX(float lastPosX) {
+        this.lastPosX = lastPosX;
+    }
+
+    public void setFirstPosY(float firstPosY) {
+        this.firstPosY = firstPosY;
+    }
+
+    public void setLastPosY(float lastPosY) {
+        this.lastPosY = lastPosY;
     }
 
     public float getLastPosY() {
