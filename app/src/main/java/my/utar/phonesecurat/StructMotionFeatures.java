@@ -20,6 +20,7 @@ public class StructMotionFeatures {
     private long motionDuration;
     private double motionAvgSpeed;
     private double motionAvgPressure;
+    private double firstPressure, lastPressure;
     private float firstPosX, lastPosX, firstPosY, lastPosY;
     private String moveType, userId, PhoneId;
 
@@ -32,6 +33,8 @@ public class StructMotionFeatures {
         mClone.setMotionDuration(this.getMotionDuration());
         mClone.setMotionAvgSpeed(this.getMotionAvgSpeed());
         mClone.setMotionAvgPressure(this.getMotionAvgPressure());
+        mClone.setFirstPressure(this.getFirstPressure());
+        mClone.setLastPressure(this.getLastPressure());
         mClone.setFirstPosX(this.getFirstPosX());
         mClone.setLastPosX(this.getLastPosX());
         mClone.setFirstPosY(this.getFirstPosY());
@@ -49,11 +52,29 @@ public class StructMotionFeatures {
         motionAvgSpeed = 0;
         motionAvgSpeed = 0;
         motionAvgPressure = 0;
+        firstPressure = 0;
+        lastPressure = 0;
         firstPosX = 0;
         lastPosX =0;
         firstPosY = 0;
         lastPosY = 0;
 
+    }
+
+    public double getFirstPressure() {
+        return firstPressure;
+    }
+
+    public void setFirstPressure(double firstPressure) {
+        this.firstPressure = firstPressure;
+    }
+
+    public double getLastPressure() {
+        return lastPressure;
+    }
+
+    public void setLastPressure(double lastPressure) {
+        this.lastPressure = lastPressure;
     }
 
     public String getMoveType() {
@@ -159,6 +180,8 @@ public class StructMotionFeatures {
         motionAvgSpeed = 0;
         motionAvgSpeed = 0;
         motionAvgPressure = 0;
+        firstPressure = 0;
+        lastPressure = 0;
         firstPosX = 0;
         lastPosX =0;
         firstPosY = 0;
@@ -222,10 +245,12 @@ public class StructMotionFeatures {
                 mStructMotionElemts = mList.get(0);
                 firstPosX = mStructMotionElemts.getPosX();
                 firstPosY = mStructMotionElemts.getPosY();
+                firstPressure = mStructMotionElemts.getPressure();
                 startTime = mStructMotionElemts.getTime();
                 mStructMotionElemts = mList.get(mList.size() - 1);
                 lastPosX = mStructMotionElemts.getPosX();
                 lastPosY = mStructMotionElemts.getPosY();
+                lastPressure = mStructMotionElemts.getPressure();
                 endTime = mStructMotionElemts.getTime();
 
                 motionDuration = endTime - startTime;
